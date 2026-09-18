@@ -1,6 +1,10 @@
 import { errorText } from "./errors.js";
 import type { Freshness, ResolvedScope, Scope, SearchSource } from "./types.js";
 
+export class OperationTimeoutError extends Error {
+  override readonly name = "TimeoutError";
+}
+
 export function hasHanCharacters(value: string): boolean {
   return /\p{Script=Han}/u.test(value);
 }
@@ -71,10 +75,14 @@ export async function withTimeout<T>(
 ): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => {
-    controller.abort(new Error(`${label} timed out after ${timeoutMs}ms`));
+    controller.abort(new OperationTimeoutError(`${label} timed out after ${timeoutMs}ms`));
   }, timeoutMs);
   const onAbort = (): void => controller.abort(externalSignal?.reason);
-  externalSignal?.addEventListener("abort", onAbort, { once: true });
+  if (externalSignal?.aborted === true) {
+    controller.abort(externalSignal.reason);
+  } else {
+    externalSignal?.addEventListener("abort", onAbort, { once: true });
+  }
   try {
     return await operation(controller.signal);
   } finally {

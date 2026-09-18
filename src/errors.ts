@@ -57,8 +57,15 @@ export function normalizeProviderError(
   error: unknown,
 ): ProviderError {
   if (error instanceof ProviderError) return error;
-  if (error instanceof DOMException && error.name === "AbortError") {
-    return new ProviderError(provider, "timeout", "Request timed out", {
+  if (
+    error instanceof Error
+    && (
+      error.name === "TimeoutError"
+      || error.name === "AbortError"
+      || error.name === "APIConnectionTimeoutError"
+    )
+  ) {
+    return new ProviderError(provider, "timeout", error.message, {
       retryable: true,
       cause: error,
     });

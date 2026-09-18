@@ -1,6 +1,7 @@
 export type Scope = "auto" | "cn" | "global";
 export type ResolvedScope = Exclude<Scope, "auto">;
 export type Freshness = "any" | "day" | "week" | "month" | "year";
+export type Quality = "fast" | "balanced" | "deep";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
@@ -10,7 +11,8 @@ export interface SearchInput {
   scope: Scope;
   maxResults: number;
   freshness: Freshness;
-  rerank: boolean;
+  quality?: Quality;
+  rerank?: boolean;
 }
 
 export interface ResearchInput {
@@ -41,6 +43,7 @@ export interface ProviderAttempt {
   provider: SearchProviderId;
   status: "ok" | "empty" | "error";
   elapsedMs: number;
+  cached?: boolean;
   errorCode?: string;
   errorMessage?: string;
 }
@@ -49,6 +52,7 @@ export interface SearchResult {
   query: string;
   scope: ResolvedScope;
   mode: "fast" | "reranked";
+  quality: Quality;
   provider: SearchProviderId | "multiple" | null;
   fallbackUsed: boolean;
   attempts: ProviderAttempt[];
@@ -59,9 +63,17 @@ export interface SearchResult {
     requested: boolean;
     applied: boolean;
     provider: RerankerId;
+    strategy?: "rank_fusion";
+    weights?: {
+      original: number;
+      rerank: number;
+    };
     model?: string;
     elapsedMs?: number;
     inputCount?: number;
+    candidateCount?: number;
+    cached?: boolean;
+    top1Protected?: boolean;
     reason?: string;
   };
 }
@@ -101,7 +113,6 @@ export interface Reranker {
   rerank(
     query: string,
     sources: SearchSource[],
-    maxResults: number,
     signal?: AbortSignal,
   ): Promise<RerankResult>;
   health(signal?: AbortSignal): Promise<number>;

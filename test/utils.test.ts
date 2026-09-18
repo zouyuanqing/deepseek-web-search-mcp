@@ -1,5 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { canonicalizeUrl, dedupeSources, resolveScope } from "../src/utils.js";
+import { describe, expect, it, vi } from "vitest";
+import { normalizeProviderError } from "../src/errors.js";
+import {
+  canonicalizeUrl,
+  dedupeSources,
+  OperationTimeoutError,
+  resolveScope,
+  withTimeout,
+} from "../src/utils.js";
 
 describe("scope resolution", () => {
   it("selects Chinese scope for Han text", () => {
@@ -28,5 +35,29 @@ describe("URL normalization", () => {
       { url: "https://example.com/a", provider: "searxng" },
     ]);
     expect(sources).toHaveLength(1);
+  });
+});
+
+describe("operation timeouts", () => {
+  it("reports a typed timeout and normalizes it to a provider timeout error", async () => {
+    vi.useFakeTimers();
+    const promise = withTimeout(
+      async (signal) => new Promise<never>((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+      }),
+      5,
+      "test request",
+    );
+    const rejection = expect(promise).rejects.toBeInstanceOf(OperationTimeoutError);
+    await vi.advanceTimersByTimeAsync(6);
+    await rejection;
+    vi.useRealTimers();
+
+    const normalized = normalizeProviderError(
+      "tavily",
+      new OperationTimeoutError("test request timed out"),
+    );
+    expect(normalized.code).toBe("timeout");
+    expect(normalized.retryable).toBe(true);
   });
 });

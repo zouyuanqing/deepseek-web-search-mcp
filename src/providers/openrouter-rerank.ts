@@ -44,7 +44,6 @@ export class OpenRouterReranker implements Reranker {
   async rerank(
     query: string,
     sources: SearchSource[],
-    maxResults: number,
     signal?: AbortSignal,
   ): Promise<RerankResult> {
     const apiKey = this.apiKey();
@@ -74,7 +73,7 @@ export class OpenRouterReranker implements Reranker {
               documents: sources.map((source) => ({
                 text: documentText(source, this.config.rerankInputChars),
               })),
-              top_n: Math.min(maxResults, sources.length),
+              top_n: sources.length,
             }),
             signal: requestSignal,
           });
@@ -89,7 +88,12 @@ export class OpenRouterReranker implements Reranker {
           const payload = (await response.json()) as OpenRouterRerankResponse;
           const ranked: SearchSource[] = [];
           const seen = new Set<number>();
-          for (const item of payload.results ?? []) {
+          const responseItems = [...(payload.results ?? [])].sort(
+            (left, right) =>
+              (right.relevance_score ?? Number.NEGATIVE_INFINITY)
+              - (left.relevance_score ?? Number.NEGATIVE_INFINITY),
+          );
+          for (const item of responseItems) {
             if (
               typeof item.index !== "number"
               || !Number.isInteger(item.index)
@@ -121,7 +125,7 @@ export class OpenRouterReranker implements Reranker {
             );
           }
           return {
-            sources: ranked.slice(0, maxResults),
+            sources: ranked,
             model: payload.model ?? this.config.openRouterRerankModel,
             elapsedMs: Math.round(performance.now() - started),
             inputCount: sources.length,
@@ -153,7 +157,6 @@ export class OpenRouterReranker implements Reranker {
           snippet: "An unrelated example.",
         },
       ],
-      2,
       signal,
     );
     return result.sources.length;

@@ -55,7 +55,7 @@ export class AnySearchProvider implements SearchProvider {
 
   async search(input: SearchInput, signal?: AbortSignal): Promise<ProviderResult> {
     const headers: Record<string, string> = {
-      "X-Anysearch-Client": "deepseek-web-search-mcp/1.0.0",
+      "X-Anysearch-Client": "deepseek-web-search-mcp/1.1.0",
     };
     if (this.config.anySearchApiKey !== undefined) {
       headers.Authorization = `Bearer ${this.config.anySearchApiKey}`;
@@ -69,7 +69,7 @@ export class AnySearchProvider implements SearchProvider {
           });
           const client = new Client({
             name: "deepseek-web-search-mcp",
-            version: "1.0.0",
+            version: "1.1.0",
           });
           try {
             await client.connect(transport as never);

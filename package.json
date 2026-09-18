@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "MCP server for DeepSeek native web research plus AnySearch, Tavily, and self-hosted SearXNG fallback.",
@@ -13,7 +13,7 @@
     "test:watch": "vitest",
     "test:mcp": "npm run build --silent && node scripts/mcp-smoke.mjs",
     "start": "node dist/index.js",
-    "doctor": "npm run build --silent && node dist/index.js --doctor --json"
+    "doctor": "npm run build --silent && node dist/index.js --doctor"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.126.0",

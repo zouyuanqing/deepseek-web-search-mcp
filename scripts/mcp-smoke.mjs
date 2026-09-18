@@ -10,7 +10,7 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "deepseek-web-search-smoke", version: "1.0.0" });
+const client = new Client({ name: "deepseek-web-search-smoke", version: "1.1.0" });
 
 try {
   await client.connect(transport);
@@ -27,11 +27,24 @@ try {
       scope: "cn",
       max_results: 8,
       freshness: "day",
-      rerank: true,
+      quality: "balanced",
     },
   });
   if (search.isError === true) {
     throw new Error(`web_search failed: ${JSON.stringify(search.content)}`);
+  }
+
+  const legacySearch = await client.callTool({
+    name: "web_search",
+    arguments: {
+      query: "OpenAI MCP documentation",
+      scope: "global",
+      max_results: 5,
+      rerank: true,
+    },
+  });
+  if (legacySearch.isError === true) {
+    throw new Error(`legacy web_search failed: ${JSON.stringify(legacySearch.content)}`);
   }
 
   const research = await client.callTool({
@@ -47,7 +60,14 @@ try {
   }
 
   const searchResult = search.structuredContent;
+  const legacySearchResult = legacySearch.structuredContent;
   const researchResult = research.structuredContent;
+  if (searchResult?.quality !== "balanced" || searchResult.rerank?.strategy !== "rank_fusion") {
+    throw new Error(`Unexpected balanced search metadata: ${JSON.stringify(searchResult)}`);
+  }
+  if (legacySearchResult?.quality !== "balanced") {
+    throw new Error(`Legacy rerank alias did not map to balanced: ${JSON.stringify(legacySearchResult)}`);
+  }
   process.stdout.write(`${JSON.stringify({
     tools: toolNames,
     search: {
@@ -55,7 +75,16 @@ try {
       sources: Array.isArray(searchResult?.sources) ? searchResult.sources.length : 0,
       fallbackUsed: searchResult?.fallbackUsed,
       mode: searchResult?.mode,
+      quality: searchResult?.quality,
       rerankApplied: searchResult?.rerank?.applied,
+      strategy: searchResult?.rerank?.strategy,
+      cached: searchResult?.rerank?.cached,
+      top1Protected: searchResult?.rerank?.top1Protected,
+    },
+    legacySearch: {
+      quality: legacySearchResult?.quality,
+      mode: legacySearchResult?.mode,
+      rerankApplied: legacySearchResult?.rerank?.applied,
     },
     research: {
       provider: researchResult?.provider,

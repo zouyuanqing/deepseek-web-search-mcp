@@ -9,12 +9,14 @@ import { safeJson } from "./utils.js";
 
 const scopeSchema = z.enum(["auto", "cn", "global"]).default("auto");
 const freshnessSchema = z.enum(["any", "day", "week", "month", "year"]).default("any");
+const qualitySchema = z.enum(["fast", "balanced", "deep"]);
 
 export function searchMarkdown(result: SearchResult): string {
   const lines = [
     `Search provider: ${result.provider ?? "none"}`,
     `Scope: ${result.scope}`,
     `Mode: ${result.mode}`,
+    `Quality: ${result.quality}`,
     `Fallback used: ${result.fallbackUsed ? "yes" : "no"}`,
     "",
   ];
@@ -22,6 +24,9 @@ export function searchMarkdown(result: SearchResult): string {
     lines.push(
       `Rerank: ${result.rerank.applied ? "applied" : "not applied"}`
       + `${result.rerank.model === undefined ? "" : ` (${result.rerank.model})`}`,
+      ...(result.rerank.strategy === undefined
+        ? []
+        : [`Rank fusion: ${result.rerank.strategy}`]),
       ...(result.rerank.reason === undefined ? [] : [`Rerank detail: ${result.rerank.reason}`]),
       "",
     );
@@ -64,30 +69,37 @@ export function createMcpServer(config: AppConfig): McpServer {
   const service = new SearchService(config);
   const server = new McpServer({
     name: "deepseek-web-search-mcp",
-    version: "1.0.0",
+    version: "1.1.0",
   });
 
   server.registerTool(
     "web_search",
     {
       title: "Web Search",
-      description: "Search the live web and return normalized, citeable sources.",
+      description:
+        "Search the live web and return normalized, citeable sources with optional rank fusion.",
       inputSchema: {
         query: z.string().min(1).max(400),
         scope: scopeSchema,
         max_results: z.number().int().min(1).max(20).default(8),
         freshness: freshnessSchema,
-        rerank: z.boolean().default(false),
+        quality: qualitySchema.optional().describe(
+          "Search quality. Defaults to fast; balanced/deep enable rank fusion.",
+        ),
+        rerank: z.boolean().optional().describe(
+          "Deprecated compatibility alias: true maps to balanced when quality is omitted.",
+        ),
       },
     },
-    async ({ query, scope, max_results, freshness, rerank }) => {
+    async ({ query, scope, max_results, freshness, quality, rerank }) => {
       try {
         const result = await service.webSearch({
           query,
           scope,
           maxResults: max_results,
           freshness,
-          rerank,
+          ...(quality === undefined ? {} : { quality }),
+          ...(rerank === undefined ? {} : { rerank }),
         });
         return {
           content: [{ type: "text", text: searchMarkdown(result) }],

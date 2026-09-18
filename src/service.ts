@@ -1,3 +1,4 @@
+import { hashCacheKey, normalizeCacheQuery, TtlLruCache } from "./cache.js";
 import type { AppConfig } from "./config.js";
 import { ProviderError, errorText } from "./errors.js";
 import { DeepSeekNativeSearchProvider } from "./providers/deepseek-native.js";
@@ -5,22 +6,44 @@ import { AnySearchProvider } from "./providers/anysearch.js";
 import { OpenRouterReranker } from "./providers/openrouter-rerank.js";
 import { TavilySearchProvider } from "./providers/tavily.js";
 import { SearxngProvider } from "./providers/searxng.js";
+import {
+  candidateTarget,
+  fuseRankings,
+  providerRequestLimit,
+  QUALITY_PROFILES,
+  RANK_FUSION_WEIGHTS,
+  resolveQuality,
+  withoutRankingMetadata,
+} from "./ranking.js";
 import type {
   DeepSeekNativeProvider,
   HealthReport,
   ProviderAttempt,
+  ProviderResult,
+  Quality,
   ResearchInput,
   ResearchResult,
   Reranker,
+  RerankResult,
   SearchInput,
   SearchProvider,
   SearchProviderId,
   SearchResult,
   SearchSource,
 } from "./types.js";
-import { dedupeSources, resolveScope } from "./utils.js";
+import { canonicalizeUrl, dedupeSources, resolveScope } from "./utils.js";
 
 export type ProviderRegistry = Record<SearchProviderId, SearchProvider>;
+
+interface ProviderCall {
+  result: ProviderResult;
+  cached: boolean;
+}
+
+interface RerankCall {
+  result: RerankResult;
+  cached: boolean;
+}
 
 export function providerOrder(scope: "cn" | "global"): SearchProviderId[] {
   return scope === "cn"
@@ -36,9 +59,27 @@ export function buildProviderRegistry(config: AppConfig): ProviderRegistry {
   };
 }
 
+function cloneProviderResult(result: ProviderResult): ProviderResult {
+  return {
+    ...result,
+    sources: result.sources.map((source) => ({ ...source })),
+    warnings: [...result.warnings],
+    ...(result.usage === undefined ? {} : { usage: { ...result.usage } }),
+  };
+}
+
+function cloneRerankResult(result: RerankResult): RerankResult {
+  return {
+    ...result,
+    sources: result.sources.map((source) => ({ ...source })),
+  };
+}
+
 export class SearchService {
   private readonly nativeProvider: DeepSeekNativeProvider;
   private readonly reranker: Reranker;
+  private readonly searchCache: TtlLruCache<string, ProviderResult>;
+  private readonly rerankCache: TtlLruCache<string, RerankResult>;
 
   constructor(
     private readonly config: AppConfig,
@@ -48,42 +89,71 @@ export class SearchService {
   ) {
     this.nativeProvider = nativeProvider ?? new DeepSeekNativeSearchProvider(config);
     this.reranker = reranker ?? new OpenRouterReranker(config);
+    this.searchCache = new TtlLruCache({
+      ttlMs: config.searchCacheTtlMs,
+      maxEntries: config.searchCacheMaxEntries,
+    });
+    this.rerankCache = new TtlLruCache({
+      ttlMs: config.rerankCacheTtlMs,
+      maxEntries: config.rerankCacheMaxEntries,
+    });
   }
 
   async webSearch(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
-    return input.rerank
-      ? this.webSearchReranked(input, signal)
-      : this.webSearchFallback(input, signal);
+    const quality = resolveQuality(input);
+    return QUALITY_PROFILES[quality].rerank
+      ? this.webSearchRanked(input, quality, signal)
+      : this.webSearchFast(input, quality, signal);
   }
 
-  private async webSearchFallback(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
+  private async webSearchFast(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
     const attempts: ProviderAttempt[] = [];
     const warnings: string[] = [];
     let lastError: unknown;
+    const providerInput: SearchInput = {
+      ...input,
+      quality,
+      rerank: false,
+      maxResults: providerRequestLimit(quality, input.maxResults),
+    };
 
     for (const providerId of providerOrder(scope)) {
-      const provider = this.providers[providerId];
       const started = performance.now();
       try {
-        const result = await provider.search(input, signal);
+        const call = await this.searchProvider(providerId, providerInput, scope, signal);
         const elapsedMs = Math.round(performance.now() - started);
-        if (result.sources.length === 0) {
-          attempts.push({ provider: providerId, status: "empty", elapsedMs });
+        if (call.result.sources.length === 0) {
+          attempts.push({
+            provider: providerId,
+            status: "empty",
+            elapsedMs,
+            ...(call.cached ? { cached: true } : {}),
+          });
           warnings.push(`${providerId} returned no results`);
           continue;
         }
-        attempts.push({ provider: providerId, status: "ok", elapsedMs });
-        warnings.push(...result.warnings);
+        attempts.push({
+          provider: providerId,
+          status: "ok",
+          elapsedMs,
+          ...(call.cached ? { cached: true } : {}),
+        });
+        warnings.push(...call.result.warnings);
         return {
           query: input.query,
           scope,
           mode: "fast",
+          quality,
           provider: providerId,
           fallbackUsed: attempts.length > 1,
           attempts,
-          sources: result.sources.slice(0, input.maxResults),
-          ...(result.answer === undefined ? {} : { answer: result.answer }),
+          sources: call.result.sources.slice(0, input.maxResults),
+          ...(call.result.answer === undefined ? {} : { answer: call.result.answer }),
           warnings,
         };
       } catch (error) {
@@ -111,23 +181,35 @@ export class SearchService {
     );
   }
 
-  private async webSearchReranked(
+  private async webSearchRanked(
     input: SearchInput,
+    quality: Quality,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
     const order = providerOrder(scope);
+    const target = candidateTarget(
+      quality,
+      input.maxResults,
+      this.config.rerankCandidateLimit,
+    );
     const candidateInput: SearchInput = {
       ...input,
+      quality,
       rerank: false,
-      maxResults: Math.min(20, Math.max(input.maxResults, 10)),
+      maxResults: providerRequestLimit(quality, input.maxResults),
     };
     const settled = await Promise.all(
       order.map(async (providerId) => {
         const started = performance.now();
         try {
-          const result = await this.providers[providerId].search(candidateInput, signal);
-          return { providerId, result, elapsedMs: Math.round(performance.now() - started) };
+          const call = await this.searchProvider(providerId, candidateInput, scope, signal);
+          return {
+            providerId,
+            result: call.result,
+            cached: call.cached,
+            elapsedMs: Math.round(performance.now() - started),
+          };
         } catch (error) {
           return {
             providerId,
@@ -163,6 +245,7 @@ export class SearchService {
           provider: item.providerId,
           status: "empty",
           elapsedMs: item.elapsedMs,
+          ...(item.cached ? { cached: true } : {}),
         });
         warnings.push(`${item.providerId} returned no results`);
         continue;
@@ -172,6 +255,7 @@ export class SearchService {
         provider: item.providerId,
         status: "ok",
         elapsedMs: item.elapsedMs,
+        ...(item.cached ? { cached: true } : {}),
       });
       candidates.push(...item.result.sources);
       warnings.push(...item.result.warnings);
@@ -180,7 +264,7 @@ export class SearchService {
       }
     }
 
-    const uniqueCandidates = dedupeSources(candidates).slice(0, this.config.rerankCandidateLimit);
+    const uniqueCandidates = dedupeSources(candidates).slice(0, target);
     if (uniqueCandidates.length === 0) {
       throw new ProviderError(
         "service",
@@ -193,6 +277,7 @@ export class SearchService {
       query: input.query,
       scope,
       mode: "reranked" as const,
+      quality,
       provider: successCount > 1 ? ("multiple" as const) : settled.find(
         (item) => "result" in item && item.result.sources.length > 0,
       )?.providerId ?? null,
@@ -210,29 +295,39 @@ export class SearchService {
           requested: true,
           applied: false,
           provider: this.reranker.id,
+          strategy: "rank_fusion",
+          weights: RANK_FUSION_WEIGHTS,
           inputCount: uniqueCandidates.length,
+          candidateCount: uniqueCandidates.length,
           reason: "candidate_count_not_larger_than_result_limit",
         },
       };
     }
 
     try {
-      const reranked = await this.reranker.rerank(
+      const rerankCall = await this.rerankCandidates(input.query, uniqueCandidates, signal);
+      const fused = fuseRankings(
         input.query,
         uniqueCandidates,
-        input.maxResults,
-        signal,
+        rerankCall.result.sources,
       );
       return {
         ...base,
-        sources: reranked.sources,
+        sources: fused.sources
+          .slice(0, input.maxResults)
+          .map((source) => withoutRankingMetadata(source)),
         rerank: {
           requested: true,
           applied: true,
           provider: this.reranker.id,
-          model: reranked.model,
-          elapsedMs: reranked.elapsedMs,
-          inputCount: reranked.inputCount,
+          strategy: "rank_fusion",
+          weights: RANK_FUSION_WEIGHTS,
+          model: rerankCall.result.model,
+          elapsedMs: rerankCall.result.elapsedMs,
+          inputCount: rerankCall.result.inputCount,
+          candidateCount: uniqueCandidates.length,
+          ...(rerankCall.cached ? { cached: true } : {}),
+          top1Protected: fused.top1Protected,
         },
       };
     } catch (error) {
@@ -247,11 +342,79 @@ export class SearchService {
           requested: true,
           applied: false,
           provider: this.reranker.id,
+          strategy: "rank_fusion",
+          weights: RANK_FUSION_WEIGHTS,
           inputCount: uniqueCandidates.length,
+          candidateCount: uniqueCandidates.length,
           reason: rerankError.message,
         },
       };
     }
+  }
+
+  private async searchProvider(
+    providerId: SearchProviderId,
+    input: SearchInput,
+    scope: "cn" | "global",
+    signal?: AbortSignal,
+  ): Promise<ProviderCall> {
+    const key = hashCacheKey([
+      "search",
+      providerId,
+      normalizeCacheQuery(input.query),
+      scope,
+      input.freshness,
+      input.maxResults,
+    ]);
+    const cached = this.searchCache.get(key);
+    if (cached !== undefined) {
+      return {
+        result: cloneProviderResult(cached),
+        cached: true,
+      };
+    }
+
+    const result = await this.providers[providerId].search(input, signal);
+    if (result.sources.length > 0) {
+      this.searchCache.set(key, cloneProviderResult(result));
+    }
+    return {
+      result,
+      cached: false,
+    };
+  }
+
+  private async rerankCandidates(
+    query: string,
+    sources: SearchSource[],
+    signal?: AbortSignal,
+  ): Promise<RerankCall> {
+    const key = hashCacheKey([
+      "rerank",
+      this.reranker.id,
+      this.config.openRouterRerankModel,
+      this.config.rerankInputChars,
+      normalizeCacheQuery(query),
+      sources.map((source) => ({
+        url: canonicalizeUrl(source.url) ?? source.url,
+        title: source.title ?? "",
+        snippet: source.snippet ?? "",
+      })),
+    ]);
+    const cached = this.rerankCache.get(key);
+    if (cached !== undefined) {
+      return {
+        result: cloneRerankResult(cached),
+        cached: true,
+      };
+    }
+
+    const result = await this.reranker.rerank(query, sources, signal);
+    this.rerankCache.set(key, cloneRerankResult(result));
+    return {
+      result,
+      cached: false,
+    };
   }
 
   async webResearch(input: ResearchInput, signal?: AbortSignal): Promise<ResearchResult> {
@@ -271,6 +434,7 @@ export class SearchService {
           scope: "auto",
           maxResults: input.maxSources,
           freshness: input.freshness,
+          quality: "fast",
           rerank: false,
         },
         signal,
@@ -299,6 +463,7 @@ export class SearchService {
       scope: "global",
       maxResults: 3,
       freshness: "day",
+      quality: "fast",
       rerank: false,
     };
     const providers: HealthReport["providers"] = {};

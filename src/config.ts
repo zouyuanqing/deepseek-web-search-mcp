@@ -15,6 +15,10 @@ export interface AppConfig {
   openRouterRerankTimeoutMs: number;
   rerankCandidateLimit: number;
   rerankInputChars: number;
+  searchCacheTtlMs: number;
+  searchCacheMaxEntries: number;
+  rerankCacheTtlMs: number;
+  rerankCacheMaxEntries: number;
   searxngUrl?: string;
   searxngLanguage: string;
   searxngTimeoutMs: number;
@@ -46,17 +50,21 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     deepseekSearchTimeoutMs: positiveInt(env.DEEPSEEK_SEARCH_TIMEOUT_MS, 150_000),
     ...(anySearchApiKey === undefined ? {} : { anySearchApiKey }),
     anySearchMcpUrl: optional(env.ANYSEARCH_MCP_URL) ?? "https://api.anysearch.com/mcp",
-    anySearchTimeoutMs: positiveInt(env.ANYSEARCH_TIMEOUT_MS, 60_000),
+    anySearchTimeoutMs: positiveInt(env.ANYSEARCH_TIMEOUT_MS, 6_000),
     ...(tavilyApiKey === undefined ? {} : { tavilyApiKey }),
-    tavilyTimeoutMs: positiveInt(env.TAVILY_TIMEOUT_MS, 45_000),
+    tavilyTimeoutMs: positiveInt(env.TAVILY_TIMEOUT_MS, 6_000),
     ...(openRouterApiKey === undefined ? {} : { openRouterApiKey }),
     openRouterRerankModel:
       optional(env.OPENROUTER_RERANK_MODEL) ?? "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
-    openRouterRerankTimeoutMs: positiveInt(env.OPENROUTER_RERANK_TIMEOUT_MS, 45_000),
+    openRouterRerankTimeoutMs: positiveInt(env.OPENROUTER_RERANK_TIMEOUT_MS, 5_000),
     rerankCandidateLimit: positiveInt(env.RERANK_CANDIDATE_LIMIT, 30),
     rerankInputChars: positiveInt(env.RERANK_INPUT_CHARS, 800),
+    searchCacheTtlMs: positiveInt(env.SEARCH_CACHE_TTL_MS, 600_000),
+    searchCacheMaxEntries: positiveInt(env.SEARCH_CACHE_MAX_ENTRIES, 200),
+    rerankCacheTtlMs: positiveInt(env.RERANK_CACHE_TTL_MS, 1_800_000),
+    rerankCacheMaxEntries: positiveInt(env.RERANK_CACHE_MAX_ENTRIES, 200),
     ...(searxngUrl === undefined ? {} : { searxngUrl }),
     searxngLanguage: optional(env.SEARXNG_LANGUAGE) ?? "zh-CN",
-    searxngTimeoutMs: positiveInt(env.SEARXNG_TIMEOUT_MS, 30_000),
+    searxngTimeoutMs: positiveInt(env.SEARXNG_TIMEOUT_MS, 10_000),
   };
 }
