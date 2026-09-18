@@ -1,0 +1,27 @@
+name: searxng
+
+services:
+  core:
+    image: ${SEARXNG_IMAGE:-ghcr.io/searxng/searxng:2026.9.17-274b63b67}
+    container_name: searxng-core
+    restart: unless-stopped
+    ports:
+      - "${SEARXNG_BIND_IP:-127.0.0.1}:${SEARXNG_PORT:-8888}:8080"
+    volumes:
+      - ./config:/etc/searxng:Z
+      - core-data:/var/cache/searxng
+    environment:
+      - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-http://127.0.0.1:8888/}
+      - TZ=Asia/Shanghai
+
+  valkey:
+    image: ${VALKEY_IMAGE:-ghcr.io/valkey-io/valkey:9-alpine}
+    container_name: searxng-valkey
+    restart: unless-stopped
+    command: valkey-server --save 30 1 --loglevel warning
+    volumes:
+      - valkey-data:/data
+
+volumes:
+  core-data:
+  valkey-data:

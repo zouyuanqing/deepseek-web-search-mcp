@@ -1,0 +1,28 @@
+use_default_settings: true
+
+server:
+  secret_key: "__SEARXNG_SECRET__"
+  limiter: false
+  public_instance: false
+
+search:
+  formats:
+    - html
+    - json
+
+engines:
+  - name: duckduckgo
+    disabled: true
+  - name: wikipedia
+    disabled: true
+  - name: wikidata
+    disabled: true
+  - name: brave
+    timeout: 8
+  - name: yandex
+    disabled: false
+    timeout: 8
+  - name: github
+    timeout: 8
+  - name: stackoverflow
+    timeout: 8
