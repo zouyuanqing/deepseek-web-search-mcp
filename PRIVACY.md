@@ -1,0 +1,60 @@
+# Privacy
+
+This MCP server runs as a local stdio process that you configure and control.
+The project itself has no backend, no accounts, and no telemetry.
+
+## Data we collect
+
+None. The maintainers do not receive queries, results, logs, credentials, or
+usage statistics from your installation.
+
+## What leaves your machine
+
+Outbound traffic only happens when a tool is invoked, and only to endpoints you
+configure:
+
+| Tool / mode | Data sent | Destination |
+| --- | --- | --- |
+| `web_search` (`fast`) | the query string | the first working provider below |
+| `web_search` via AnySearch | the query string | `ANYSEARCH_MCP_URL` (default `api.anysearch.com`) |
+| `web_search` via SearXNG | the query string | `SEARXNG_URL` (your own instance by default) |
+| `web_search` via Tavily | the query string | `api.tavily.com` |
+| `web_search` (`balanced`, `deep`) | the query plus candidate titles, URLs, and snippets | `openrouter.ai` for reranking |
+| `web_research` | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
+
+No other network calls are made. In particular there is no analytics, no crash
+reporting, and no update check.
+
+## Credentials
+
+API keys are read from environment variables at run time (see `.env.example`).
+They are never hardcoded, never written to disk by this project, and never sent
+anywhere except the provider they belong to.
+
+## Local storage and retention
+
+Search and rerank caches are held in memory only and are discarded when the MCP
+process exits. The server does not write query data to disk. Retention on the
+provider side is governed by each provider's own policy:
+
+- DeepSeek: https://platform.deepseek.com/ (privacy policy linked from the site)
+- AnySearch: https://api.anysearch.com
+- Tavily: https://tavily.com/privacy
+- OpenRouter: https://openrouter.ai/privacy
+- SearXNG: your own deployment, your own policy
+
+## Your controls
+
+- Disable reranking by keeping `quality: "fast"` (the default) so candidates are
+  never sent to OpenRouter.
+- Point `SEARXNG_URL` at a self-hosted instance to keep queries inside your own
+  infrastructure.
+- Unset a provider's API key to remove that provider from the fallback chain.
+- Run the server offline: without any provider credentials configured, no
+  outbound requests succeed and no query data leaves the machine.
+
+## Contact
+
+Questions or corrections: open an issue in the GitHub repository. Suspected
+credential leaks or vulnerabilities should go through a private security
+advisory as described in `SECURITY.md`.

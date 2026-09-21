@@ -1,6 +1,6 @@
 # DeepSeek Web Search MCP
 
-[![M8ven Score](https://m8ven.ai/badge/mcp/zouyuanqing/deepseek-web-search-mcp)](https://m8ven.ai/mcp/zouyuanqing/deepseek-web-search-mcp)
+[![M8ven Verified](https://m8ven.ai/badge/mcp/zouyuanqing/deepseek-web-search-mcp?variant=verified)](https://m8ven.ai/mcp/zouyuanqing/deepseek-web-search-mcp)
 
 一个独立的 stdio MCP 服务器，向 Codex 等客户端暴露两个工具：
 
@@ -45,6 +45,11 @@ npm test
 
 `DEEPSEEK_SEARCH_BASE_URL` 是 Anthropic SDK 的 base URL，SDK 会自动追加
 `/v1/messages`。默认值是 `https://api.deepseek.com/anthropic`。
+
+## 隐私
+
+本项目不收集也不上传任何遥测数据。查询只会发送给你自己配置的检索/重排提供商，
+凭据仅从进程环境读取，缓存只存在于内存。详见 [PRIVACY.md](./PRIVACY.md)。
 
 ## 本地运行
 
