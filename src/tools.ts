@@ -78,6 +78,12 @@ export function createMcpServer(config: AppConfig): McpServer {
       title: "Web Search",
       description:
         "Search the live web and return normalized, citeable sources with optional rank fusion.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: {
         query: z.string().min(1).max(400),
         scope: scopeSchema,
@@ -119,6 +125,12 @@ export function createMcpServer(config: AppConfig): McpServer {
     {
       title: "Web Research",
       description: "Use DeepSeek native web search to research a question and return citeable sources.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: {
         query: z.string().min(1).max(400),
         max_sources: z.number().int().min(1).max(20).default(5),

@@ -1,5 +1,7 @@
 # DeepSeek Web Search MCP
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/zouyuanqing/deepseek-web-search-mcp)](https://m8ven.ai/mcp/zouyuanqing/deepseek-web-search-mcp)
+
 一个独立的 stdio MCP 服务器，向 Codex 等客户端暴露两个工具：
 
 - `web_search`：AnySearch、SearXNG、Tavily 的统一原始检索接口。
