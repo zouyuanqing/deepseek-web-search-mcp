@@ -10,7 +10,7 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "deepseek-web-search-smoke", version: "1.1.0" });
+const client = new Client({ name: "deepseek-web-search-smoke", version: "1.2.0" });
 
 try {
   await client.connect(transport);
@@ -59,14 +59,38 @@ try {
     throw new Error(`web_research failed: ${JSON.stringify(research.content)}`);
   }
 
+  const nativeSearch = await client.callTool({
+    name: "web_search",
+    arguments: {
+      query: "DeepSeek official web search API",
+      scope: "global",
+      max_results: 3,
+      freshness: "any",
+      backend: "deepseek-native",
+    },
+  });
+  if (nativeSearch.isError === true) {
+    throw new Error(`native web_search failed: ${JSON.stringify(nativeSearch.content)}`);
+  }
+
   const searchResult = search.structuredContent;
   const legacySearchResult = legacySearch.structuredContent;
   const researchResult = research.structuredContent;
+  const nativeSearchResult = nativeSearch.structuredContent;
   if (searchResult?.quality !== "balanced" || searchResult.rerank?.strategy !== "rank_fusion") {
     throw new Error(`Unexpected balanced search metadata: ${JSON.stringify(searchResult)}`);
   }
   if (legacySearchResult?.quality !== "balanced") {
     throw new Error(`Legacy rerank alias did not map to balanced: ${JSON.stringify(legacySearchResult)}`);
+  }
+  if (
+    nativeSearchResult?.backend !== "deepseek-native"
+    || nativeSearchResult?.mode !== "native"
+    || nativeSearchResult?.provider !== "deepseek-native"
+    || !Array.isArray(nativeSearchResult?.sources)
+    || nativeSearchResult.sources.length === 0
+  ) {
+    throw new Error(`Unexpected native web_search metadata: ${JSON.stringify(nativeSearchResult)}`);
   }
   process.stdout.write(`${JSON.stringify({
     tools: toolNames,
@@ -91,6 +115,14 @@ try {
       sources: Array.isArray(researchResult?.sources) ? researchResult.sources.length : 0,
       nativeSearchRequests: researchResult?.nativeSearchRequests,
       degraded: researchResult?.degraded,
+    },
+    nativeSearch: {
+      backend: nativeSearchResult?.backend,
+      mode: nativeSearchResult?.mode,
+      provider: nativeSearchResult?.provider,
+      sources: nativeSearchResult.sources.length,
+      nativeSearchRequests: nativeSearchResult?.nativeSearchRequests,
+      degraded: nativeSearchResult?.nativeSearchDegraded,
     },
   }, null, 2)}\n`);
 } finally {

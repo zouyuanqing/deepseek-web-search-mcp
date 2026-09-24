@@ -31,7 +31,12 @@ import type {
   SearchResult,
   SearchSource,
 } from "./types.js";
-import { canonicalizeUrl, dedupeSources, resolveScope } from "./utils.js";
+import {
+  applyFreshnessToQuery,
+  canonicalizeUrl,
+  dedupeSources,
+  resolveScope,
+} from "./utils.js";
 
 export type ProviderRegistry = Record<SearchProviderId, SearchProvider>;
 
@@ -101,9 +106,110 @@ export class SearchService {
 
   async webSearch(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
     const quality = resolveQuality(input);
+    const backend = input.backend ?? this.config.webSearchBackend ?? "external";
+    if (backend === "deepseek-native") {
+      return this.webSearchNative(input, quality, signal);
+    }
+    if (backend === "auto" && this.config.deepseekApiKey !== undefined) {
+      return this.webSearchAutoNative(input, quality, signal);
+    }
+    return this.webSearchExternal(input, quality, signal);
+  }
+
+  private async webSearchExternal(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
     return QUALITY_PROFILES[quality].rerank
       ? this.webSearchRanked(input, quality, signal)
       : this.webSearchFast(input, quality, signal);
+  }
+
+  private async webSearchNative(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
+    const started = performance.now();
+    try {
+      const native = await this.nativeProvider.research(
+        {
+          query: applyFreshnessToQuery(input.query, input.freshness),
+          maxSources: input.maxResults,
+          freshness: input.freshness,
+        },
+        signal,
+      );
+      const elapsedMs = Math.round(performance.now() - started);
+      const warnings = [...native.warnings];
+      if (input.rerank === true || quality !== "fast") {
+        warnings.push("The deepseek-native backend does not use external-provider rank fusion.");
+      }
+      return {
+        query: input.query,
+        scope: resolveScope(input.query, input.scope),
+        mode: "native",
+        quality,
+        backend: "deepseek-native",
+        provider: "deepseek-native",
+        fallbackUsed: false,
+        attempts: [{
+          provider: "deepseek-native",
+          status: "ok",
+          elapsedMs,
+        }],
+        sources: native.sources.slice(0, input.maxResults),
+        answer: native.answerMarkdown,
+        warnings,
+        nativeSearchRequests: native.nativeSearchRequests,
+        nativeSearchCalls: native.nativeSearchCalls,
+        nativeSearchDegraded: false,
+      };
+    } catch (error) {
+      throw error instanceof ProviderError
+        ? error
+        : new ProviderError("deepseek-native", "unknown", errorText(error), { cause: error });
+    }
+  }
+
+  private async webSearchAutoNative(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
+    try {
+      return await this.webSearchNative(input, quality, signal);
+    } catch (error) {
+      const nativeError = error instanceof ProviderError
+        ? error
+        : new ProviderError("deepseek-native", "unknown", errorText(error), { cause: error });
+      try {
+        const fallback = await this.webSearchExternal(input, quality, signal);
+        return {
+          ...fallback,
+          backend: "external",
+          fallbackUsed: true,
+          warnings: [
+            `DeepSeek native search was unavailable; used external providers: ${nativeError.message}`,
+            ...fallback.warnings,
+          ],
+          nativeSearchRequests: 0,
+          nativeSearchCalls: [],
+          nativeSearchDegraded: true,
+        };
+      } catch (fallbackError) {
+        const fallbackProviderError = fallbackError instanceof ProviderError
+          ? fallbackError
+          : new ProviderError("service", "unknown", errorText(fallbackError), { cause: fallbackError });
+        throw new ProviderError(
+          "service",
+          "no_results",
+          `DeepSeek native search failed (${nativeError.message}); external fallback failed (${fallbackProviderError.message})`,
+          { cause: fallbackError },
+        );
+      }
+    }
   }
 
   private async webSearchFast(
@@ -149,6 +255,7 @@ export class SearchService {
           scope,
           mode: "fast",
           quality,
+          backend: "external",
           provider: providerId,
           fallbackUsed: attempts.length > 1,
           attempts,
@@ -278,6 +385,7 @@ export class SearchService {
       scope,
       mode: "reranked" as const,
       quality,
+      backend: "external" as const,
       provider: successCount > 1 ? ("multiple" as const) : settled.find(
         (item) => "result" in item && item.result.sources.length > 0,
       )?.providerId ?? null,
@@ -436,6 +544,7 @@ export class SearchService {
           freshness: input.freshness,
           quality: "fast",
           rerank: false,
+          backend: "external",
         },
         signal,
       );

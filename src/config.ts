@@ -1,4 +1,7 @@
+import type { SearchBackend } from "./types.js";
+
 export interface AppConfig {
+  webSearchBackend?: SearchBackend;
   deepseekApiKey?: string;
   deepseekSearchBaseUrl: string;
   deepseekSearchModel: string;
@@ -34,6 +37,17 @@ function optional(value: string | undefined): string | undefined {
   return value !== undefined && value.trim().length > 0 ? value.trim() : undefined;
 }
 
+function searchBackend(value: string | undefined): SearchBackend {
+  switch (optional(value)) {
+    case "auto":
+      return "auto";
+    case "deepseek-native":
+      return "deepseek-native";
+    default:
+      return "external";
+  }
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const deepseekApiKey = optional(env.DEEPSEEK_API_KEY);
   const anySearchApiKey = optional(env.ANYSEARCH_API_KEY);
@@ -41,6 +55,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const openRouterApiKey = optional(env.OPENROUTER_API_KEY);
   const searxngUrl = optional(env.SEARXNG_URL);
   return {
+    webSearchBackend: searchBackend(env.WEB_SEARCH_BACKEND),
     ...(deepseekApiKey === undefined ? {} : { deepseekApiKey }),
     deepseekSearchBaseUrl:
       optional(env.DEEPSEEK_SEARCH_BASE_URL) ?? "https://api.deepseek.com/anthropic",

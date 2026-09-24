@@ -2,6 +2,7 @@ export type Scope = "auto" | "cn" | "global";
 export type ResolvedScope = Exclude<Scope, "auto">;
 export type Freshness = "any" | "day" | "week" | "month" | "year";
 export type Quality = "fast" | "balanced" | "deep";
+export type SearchBackend = "auto" | "external" | "deepseek-native";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
@@ -13,6 +14,7 @@ export interface SearchInput {
   freshness: Freshness;
   quality?: Quality;
   rerank?: boolean;
+  backend?: SearchBackend;
 }
 
 export interface ResearchInput {
@@ -40,7 +42,7 @@ export interface ProviderResult {
 }
 
 export interface ProviderAttempt {
-  provider: SearchProviderId;
+  provider: SearchProviderId | NativeSearchProviderId;
   status: "ok" | "empty" | "error";
   elapsedMs: number;
   cached?: boolean;
@@ -51,14 +53,18 @@ export interface ProviderAttempt {
 export interface SearchResult {
   query: string;
   scope: ResolvedScope;
-  mode: "fast" | "reranked";
+  mode: "fast" | "reranked" | "native";
   quality: Quality;
-  provider: SearchProviderId | "multiple" | null;
+  backend: Exclude<SearchBackend, "auto">;
+  provider: SearchProviderId | NativeSearchProviderId | "multiple" | null;
   fallbackUsed: boolean;
   attempts: ProviderAttempt[];
   sources: SearchSource[];
   answer?: string;
   warnings: string[];
+  nativeSearchRequests?: number;
+  nativeSearchCalls?: NativeSearchCall[];
+  nativeSearchDegraded?: boolean;
   rerank?: {
     requested: boolean;
     applied: boolean;

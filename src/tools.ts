@@ -10,10 +10,12 @@ import { safeJson } from "./utils.js";
 const scopeSchema = z.enum(["auto", "cn", "global"]).default("auto");
 const freshnessSchema = z.enum(["any", "day", "week", "month", "year"]).default("any");
 const qualitySchema = z.enum(["fast", "balanced", "deep"]);
+const backendSchema = z.enum(["auto", "external", "deepseek-native"]);
 
 export function searchMarkdown(result: SearchResult): string {
   const lines = [
     `Search provider: ${result.provider ?? "none"}`,
+    `Search backend: ${result.backend}`,
     `Scope: ${result.scope}`,
     `Mode: ${result.mode}`,
     `Quality: ${result.quality}`,
@@ -45,6 +47,12 @@ export function searchMarkdown(result: SearchResult): string {
   if (result.warnings.length > 0) {
     lines.push("", "Warnings:", ...result.warnings.map((warning) => `- ${warning}`));
   }
+  if (result.nativeSearchRequests !== undefined) {
+    lines.push(
+      `Native search requests: ${result.nativeSearchRequests}`,
+      `Native search degraded: ${result.nativeSearchDegraded === true ? "yes" : "no"}`,
+    );
+  }
   return lines.join("\n");
 }
 
@@ -69,7 +77,7 @@ export function createMcpServer(config: AppConfig): McpServer {
   const service = new SearchService(config);
   const server = new McpServer({
     name: "deepseek-web-search-mcp",
-    version: "1.1.0",
+    version: "1.2.0",
   });
 
   server.registerTool(
@@ -95,9 +103,12 @@ export function createMcpServer(config: AppConfig): McpServer {
         rerank: z.boolean().optional().describe(
           "Deprecated compatibility alias: true maps to balanced when quality is omitted.",
         ),
+        backend: backendSchema.optional().describe(
+          "Search backend. Defaults to WEB_SEARCH_BACKEND (external by default); deepseek-native uses DeepSeek's native search and auto falls back to external providers.",
+        ),
       },
     },
-    async ({ query, scope, max_results, freshness, quality, rerank }) => {
+    async ({ query, scope, max_results, freshness, quality, rerank, backend }) => {
       try {
         const result = await service.webSearch({
           query,
@@ -106,6 +117,7 @@ export function createMcpServer(config: AppConfig): McpServer {
           freshness,
           ...(quality === undefined ? {} : { quality }),
           ...(rerank === undefined ? {} : { rerank }),
+          ...(backend === undefined ? {} : { backend }),
         });
         return {
           content: [{ type: "text", text: searchMarkdown(result) }],

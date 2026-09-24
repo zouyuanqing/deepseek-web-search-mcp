@@ -4,7 +4,8 @@
 
 一个独立的 stdio MCP 服务器，向 Codex 等客户端暴露两个工具：
 
-- `web_search`：AnySearch、SearXNG、Tavily 的统一原始检索接口。
+- `web_search`：默认使用 AnySearch、SearXNG、Tavily；也可选择 DeepSeek 原生搜索，
+  并在自动模式下失败回退到外部 provider。
 - `web_research`：通过 DeepSeek 官方 Anthropic 兼容 Messages API 调用
   `web_search_20250305`，返回回答、结构化来源和引用摘要。
 
@@ -37,7 +38,9 @@ npm test
 
 复制 `.env.example` 中的变量到进程环境或 Windows 用户环境。至少需要：
 
-- `DEEPSEEK_API_KEY`：`web_research`
+- `DEEPSEEK_API_KEY`：`web_research` 和 `web_search(backend="deepseek-native")`
+- `WEB_SEARCH_BACKEND`：`web_search` 的默认后端，可选 `external`（默认）、
+  `deepseek-native` 或 `auto`
 - `ANYSEARCH_API_KEY`：可选，匿名模式限额更低
 - `TAVILY_API_KEY`：全球搜索
 - `OPENROUTER_API_KEY`：`web_search(rerank=true)` 使用的可选重排
@@ -45,6 +48,38 @@ npm test
 
 `DEEPSEEK_SEARCH_BASE_URL` 是 Anthropic SDK 的 base URL，SDK 会自动追加
 `/v1/messages`。默认值是 `https://api.deepseek.com/anthropic`。
+
+## `web_search` 后端兼容
+
+`web_search` 保留原有的 `SearchResult` 形状：始终返回 `query`、`scope`、
+`provider`、`sources` 和 `warnings`。新增的 `backend` 只决定结果从哪里来：
+
+```json
+{
+  "query": "DeepSeek web search API",
+  "backend": "deepseek-native",
+  "max_results": 5,
+  "freshness": "week"
+}
+```
+
+可选值：
+
+- `external`：旧行为，按 provider 顺序使用 AnySearch、SearXNG、Tavily。
+- `deepseek-native`：调用与 `web_research` 相同的 DeepSeek 原生搜索，
+  返回 `mode: "native"`、模型回答和带 `provider: "deepseek-native"` 的来源。
+- `auto`：有 `DEEPSEEK_API_KEY` 时先尝试原生搜索；原生搜索失败后自动回退到
+  外部 provider，并在 `warnings` 与 `nativeSearchDegraded` 中标明降级。
+
+不传 `backend` 时使用 `WEB_SEARCH_BACKEND`；未设置该变量时仍是 `external`，
+所以旧 MCP 客户端无需修改。`deepseek-native` 不执行 OpenRouter rank fusion；
+传入 `quality: "balanced"` / `"deep"` 或旧 `rerank: true` 时会保留 quality
+元数据并返回 warning，而不会悄悄把查询发送到 OpenRouter。
+
+原生接口没有与本项目 `scope` / `freshness` 完全等价的过滤参数。`scope`
+仍按查询语言解析并原样返回；`freshness` 会作为查询提示传给原生搜索，但不应
+被理解为严格的服务端时间过滤。需要严格 provider 路由和融合排序时继续使用
+`external`。
 
 ## 隐私
 
@@ -61,13 +96,14 @@ node dist/index.js
 `--doctor` 只在终端输出各 provider 的健康状态，不会把健康检查注册成第三个
 MCP 工具。
 
-搜索查询会发送给用户配置的搜索提供商；启用重排后，候选结果摘要还会发送给
-OpenRouter。项目本身不包含遥测。
+搜索查询会发送给用户配置的搜索提供商；选择 `deepseek-native` 或 `auto` 且
+原生搜索成功时，查询还会发送给 DeepSeek；启用外部重排后，候选结果摘要还会发送
+给 OpenRouter。项目本身不包含遥测。
 
 ## 质量控制与融合重排
 
-`web_search` 默认使用 `quality: "fast"`，保持快速的单 provider 降级模式，不把
-查询或来源发送给 OpenRouter。
+`web_search` 默认使用 `quality: "fast"` 和 `backend: "external"`，保持快速的
+单 provider 降级模式，不把查询或来源发送给 OpenRouter。
 
 | quality | provider 候选 | 候选目标 | 行为 |
 | --- | ---: | ---: | --- |
@@ -84,7 +120,8 @@ OpenRouter。项目本身不包含遥测。
   "query": "DeepSeek Responses API web_search 是否已经失效",
   "scope": "global",
   "max_results": 8,
-  "quality": "balanced"
+  "quality": "balanced",
+  "backend": "external"
 }
 ```
 

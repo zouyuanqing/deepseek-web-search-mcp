@@ -20,6 +20,8 @@ configure:
 | `web_search` via SearXNG | the query string | `SEARXNG_URL` (your own instance by default) |
 | `web_search` via Tavily | the query string | `api.tavily.com` |
 | `web_search` (`balanced`, `deep`) | the query plus candidate titles, URLs, and snippets | `openrouter.ai` for reranking |
+| `web_search` (`backend: "deepseek-native"`) | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
+| `web_search` (`backend: "auto"`) | the query to DeepSeek first; if native search fails, the query to the first working external provider | DeepSeek and the selected external provider |
 | `web_research` | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
 
 No other network calls are made. In particular there is no analytics, no crash
@@ -47,6 +49,10 @@ provider side is governed by each provider's own policy:
 
 - Disable reranking by keeping `quality: "fast"` (the default) so candidates are
   never sent to OpenRouter.
+- Keep `WEB_SEARCH_BACKEND=external` (the default), or pass
+  `backend: "external"`, to keep `web_search` queries away from DeepSeek.
+- Use `backend: "deepseek-native"` only when you intend to send `web_search`
+  queries to DeepSeek's native search endpoint.
 - Point `SEARXNG_URL` at a self-hosted instance to keep queries inside your own
   infrastructure.
 - Unset a provider's API key to remove that provider from the fallback chain.

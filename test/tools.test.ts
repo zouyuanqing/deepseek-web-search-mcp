@@ -13,7 +13,7 @@ const EXPECTED_ANNOTATIONS = {
 
 async function listToolSurface() {
   const server = createMcpServer(loadConfig({}));
-  const client = new Client({ name: "tools-test", version: "1.1.0" });
+  const client = new Client({ name: "tools-test", version: "1.2.0" });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
   try {
@@ -38,5 +38,17 @@ describe("tool surface", () => {
       expect(tool, name).toBeDefined();
       expect(tool?.annotations, name).toEqual(EXPECTED_ANNOTATIONS);
     }
+  });
+
+  it("exposes the compatible backend selector on web_search", async () => {
+    const tools = await listToolSurface();
+    const tool = tools.find((candidate) => candidate.name === "web_search");
+    expect(tool?.inputSchema).toMatchObject({
+      properties: {
+        backend: {
+          type: "string",
+        },
+      },
+    });
   });
 });
