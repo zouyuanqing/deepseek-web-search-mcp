@@ -4,7 +4,10 @@ import {
   candidateTarget,
   fuseRankings,
   providerRequestLimit,
+  rerankConfidence,
+  RERANK_CONFIDENCE_FLOOR,
   resolveQuality,
+  TOP1_MIN_RERANK_RELEVANCE,
   withoutRankingMetadata,
 } from "../src/ranking.js";
 import type { SearchSource } from "../src/types.js";
@@ -19,6 +22,13 @@ function source(
     provider,
     ...(title === undefined ? {} : { title }),
   };
+}
+
+function reranked(
+  item: SearchSource,
+  relevanceScore: number,
+): SearchSource {
+  return { ...item, rerankScore: relevanceScore };
 }
 
 describe("quality profiles", () => {
@@ -61,7 +71,11 @@ describe("rank fusion", () => {
       source("https://example.com/b"),
       source("https://example.com/c"),
     ];
-    const fused = fuseRankings("test query", original, [...original]);
+    const fused = fuseRankings(
+      "test query",
+      original,
+      original.map((item) => reranked(item, 0.9)),
+    );
     expect(fused.sources.map((item) => item.url)).toEqual(original.map((item) => item.url));
     expect(fused.top1Protected).toBe(true);
   });
@@ -72,8 +86,12 @@ describe("rank fusion", () => {
       source("https://example.com/b"),
       source("https://example.com/c"),
     ];
-    const reranked = [original[2]!, original[0]!, original[1]!];
-    const fused = fuseRankings("test query", original, reranked);
+    const rerankedSources = [
+      reranked(original[2]!, 0.8),
+      reranked(original[0]!, 0.8),
+      reranked(original[1]!, 0.8),
+    ];
+    const fused = fuseRankings("test query", original, rerankedSources);
     expect(fused.sources[0]?.url).toBe(original[0]?.url);
     expect(fused.top1Protected).toBe(true);
   });
@@ -88,10 +106,86 @@ describe("rank fusion", () => {
       source("https://example.com/d"),
       official,
     ];
-    const reranked = [official, aggregator, ...original.slice(1, 4)];
-    const fused = fuseRankings("DeepSeek official API documentation", original, reranked);
+    const rerankedSources = [
+      reranked(official, 0.95),
+      reranked(aggregator, 0.8),
+      ...original.slice(1, 4).map((item) => reranked(item, 0.8)),
+    ];
+    const fused = fuseRankings("DeepSeek official API documentation", original, rerankedSources);
     expect(fused.sources[0]?.url).toBe(official.url);
     expect(fused.top1Protected).toBe(false);
+  });
+
+  it("zeroes low-confidence rerank contributions so noise cannot win by rank alone", () => {
+    const original = [
+      source("https://example.com/original-top"),
+      source("https://example.com/noise"),
+      source("https://example.com/relevant"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(original[1]!, 0),
+        reranked(original[0]!, RERANK_CONFIDENCE_FLOOR),
+        reranked(original[2]!, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(original[2]?.url);
+    expect(fused.sources[1]?.rerankConfidence).toBe(0);
+    expect(fused.top1Protected).toBe(false);
+  });
+
+  it("requires the original top result to clear the top-1 relevance floor", () => {
+    const original = [
+      source("https://example.com/original-top"),
+      source("https://example.com/reliable-alternative"),
+      source("https://example.com/third"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(original[1]!, 0.9),
+        reranked(original[0]!, TOP1_MIN_RERANK_RELEVANCE - 0.01),
+        reranked(original[2]!, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(original[1]?.url);
+    expect(fused.top1Protected).toBe(false);
+  });
+
+  it("does not let a low-confidence authoritative result replace the original top", () => {
+    const original = [
+      source("https://example.com/original-top"),
+      source("https://example.com/second"),
+      source("https://example.com/third"),
+    ];
+    const authoritativeNoise = source("https://docs.example.com/official-looking");
+    const fused = fuseRankings(
+      "official documentation",
+      [original[0]!, authoritativeNoise, original[2]!],
+      [
+        reranked(authoritativeNoise, RERANK_CONFIDENCE_FLOOR),
+        reranked(original[0]!, 0.9),
+        reranked(original[2]!, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(original[0]?.url);
+    expect(fused.top1Protected).toBe(true);
+  });
+
+  it("normalizes rerank confidence and clamps invalid scores", () => {
+    expect(rerankConfidence(undefined)).toBe(0);
+    expect(rerankConfidence(Number.NaN)).toBe(0);
+    expect(rerankConfidence(-1)).toBe(0);
+    expect(rerankConfidence(RERANK_CONFIDENCE_FLOOR)).toBe(0);
+    expect(rerankConfidence(1)).toBe(1);
+    expect(rerankConfidence(2)).toBe(1);
+    expect(rerankConfidence(0.675)).toBeCloseTo(0.5, 10);
   });
 
   it("removes internal ranking metadata from public sources", () => {

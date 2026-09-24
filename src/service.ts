@@ -18,6 +18,7 @@ import {
 import type {
   DeepSeekNativeProvider,
   HealthReport,
+  NativeSearchCall,
   ProviderAttempt,
   ProviderResult,
   Quality,
@@ -39,10 +40,15 @@ import {
 } from "./utils.js";
 
 export type ProviderRegistry = Record<SearchProviderId, SearchProvider>;
+type CandidateProviderId = SearchProviderId | "deepseek-native";
 
 interface ProviderCall {
   result: ProviderResult;
   cached: boolean;
+  nativeSearch?: {
+    requests: number;
+    calls: NativeSearchCall[];
+  };
 }
 
 interface RerankCall {
@@ -54,6 +60,10 @@ export function providerOrder(scope: "cn" | "global"): SearchProviderId[] {
   return scope === "cn"
     ? ["anysearch", "searxng", "tavily"]
     : ["tavily", "searxng", "anysearch"];
+}
+
+export function hybridProviderOrder(scope: "cn" | "global"): CandidateProviderId[] {
+  return [...providerOrder(scope), "deepseek-native"];
 }
 
 export function buildProviderRegistry(config: AppConfig): ProviderRegistry {
@@ -70,6 +80,14 @@ function cloneProviderResult(result: ProviderResult): ProviderResult {
     sources: result.sources.map((source) => ({ ...source })),
     warnings: [...result.warnings],
     ...(result.usage === undefined ? {} : { usage: { ...result.usage } }),
+    ...(result.nativeSearch === undefined
+      ? {}
+      : {
+        nativeSearch: {
+          requests: result.nativeSearch.requests,
+          calls: result.nativeSearch.calls.map((call) => ({ ...call })),
+        },
+      }),
   };
 }
 
@@ -78,6 +96,19 @@ function cloneRerankResult(result: RerankResult): RerankResult {
     ...result,
     sources: result.sources.map((source) => ({ ...source })),
   };
+}
+
+function mergeProviderSources(groups: SearchSource[][], interleave: boolean): SearchSource[] {
+  if (!interleave) return groups.flat();
+  const output: SearchSource[] = [];
+  const maxLength = groups.reduce((maximum, group) => Math.max(maximum, group.length), 0);
+  for (let index = 0; index < maxLength; index += 1) {
+    for (const group of groups) {
+      const source = group[index];
+      if (source !== undefined) output.push(source);
+    }
+  }
+  return output;
 }
 
 export class SearchService {
@@ -106,12 +137,15 @@ export class SearchService {
 
   async webSearch(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
     const quality = resolveQuality(input);
-    const backend = input.backend ?? this.config.webSearchBackend ?? "external";
+    const requestedBackend = input.backend ?? this.config.webSearchBackend ?? "auto";
+    const backend = requestedBackend === "auto"
+      ? this.config.deepseekApiKey === undefined ? "external" : "hybrid"
+      : requestedBackend;
     if (backend === "deepseek-native") {
       return this.webSearchNative(input, quality, signal);
     }
-    if (backend === "auto" && this.config.deepseekApiKey !== undefined) {
-      return this.webSearchAutoNative(input, quality, signal);
+    if (backend === "hybrid") {
+      return this.webSearchHybrid(input, quality, signal);
     }
     return this.webSearchExternal(input, quality, signal);
   }
@@ -124,6 +158,16 @@ export class SearchService {
     return QUALITY_PROFILES[quality].rerank
       ? this.webSearchRanked(input, quality, signal)
       : this.webSearchFast(input, quality, signal);
+  }
+
+  private async webSearchHybrid(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
+    return QUALITY_PROFILES[quality].rerank
+      ? this.webSearchRanked(input, quality, signal, true)
+      : this.webSearchAggregate(input, quality, signal);
   }
 
   private async webSearchNative(
@@ -170,45 +214,6 @@ export class SearchService {
       throw error instanceof ProviderError
         ? error
         : new ProviderError("deepseek-native", "unknown", errorText(error), { cause: error });
-    }
-  }
-
-  private async webSearchAutoNative(
-    input: SearchInput,
-    quality: Quality,
-    signal?: AbortSignal,
-  ): Promise<SearchResult> {
-    try {
-      return await this.webSearchNative(input, quality, signal);
-    } catch (error) {
-      const nativeError = error instanceof ProviderError
-        ? error
-        : new ProviderError("deepseek-native", "unknown", errorText(error), { cause: error });
-      try {
-        const fallback = await this.webSearchExternal(input, quality, signal);
-        return {
-          ...fallback,
-          backend: "external",
-          fallbackUsed: true,
-          warnings: [
-            `DeepSeek native search was unavailable; used external providers: ${nativeError.message}`,
-            ...fallback.warnings,
-          ],
-          nativeSearchRequests: 0,
-          nativeSearchCalls: [],
-          nativeSearchDegraded: true,
-        };
-      } catch (fallbackError) {
-        const fallbackProviderError = fallbackError instanceof ProviderError
-          ? fallbackError
-          : new ProviderError("service", "unknown", errorText(fallbackError), { cause: fallbackError });
-        throw new ProviderError(
-          "service",
-          "no_results",
-          `DeepSeek native search failed (${nativeError.message}); external fallback failed (${fallbackProviderError.message})`,
-          { cause: fallbackError },
-        );
-      }
     }
   }
 
@@ -288,19 +293,14 @@ export class SearchService {
     );
   }
 
-  private async webSearchRanked(
+  private async webSearchAggregate(
     input: SearchInput,
     quality: Quality,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
-    const order = providerOrder(scope);
-    const target = candidateTarget(
-      quality,
-      input.maxResults,
-      this.config.rerankCandidateLimit,
-    );
-    const candidateInput: SearchInput = {
+    const order = hybridProviderOrder(scope);
+    const providerInput: SearchInput = {
       ...input,
       quality,
       rerank: false,
@@ -310,11 +310,12 @@ export class SearchService {
       order.map(async (providerId) => {
         const started = performance.now();
         try {
-          const call = await this.searchProvider(providerId, candidateInput, scope, signal);
+          const call = await this.searchCandidateProvider(providerId, providerInput, scope, signal);
           return {
             providerId,
             result: call.result,
             cached: call.cached,
+            nativeSearch: call.nativeSearch,
             elapsedMs: Math.round(performance.now() - started),
           };
         } catch (error) {
@@ -331,11 +332,141 @@ export class SearchService {
 
     const attempts: ProviderAttempt[] = [];
     const warnings: string[] = [];
-    const candidates: SearchSource[] = [];
+    const sourceGroups: SearchSource[][] = [];
     const answers: string[] = [];
-    let successCount = 0;
+    const successfulProviders: CandidateProviderId[] = [];
+    let nativeAttempted = false;
+    let nativeSucceeded = false;
+    let nativeSearchRequests = 0;
+    let nativeSearchCalls: NativeSearchCall[] = [];
 
     for (const item of settled) {
+      if (item.providerId === "deepseek-native") nativeAttempted = true;
+      if ("error" in item) {
+        attempts.push({
+          provider: item.providerId,
+          status: "error",
+          elapsedMs: item.elapsedMs,
+          errorCode: item.error.code,
+          errorMessage: item.error.message,
+        });
+        warnings.push(`${item.providerId} failed: ${item.error.message}`);
+        continue;
+      }
+      if (item.result.sources.length === 0) {
+        attempts.push({
+          provider: item.providerId,
+          status: "empty",
+          elapsedMs: item.elapsedMs,
+          ...(item.cached ? { cached: true } : {}),
+        });
+        warnings.push(`${item.providerId} returned no results`);
+        continue;
+      }
+      successfulProviders.push(item.providerId);
+      if (item.providerId === "deepseek-native") {
+        nativeSucceeded = true;
+        nativeSearchRequests = item.nativeSearch?.requests ?? 0;
+        nativeSearchCalls = item.nativeSearch?.calls ?? [];
+      }
+      attempts.push({
+        provider: item.providerId,
+        status: "ok",
+        elapsedMs: item.elapsedMs,
+        ...(item.cached ? { cached: true } : {}),
+      });
+      sourceGroups.push(item.result.sources);
+      warnings.push(...item.result.warnings);
+      if (item.result.answer !== undefined && item.result.answer.length > 0) {
+        answers.push(item.result.answer);
+      }
+    }
+
+    const sources = dedupeSources(mergeProviderSources(sourceGroups, true))
+      .slice(0, input.maxResults);
+    if (sources.length === 0) {
+      throw new ProviderError(
+        "service",
+        "no_results",
+        `All search providers failed for query "${input.query}"`,
+      );
+    }
+
+    return {
+      query: input.query,
+      scope,
+      mode: "fast",
+      quality,
+      backend: "hybrid",
+      provider: successfulProviders.length > 1
+        ? "multiple"
+        : successfulProviders[0] ?? null,
+      fallbackUsed: successfulProviders.length < order.length,
+      attempts,
+      sources,
+      ...(answers[0] === undefined ? {} : { answer: answers[0] }),
+      warnings,
+      nativeSearchRequests,
+      nativeSearchCalls,
+      nativeSearchDegraded: nativeAttempted && !nativeSucceeded,
+    };
+  }
+
+  private async webSearchRanked(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+    hybrid = false,
+  ): Promise<SearchResult> {
+    const scope = resolveScope(input.query, input.scope);
+    const order = hybrid ? hybridProviderOrder(scope) : providerOrder(scope);
+    const target = candidateTarget(
+      quality,
+      input.maxResults,
+      this.config.rerankCandidateLimit,
+    );
+    const candidateInput: SearchInput = {
+      ...input,
+      quality,
+      rerank: false,
+      maxResults: providerRequestLimit(quality, input.maxResults),
+    };
+    const settled = await Promise.all(
+      order.map(async (providerId) => {
+        const started = performance.now();
+        try {
+          const call = await this.searchCandidateProvider(providerId, candidateInput, scope, signal);
+          return {
+            providerId,
+            result: call.result,
+            cached: call.cached,
+            nativeSearch: call.nativeSearch,
+            elapsedMs: Math.round(performance.now() - started),
+          };
+        } catch (error) {
+          return {
+            providerId,
+            error: error instanceof ProviderError
+              ? error
+              : new ProviderError(providerId, "unknown", errorText(error), { cause: error }),
+            elapsedMs: Math.round(performance.now() - started),
+          };
+        }
+      }),
+    );
+
+    const attempts: ProviderAttempt[] = [];
+    const warnings: string[] = [];
+    const sourceGroups: SearchSource[][] = [];
+    const answers: string[] = [];
+    let successCount = 0;
+    let nativeAttempted = false;
+    let nativeSucceeded = false;
+    let nativeSearchRequests = 0;
+    let nativeSearchCalls: NativeSearchCall[] = [];
+
+    for (const item of settled) {
+      if (item.providerId === "deepseek-native") nativeAttempted = true;
       if ("error" in item) {
         attempts.push({
           provider: item.providerId,
@@ -358,20 +489,27 @@ export class SearchService {
         continue;
       }
       successCount += 1;
+      if (item.providerId === "deepseek-native") {
+        nativeSucceeded = true;
+        nativeSearchRequests = item.nativeSearch?.requests ?? 0;
+        nativeSearchCalls = item.nativeSearch?.calls ?? [];
+      }
       attempts.push({
         provider: item.providerId,
         status: "ok",
         elapsedMs: item.elapsedMs,
         ...(item.cached ? { cached: true } : {}),
       });
-      candidates.push(...item.result.sources);
+      sourceGroups.push(item.result.sources);
       warnings.push(...item.result.warnings);
       if (item.result.answer !== undefined && item.result.answer.length > 0) {
         answers.push(item.result.answer);
       }
     }
 
-    const uniqueCandidates = dedupeSources(candidates).slice(0, target);
+    const uniqueCandidates = dedupeSources(
+      mergeProviderSources(sourceGroups, hybrid),
+    ).slice(0, target);
     if (uniqueCandidates.length === 0) {
       throw new ProviderError(
         "service",
@@ -385,7 +523,7 @@ export class SearchService {
       scope,
       mode: "reranked" as const,
       quality,
-      backend: "external" as const,
+      backend: hybrid ? "hybrid" as const : "external" as const,
       provider: successCount > 1 ? ("multiple" as const) : settled.find(
         (item) => "result" in item && item.result.sources.length > 0,
       )?.providerId ?? null,
@@ -393,6 +531,13 @@ export class SearchService {
       attempts,
       ...(answers[0] === undefined ? {} : { answer: answers[0] }),
       warnings,
+      ...(hybrid
+        ? {
+          nativeSearchRequests,
+          nativeSearchCalls,
+          nativeSearchDegraded: nativeAttempted && !nativeSucceeded,
+        }
+        : {}),
     };
 
     if (uniqueCandidates.length <= input.maxResults) {
@@ -492,6 +637,73 @@ export class SearchService {
     };
   }
 
+  private async searchNativeProvider(
+    input: SearchInput,
+    scope: "cn" | "global",
+    signal?: AbortSignal,
+  ): Promise<ProviderCall> {
+    const key = hashCacheKey([
+      "search",
+      "deepseek-native",
+      normalizeCacheQuery(input.query),
+      scope,
+      input.freshness,
+      input.maxResults,
+    ]);
+    const cached = this.searchCache.get(key);
+    if (cached !== undefined) {
+      return {
+        result: cloneProviderResult(cached),
+        cached: true,
+        ...(cached.nativeSearch === undefined
+          ? {}
+          : { nativeSearch: cached.nativeSearch }),
+      };
+    }
+
+    const native = await this.nativeProvider.research(
+      {
+        query: applyFreshnessToQuery(input.query, input.freshness),
+        maxSources: input.maxResults,
+        freshness: input.freshness,
+      },
+      signal,
+    );
+    const result: ProviderResult = {
+      provider: "deepseek-native",
+      sources: native.sources,
+      answer: native.answerMarkdown,
+      warnings: native.warnings,
+      ...(native.usage === undefined ? {} : { usage: native.usage }),
+      nativeSearch: {
+        requests: native.nativeSearchRequests,
+        calls: native.nativeSearchCalls,
+      },
+    };
+    if (result.sources.length > 0) {
+      this.searchCache.set(key, cloneProviderResult(result));
+    }
+    return {
+      result,
+      cached: false,
+      nativeSearch: {
+        requests: native.nativeSearchRequests,
+        calls: native.nativeSearchCalls,
+      },
+    };
+  }
+
+  private async searchCandidateProvider(
+    providerId: CandidateProviderId,
+    input: SearchInput,
+    scope: "cn" | "global",
+    signal?: AbortSignal,
+  ): Promise<ProviderCall> {
+    return providerId === "deepseek-native"
+      ? this.searchNativeProvider(input, scope, signal)
+      : this.searchProvider(providerId, input, scope, signal);
+  }
+
   private async rerankCandidates(
     query: string,
     sources: SearchSource[],
@@ -505,6 +717,7 @@ export class SearchService {
       normalizeCacheQuery(query),
       sources.map((source) => ({
         url: canonicalizeUrl(source.url) ?? source.url,
+        provider: source.provider,
         title: source.title ?? "",
         snippet: source.snippet ?? "",
       })),

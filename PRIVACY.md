@@ -15,13 +15,15 @@ configure:
 
 | Tool / mode | Data sent | Destination |
 | --- | --- | --- |
-| `web_search` (`fast`) | the query string | the first working provider below |
+| `web_search` (`fast`, external-only) | the query string | the first working external provider below |
+| `web_search` (`fast`, auto/hybrid) | the query string | all selected external providers and, when configured, DeepSeek |
 | `web_search` via AnySearch | the query string | `ANYSEARCH_MCP_URL` (default `api.anysearch.com`) |
 | `web_search` via SearXNG | the query string | `SEARXNG_URL` (your own instance by default) |
 | `web_search` via Tavily | the query string | `api.tavily.com` |
+| `web_search` (`backend: "hybrid"`) | the query | the selected external providers and `DEEPSEEK_SEARCH_BASE_URL` |
 | `web_search` (`balanced`, `deep`) | the query plus candidate titles, URLs, and snippets | `openrouter.ai` for reranking |
 | `web_search` (`backend: "deepseek-native"`) | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
-| `web_search` (`backend: "auto"`) | the query to DeepSeek first; if native search fails, the query to the first working external provider | DeepSeek and the selected external provider |
+| `web_search` (`backend: "auto"`) | the query to DeepSeek and/or the selected external providers depending on configuration | DeepSeek and/or the selected external provider |
 | `web_research` | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
 
 No other network calls are made. In particular there is no analytics, no crash
@@ -49,8 +51,11 @@ provider side is governed by each provider's own policy:
 
 - Disable reranking by keeping `quality: "fast"` (the default) so candidates are
   never sent to OpenRouter.
-- Keep `WEB_SEARCH_BACKEND=external` (the default), or pass
-  `backend: "external"`, to keep `web_search` queries away from DeepSeek.
+- Keep `WEB_SEARCH_BACKEND=external`, or pass `backend: "external"`, to keep
+  `web_search` queries away from DeepSeek. The default `auto` mode uses the
+  native source when `DEEPSEEK_API_KEY` is configured.
+- Use `backend: "hybrid"` when you want DeepSeek native search to participate
+  alongside AnySearch, SearXNG, and Tavily in the same candidate pool.
 - Use `backend: "deepseek-native"` only when you intend to send `web_search`
   queries to DeepSeek's native search endpoint.
 - Point `SEARXNG_URL` at a self-hosted instance to keep queries inside your own

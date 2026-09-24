@@ -32,6 +32,8 @@ export const RANK_FUSION_WEIGHTS = {
 
 const RRF_K = 60;
 const OFFICIAL_BOOST = 0.003;
+export const RERANK_CONFIDENCE_FLOOR = 0.35;
+export const TOP1_MIN_RERANK_RELEVANCE = 0.5;
 
 const OFFICIAL_INTENT_PATTERN =
   /(?:官方|official|\bdocs?\b|documentation|\bapi\b|reference|source\s+code|release|changelog)/iu;
@@ -70,6 +72,7 @@ const AGGREGATOR_HOSTS = [
 export interface RankedSource extends SearchSource {
   originalRank: number;
   rerankRank: number;
+  rerankConfidence: number;
   authorityScore: number;
   fusionScore: number;
 }
@@ -182,8 +185,22 @@ function rankScore(rank: number, weight: number): number {
   return weight / (RRF_K + rank);
 }
 
+export function rerankConfidence(score: number | undefined): number {
+  if (score === undefined || !Number.isFinite(score)) return 0;
+  const normalized = Math.max(0, Math.min(1, score));
+  // Low-confidence candidates receive no rerank evidence, not a noisy rank bonus.
+  if (normalized <= RERANK_CONFIDENCE_FLOOR) return 0;
+  return (normalized - RERANK_CONFIDENCE_FLOOR) / (1 - RERANK_CONFIDENCE_FLOOR);
+}
+
+function hasTop1RelevantRerank(source: RankedSource): boolean {
+  return source.rerankScore !== undefined
+    && source.rerankScore >= TOP1_MIN_RERANK_RELEVANCE;
+}
+
 function compareRanked(left: RankedSource, right: RankedSource): number {
   return right.fusionScore - left.fusionScore
+    || right.rerankConfidence - left.rerankConfidence
     || right.authorityScore - left.authorityScore
     || left.rerankRank - right.rerankRank
     || left.originalRank - right.originalRank
@@ -216,8 +233,9 @@ export function fuseRankings(
     const rerankRank = rerankRanks.get(key) ?? missingRerankRank;
     const sourceAuthority = authorityScore(query, source);
     const rerankSource = rerankByKey.get(key);
+    const confidence = rerankConfidence(rerankSource?.rerankScore);
     const rrf = rankScore(originalRank, RANK_FUSION_WEIGHTS.original)
-      + rankScore(rerankRank, RANK_FUSION_WEIGHTS.rerank);
+      + rankScore(rerankRank, RANK_FUSION_WEIGHTS.rerank * confidence);
     return {
       ...source,
       ...(rerankSource?.rerankScore === undefined
@@ -225,8 +243,11 @@ export function fuseRankings(
         : { rerankScore: rerankSource.rerankScore }),
       originalRank,
       rerankRank,
+      rerankConfidence: confidence,
       authorityScore: sourceAuthority,
-      fusionScore: rrf + (officialIntent ? sourceAuthority * OFFICIAL_BOOST : 0),
+      fusionScore: rrf + (
+        officialIntent ? sourceAuthority * OFFICIAL_BOOST * confidence : 0
+      ),
     };
   });
 
@@ -239,8 +260,10 @@ export function fuseRankings(
     originalTop !== undefined
     && fusedTop !== undefined
     && originalTop.rerankRank <= 5
+    && hasTop1RelevantRerank(originalTop)
     && !(
       fusedTop.rerankRank <= 2
+      && hasTop1RelevantRerank(fusedTop)
       && fusedTop.authorityScore >= originalTop.authorityScore + 0.25
     )
   ) {
@@ -263,6 +286,7 @@ export function withoutRankingMetadata(source: RankedSource): SearchSource {
   const {
     originalRank: _originalRank,
     rerankRank: _rerankRank,
+    rerankConfidence: _rerankConfidence,
     authorityScore: _authorityScore,
     fusionScore: _fusionScore,
     ...publicSource

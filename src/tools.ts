@@ -10,7 +10,7 @@ import { safeJson } from "./utils.js";
 const scopeSchema = z.enum(["auto", "cn", "global"]).default("auto");
 const freshnessSchema = z.enum(["any", "day", "week", "month", "year"]).default("any");
 const qualitySchema = z.enum(["fast", "balanced", "deep"]);
-const backendSchema = z.enum(["auto", "external", "deepseek-native"]);
+const backendSchema = z.enum(["auto", "external", "deepseek-native", "hybrid"]);
 
 export function searchMarkdown(result: SearchResult): string {
   const lines = [
@@ -77,7 +77,7 @@ export function createMcpServer(config: AppConfig): McpServer {
   const service = new SearchService(config);
   const server = new McpServer({
     name: "deepseek-web-search-mcp",
-    version: "1.2.0",
+    version: "1.3.0",
   });
 
   server.registerTool(
@@ -104,7 +104,7 @@ export function createMcpServer(config: AppConfig): McpServer {
           "Deprecated compatibility alias: true maps to balanced when quality is omitted.",
         ),
         backend: backendSchema.optional().describe(
-          "Search backend. Defaults to WEB_SEARCH_BACKEND (external by default); deepseek-native uses DeepSeek's native search and auto falls back to external providers.",
+          "Search backend. Defaults to WEB_SEARCH_BACKEND (auto by default); hybrid includes DeepSeek native search as one provider, deepseek-native uses it exclusively, and auto uses hybrid when DEEPSEEK_API_KEY is configured.",
         ),
       },
     },

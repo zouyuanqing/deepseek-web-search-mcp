@@ -39,12 +39,16 @@ function optional(value: string | undefined): string | undefined {
 
 function searchBackend(value: string | undefined): SearchBackend {
   switch (optional(value)) {
+    case "external":
+      return "external";
     case "auto":
       return "auto";
     case "deepseek-native":
       return "deepseek-native";
+    case "hybrid":
+      return "hybrid";
     default:
-      return "external";
+      return "auto";
   }
 }
 

@@ -2,7 +2,7 @@ export type Scope = "auto" | "cn" | "global";
 export type ResolvedScope = Exclude<Scope, "auto">;
 export type Freshness = "any" | "day" | "week" | "month" | "year";
 export type Quality = "fast" | "balanced" | "deep";
-export type SearchBackend = "auto" | "external" | "deepseek-native";
+export type SearchBackend = "auto" | "external" | "deepseek-native" | "hybrid";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
@@ -34,11 +34,15 @@ export interface SearchSource {
 }
 
 export interface ProviderResult {
-  provider: SearchProviderId;
+  provider: SearchProviderId | NativeSearchProviderId;
   sources: SearchSource[];
   answer?: string;
   warnings: string[];
   usage?: Record<string, unknown>;
+  nativeSearch?: {
+    requests: number;
+    calls: NativeSearchCall[];
+  };
 }
 
 export interface ProviderAttempt {

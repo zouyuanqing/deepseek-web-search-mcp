@@ -48,7 +48,7 @@ function reranker(reverse = false): Reranker & { calls: number } {
       return {
         sources: (reverse ? [...sources].reverse() : sources).map((source, index) => ({
           ...source,
-          rerankScore: 1 - index / Math.max(sources.length, 1),
+          rerankScore: reverse ? 0.9 : 1 - index / Math.max(sources.length, 1),
         })),
         model: "test-reranker",
         elapsedMs: 10,

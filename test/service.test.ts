@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { loadConfig } from "../src/config.js";
 import { ProviderError } from "../src/errors.js";
-import { SearchService, providerOrder } from "../src/service.js";
+import { hybridProviderOrder, SearchService, providerOrder } from "../src/service.js";
 import type {
   DeepSeekNativeProvider,
   ResearchResult,
+  Reranker,
   SearchProvider,
   SearchProviderId,
+  SearchSource,
 } from "../src/types.js";
 
 function successfulProvider(id: SearchProviderId): SearchProvider {
@@ -57,6 +59,15 @@ describe("provider routing", () => {
   it("uses the global-first order", () => {
     expect(providerOrder("global")).toEqual(["tavily", "searxng", "anysearch"]);
   });
+
+  it("appends DeepSeek native search to the external provider order", () => {
+    expect(hybridProviderOrder("global")).toEqual([
+      "tavily",
+      "searxng",
+      "anysearch",
+      "deepseek-native",
+    ]);
+  });
 });
 
 describe("webResearch fallback", () => {
@@ -87,6 +98,31 @@ describe("webResearch fallback", () => {
 });
 
 describe("web_search native backend compatibility", () => {
+  it("keeps auto external-only when no native credential is configured", async () => {
+    const native = successfulNative();
+    const service = new SearchService(
+      loadConfig({}),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+      },
+      native,
+    );
+
+    const result = await service.webSearch({
+      query: "auto without native key",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      backend: "auto",
+    });
+
+    expect(result.backend).toBe("external");
+    expect(result.provider).toBe("tavily");
+    expect(native.calls).toBe(0);
+  });
+
   it("uses DeepSeek native search without calling external providers", async () => {
     const native = successfulNative();
     const external = {
@@ -133,7 +169,36 @@ describe("web_search native backend compatibility", () => {
     expect(result.nativeSearchDegraded).toBe(false);
   });
 
-  it("falls back to external providers in auto mode when native search fails", async () => {
+  it("includes native and external sources in auto mode", async () => {
+    const native = successfulNative();
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+      },
+      native,
+    );
+
+    const result = await service.webSearch({
+      query: "auto compatibility",
+      scope: "global",
+      maxResults: 8,
+      freshness: "any",
+      backend: "auto",
+    });
+
+    expect(result.backend).toBe("hybrid");
+    expect(result.provider).toBe("multiple");
+    expect(result.sources.some((source) => source.provider === "deepseek-native")).toBe(true);
+    expect(result.sources.some((source) => source.provider === "tavily")).toBe(true);
+    expect(result.nativeSearchRequests).toBe(1);
+    expect(result.nativeSearchDegraded).toBe(false);
+    expect(native.calls).toBe(1);
+  });
+
+  it("keeps external sources when native search fails in hybrid mode", async () => {
     const native: DeepSeekNativeProvider = {
       id: "deepseek-native",
       async research() {
@@ -153,15 +218,58 @@ describe("web_search native backend compatibility", () => {
     const result = await service.webSearch({
       query: "auto compatibility",
       scope: "global",
-      maxResults: 3,
+      maxResults: 8,
       freshness: "any",
-      backend: "auto",
+      backend: "hybrid",
     });
 
-    expect(result.backend).toBe("external");
-    expect(result.provider).toBe("tavily");
+    expect(result.backend).toBe("hybrid");
+    expect(result.provider).toBe("multiple");
     expect(result.fallbackUsed).toBe(true);
     expect(result.nativeSearchDegraded).toBe(true);
     expect(result.warnings[0]).toContain("native timeout");
+  });
+
+  it("sends native and external candidates through the same reranker", async () => {
+    const seen: SearchSource[][] = [];
+    const reranker: Reranker = {
+      id: "openrouter-rerank",
+      async rerank(_query, sources) {
+        seen.push(sources);
+        return {
+          sources: sources.map((source) => ({ ...source, rerankScore: 0.9 })),
+          model: "test-reranker",
+          elapsedMs: 1,
+          inputCount: sources.length,
+        };
+      },
+      async health() {
+        return 1;
+      },
+    };
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+      },
+      successfulNative(),
+      reranker,
+    );
+
+    const result = await service.webSearch({
+      query: "hybrid rerank compatibility",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "balanced",
+      backend: "hybrid",
+    });
+
+    expect(result.backend).toBe("hybrid");
+    expect(seen).toHaveLength(1);
+    expect(seen[0]?.some((source) => source.provider === "deepseek-native")).toBe(true);
+    expect(seen[0]?.some((source) => source.provider === "tavily")).toBe(true);
   });
 });
