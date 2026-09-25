@@ -34,6 +34,16 @@ npm run build
 npm test
 ```
 
+质量计划的离线 replay 使用无密钥 fixture，不会调用线上 provider：
+
+```powershell
+npm run quality:replay
+```
+
+结果写入 `work/quality/baseline-report.json`。fixture 保存各 provider 的原始顺序、
+状态、延迟、来源和可选 rerank 结果，用于比较当前 baseline 与 provider-aware RRF
+shadow challenger；shadow 结果不会改变 MCP 生产返回。
+
 ## 配置
 
 复制 `.env.example` 中的变量到进程环境或 Windows 用户环境。至少需要：

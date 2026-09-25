@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "a9c0f3b",
+  "productionDefaultChanged": false,
+  "k": 60,
+  "caseCount": 3,
+  "cases": [
+    {
+      "id": "official-tech-001",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 0.9308,
+        "ndcg10": 0.9308,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4
+      },
+      "challenger": {
+        "ndcg5": 0.9608,
+        "ndcg10": 0.9608,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4
+      },
+      "challengerTop5": [
+        {
+          "url": "https://api-docs.deepseek.com/",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://api-docs.deepseek.com/guides/responses_api/",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://api-docs.deepseek.com/guides/anthropic_api/",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        },
+        {
+          "url": "https://github.com/deepseek-ai",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        }
+      ]
+    },
+    {
+      "id": "current-weather-001",
+      "providerCount": 3,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3
+      },
+      "challengerTop5": [
+        {
+          "url": "https://weather.cma.cn/web/weather/58367.html",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        },
+        {
+          "url": "https://weather.com.cn/weather/101020600.shtml",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        },
+        {
+          "url": "https://www.tianqi.com/shanghai",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        }
+      ]
+    },
+    {
+      "id": "ambiguous-001",
+      "providerCount": 3,
+      "current": {
+        "ndcg5": 0.9595,
+        "ndcg10": 0.9595,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3
+      },
+      "challengerTop5": [
+        {
+          "url": "https://developers.openai.com/learn/docs-mcp",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        },
+        {
+          "url": "https://github.com/modelcontextprotocol/specification",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        },
+        {
+          "url": "https://modelcontextprotocol.io/",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.01639344
+        }
+      ]
+    }
+  ]
+}

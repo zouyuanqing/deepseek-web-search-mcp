@@ -1,0 +1,78 @@
+[
+  {
+    "id": "official-tech-001",
+    "query": "DeepSeek official API documentation",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      { "provider": "tavily", "status": "ok", "elapsedMs": 120, "sources": [
+        { "url": "https://api-docs.deepseek.com/", "provider": "tavily", "title": "DeepSeek API Docs" }
+      ] },
+      { "provider": "searxng", "status": "ok", "elapsedMs": 180, "sources": [
+        { "url": "https://github.com/deepseek-ai", "provider": "searxng", "title": "DeepSeek GitHub" }
+      ] },
+      { "provider": "anysearch", "status": "ok", "elapsedMs": 220, "sources": [
+        { "url": "https://api-docs.deepseek.com/guides/anthropic_api/", "provider": "anysearch", "title": "Anthropic API" }
+      ] },
+      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 900, "sources": [
+        { "url": "https://api-docs.deepseek.com/guides/responses_api/", "provider": "deepseek-native", "title": "Responses API" }
+      ] }
+    ],
+    "rerank": { "status": "ok", "model": "fixture-reranker", "elapsedMs": 80, "sources": [
+      { "url": "https://api-docs.deepseek.com/", "provider": "tavily", "rerankScore": 0.91 },
+      { "url": "https://api-docs.deepseek.com/guides/responses_api/", "provider": "deepseek-native", "rerankScore": 0.83 }
+    ] },
+    "labels": {
+      "https://api-docs.deepseek.com/": 3,
+      "https://api-docs.deepseek.com/guides/anthropic_api/": 3,
+      "https://api-docs.deepseek.com/guides/responses_api/": 2,
+      "https://github.com/deepseek-ai": 1
+    }
+  },
+  {
+    "id": "current-weather-001",
+    "query": "上海天气 2026年9月25日",
+    "scope": "cn",
+    "freshness": "day",
+    "providers": [
+      { "provider": "anysearch", "status": "ok", "elapsedMs": 300, "sources": [
+        { "url": "https://weather.cma.cn/web/weather/58367.html", "provider": "anysearch", "title": "中国气象局" }
+      ] },
+      { "provider": "searxng", "status": "ok", "elapsedMs": 280, "sources": [
+        { "url": "https://www.tianqi.com/shanghai", "provider": "searxng", "title": "上海天气预报" }
+      ] },
+      { "provider": "tavily", "status": "empty", "elapsedMs": 350, "sources": [] },
+      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 1200, "sources": [
+        { "url": "https://weather.com.cn/weather/101020600.shtml", "provider": "deepseek-native", "title": "上海天气" }
+      ] }
+    ],
+    "labels": {
+      "https://weather.cma.cn/web/weather/58367.html": 3,
+      "https://www.tianqi.com/shanghai": 2,
+      "https://weather.com.cn/weather/101020600.shtml": 2
+    }
+  },
+  {
+    "id": "ambiguous-001",
+    "query": "MCP documentation",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      { "provider": "tavily", "status": "ok", "elapsedMs": 150, "sources": [
+        { "url": "https://developers.openai.com/learn/docs-mcp", "provider": "tavily", "title": "OpenAI Docs MCP" }
+      ] },
+      { "provider": "searxng", "status": "ok", "elapsedMs": 200, "sources": [
+        { "url": "https://modelcontextprotocol.io/", "provider": "searxng", "title": "Model Context Protocol" }
+      ] },
+      { "provider": "anysearch", "status": "error", "elapsedMs": 500, "sources": [], "errorCode": "network_error", "errorMessage": "fixture error" },
+      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 950, "sources": [
+        { "url": "https://github.com/modelcontextprotocol/specification", "provider": "deepseek-native", "title": "MCP Specification" }
+      ] }
+    ],
+    "labels": {
+      "https://developers.openai.com/learn/docs-mcp": 3,
+      "https://modelcontextprotocol.io/": 2,
+      "https://github.com/modelcontextprotocol/specification": 3
+    }
+  }
+]
