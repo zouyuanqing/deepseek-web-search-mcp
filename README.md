@@ -69,6 +69,8 @@ provider 响应或凭据提交到仓库。
 - `FAST_CLEANING_MODE`：fast 清洗模式，可选 `shadow`（默认，只计算不改变结果）、
   `on` 或 `off`
 - `FAST_DOMAIN_CAP`：fast 清洗的同域名保留上限，默认 `2`
+- `DOCUMENTATION_QUERY_MODE`：官方文档/API/source code 类 query 的质量路由，
+  默认 `fast`，避免低分第三方页面被 deep rerank 压过；可设为 `deep` opt-in
 - `RESEARCH_SESSION_TTL_MS`、`RESEARCH_SESSION_MAX_SESSIONS`、
   `RESEARCH_SESSION_MAX_TURNS`：研究 session 生命周期和容量
 - `ANYSEARCH_API_KEY`：可选，匿名模式限额更低
@@ -122,6 +124,11 @@ DeepSeek key 的客户端默认会把 native 纳入四源候选池。完全保�
 `deep` 仍表示多 provider 召回加一次 rerank，不表示多轮对话。多轮研究请使用
 `research_start` 开启 session，再用 `research_followup` 继续，最后用
 `research_close` 释放内存状态；MCP 进程重启会清空 session。
+
+默认情况下，识别为官方文档/API/source code 的 query 会自动从 deep 路由到 fast，
+并在 warnings 中说明。研究 follow-up 不再把上一轮模型答案原文拼回下一次搜索，
+只保留来源 URL 作为检索提示；native provider 会被要求优先引用 primary/official
+source。
 
 ## 隐私
 

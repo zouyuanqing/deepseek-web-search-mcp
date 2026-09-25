@@ -5,6 +5,7 @@ export type FreshnessMode = "soft" | "strict";
 export type FastCleaningMode = "off" | "shadow" | "on";
 export type Quality = "fast" | "balanced" | "deep";
 export type SearchBackend = "auto" | "external" | "deepseek-native" | "hybrid";
+export type DocumentationQueryMode = "fast" | "deep";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
@@ -126,6 +127,10 @@ export interface ResearchResult {
   warnings: string[];
   degraded: boolean;
   freshness?: FreshnessReport;
+  sourceQuality?: {
+    officialSources: number;
+    totalSources: number;
+  };
 }
 
 export interface SearchProvider {

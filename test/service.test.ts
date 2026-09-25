@@ -316,6 +316,31 @@ describe("fast cleaning integration", () => {
     expect(onResult.fastCleaning?.applied).toBe(true);
     expect(onResult.sources[0]?.url).toBe("https://api-docs.deepseek.com/");
   });
+
+  it("routes official documentation queries away from deep reranking by default", async () => {
+    const service = new SearchService(
+      loadConfig({ DOCUMENTATION_QUERY_MODE: "fast" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+      },
+      successfulNative(),
+    );
+    const result = await service.webSearch({
+      query: "Next.js official API documentation",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      quality: "deep",
+      backend: "external",
+    });
+
+    expect(result.quality).toBe("fast");
+    expect(result.mode).toBe("fast");
+    expect(result.rerank).toBeUndefined();
+    expect(result.warnings).toContain("Documentation query routed from quality=deep to fast to protect primary documentation results.");
+  });
 });
 
 describe("research session service", () => {

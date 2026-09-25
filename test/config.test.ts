@@ -6,6 +6,7 @@ describe("web search backend configuration", () => {
     expect(loadConfig({}).webSearchBackend).toBe("auto");
     expect(loadConfig({}).fastCleaningMode).toBe("shadow");
     expect(loadConfig({}).fastDomainCap).toBe(2);
+    expect(loadConfig({}).documentationQueryMode).toBe("fast");
     expect(loadConfig({}).researchSessionTtlMs).toBe(1_800_000);
     expect(loadConfig({}).researchSessionMaxTurns).toBe(8);
   });
@@ -25,5 +26,6 @@ describe("web search backend configuration", () => {
   it("accepts explicit fast-cleaning configuration", () => {
     expect(loadConfig({ FAST_CLEANING_MODE: "on" }).fastCleaningMode).toBe("on");
     expect(loadConfig({ FAST_DOMAIN_CAP: "3" }).fastDomainCap).toBe(3);
+    expect(loadConfig({ DOCUMENTATION_QUERY_MODE: "deep" }).documentationQueryMode).toBe("deep");
   });
 });

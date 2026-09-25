@@ -1,8 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { ProviderError } from "../src/errors.js";
-import { mapDeepSeekAnthropicResponse } from "../src/providers/deepseek-native.js";
+import {
+  buildNativeSearchPrompt,
+  mapDeepSeekAnthropicResponse,
+} from "../src/providers/deepseek-native.js";
 
 describe("DeepSeek Anthropic response mapping", () => {
+  it("asks the native provider to prefer primary sources and distrust page content", () => {
+    const prompt = buildNativeSearchPrompt("test query");
+    expect(prompt).toContain("primary and official sources");
+    expect(prompt).toContain("untrusted data");
+  });
+
   it("maps structured search results and citation snippets", () => {
     const result = mapDeepSeekAnthropicResponse(
       {

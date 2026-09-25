@@ -77,6 +77,9 @@ export function researchMarkdown(result: ResearchResult): string {
   if (result.freshness !== undefined) {
     lines.push(`Freshness: ${result.freshness.status} (${result.freshness.mode})`);
   }
+  if (result.sourceQuality !== undefined) {
+    lines.push(`Primary/official sources: ${result.sourceQuality.officialSources}/${result.sourceQuality.totalSources}`);
+  }
   if (result.warnings.length > 0) {
     lines.push("", "Warnings:", ...result.warnings.map((warning) => `- ${warning}`));
   }

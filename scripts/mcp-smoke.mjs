@@ -46,7 +46,7 @@ try {
   const legacySearch = await client.callTool({
     name: "web_search",
     arguments: {
-      query: "OpenAI MCP documentation",
+      query: "MCP community server comparison",
       scope: "global",
       max_results: 5,
       rerank: true,

@@ -1,9 +1,10 @@
-import type { FastCleaningMode, SearchBackend } from "./types.js";
+import type { DocumentationQueryMode, FastCleaningMode, SearchBackend } from "./types.js";
 
 export interface AppConfig {
   webSearchBackend?: SearchBackend;
   fastCleaningMode: FastCleaningMode;
   fastDomainCap: number;
+  documentationQueryMode: DocumentationQueryMode;
   researchSessionTtlMs: number;
   researchSessionMaxSessions: number;
   researchSessionMaxTurns: number;
@@ -68,6 +69,10 @@ function fastCleaningMode(value: string | undefined): FastCleaningMode {
   }
 }
 
+function documentationQueryMode(value: string | undefined): DocumentationQueryMode {
+  return optional(value) === "deep" ? "deep" : "fast";
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const deepseekApiKey = optional(env.DEEPSEEK_API_KEY);
   const anySearchApiKey = optional(env.ANYSEARCH_API_KEY);
@@ -78,6 +83,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     webSearchBackend: searchBackend(env.WEB_SEARCH_BACKEND),
     fastCleaningMode: fastCleaningMode(env.FAST_CLEANING_MODE),
     fastDomainCap: positiveInt(env.FAST_DOMAIN_CAP, 2),
+    documentationQueryMode: documentationQueryMode(env.DOCUMENTATION_QUERY_MODE),
     researchSessionTtlMs: positiveInt(env.RESEARCH_SESSION_TTL_MS, 1_800_000),
     researchSessionMaxSessions: positiveInt(env.RESEARCH_SESSION_MAX_SESSIONS, 100),
     researchSessionMaxTurns: positiveInt(env.RESEARCH_SESSION_MAX_TURNS, 8),
