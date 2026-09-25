@@ -44,6 +44,15 @@ npm run quality:replay
 状态、延迟、来源和可选 rerank 结果，用于比较当前 baseline 与 provider-aware RRF
 shadow challenger；shadow 结果不会改变 MCP 生产返回。
 
+需要采集真实四路原始运行时数据时执行：
+
+```powershell
+npm run quality:capture -- "your query"
+```
+
+结果写入被 `.gitignore` 排除的 `work/quality/runtime/latest.json`，不会把真实
+provider 响应或凭据提交到仓库。
+
 ## 配置
 
 复制 `.env.example` 中的变量到进程环境或 Windows 用户环境。至少需要：

@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:mcp": "npm run build --silent && node scripts/mcp-smoke.mjs",
     "quality:replay": "npm run build --silent && node scripts/quality-replay.mjs",
+    "quality:capture": "npm run build --silent && node scripts/quality-capture.mjs",
     "start": "node dist/index.js",
     "doctor": "npm run build --silent && node dist/index.js --doctor"
   },
