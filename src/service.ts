@@ -6,6 +6,11 @@ import {
   combineFreshnessReports,
   freshnessWarning,
 } from "./freshness.js";
+import { freshnessIntentWarning } from "./freshness-intent.js";
+import {
+  analyzeSourceIndependence,
+  dedupeSourceIdentities,
+} from "./source-identity.js";
 import { DeepSeekNativeSearchProvider } from "./providers/deepseek-native.js";
 import { AnySearchProvider } from "./providers/anysearch.js";
 import { OpenRouterReranker } from "./providers/openrouter-rerank.js";
@@ -39,6 +44,7 @@ import type {
   SearchProviderId,
   SearchResult,
   SearchSource,
+  SourceIdentityReport,
 } from "./types.js";
 import { cleanFastSources } from "./quality.js";
 import { ResearchSessionStore } from "./research-session.js";
@@ -139,9 +145,15 @@ function appendUniqueWarning(warnings: string[], message: string | undefined): v
 }
 
 function sourceQuality(query: string, sources: SearchSource[]): NonNullable<ResearchResult["sourceQuality"]> {
+  const independence = analyzeSourceIndependence(sources, {
+    mergedCount: 0,
+    crossHostCopyCount: 0,
+  });
   return {
     officialSources: sources.filter((source) => authorityScore(query, source) >= 0.7).length,
     totalSources: sources.length,
+    independentDomains: independence.independentDomains,
+    independence: independence.independence,
   };
 }
 
@@ -198,6 +210,82 @@ export class SearchService {
         providerCoverage: cleaned.providerCoverage,
       },
     };
+  }
+
+  /**
+   * Language-variant and syndicated-copy collapse. Enabled by default because
+   * the same article mirrored in /it/, /ar/ and /en/ is a correctness bug, not
+   * a ranking preference, so it never competes with a legitimately distinct
+   * source. SOURCE_IDENTITY_MODE=off restores the previous exact-URL dedupe.
+   */
+  private identifySources(
+    sources: SearchSource[],
+  ): { sources: SearchSource[]; report: SourceIdentityReport } {
+    const identity = dedupeSourceIdentities(sources, {
+      crossHost: this.config.sourceIdentityCrossHost,
+    });
+    const independence = analyzeSourceIndependence(identity.sources, identity);
+    const report: SourceIdentityReport = {
+      applied: this.config.sourceIdentityMode === "on",
+      inputCount: sources.length,
+      mergedCount: identity.mergedCount,
+      languageVariantCount: identity.languageVariantCount,
+      crossHostCopyCount: identity.crossHostCopyCount,
+      conflictingDateCount: identity.conflictingDateCount,
+      independence: {
+        independentDomains: independence.independentDomains,
+        dominantDomainShare: independence.dominantDomainShare,
+        lowAuthorityShare: independence.lowAuthorityShare,
+        level: independence.independence,
+      },
+      ...(this.config.sourceIdentityVerbose
+        ? {
+          groups: identity.groups.map((group) => ({
+            keptUrl: group.keptUrl,
+            mergedUrls: group.mergedUrls,
+            hosts: group.hosts,
+            reason: group.reason,
+            dateConflict: group.dateConflict,
+          })),
+        }
+        : {}),
+    };
+    return {
+      sources: this.config.sourceIdentityMode === "off" ? dedupeSources(sources) : identity.sources,
+      report,
+    };
+  }
+
+  private identityWarnings(
+    report: SourceIdentityReport,
+    warnings: string[],
+  ): string[] {
+    const output = [...warnings];
+    if (report.languageVariantCount > 0) {
+      appendUniqueWarning(
+        output,
+        `Collapsed ${report.languageVariantCount} translated copy/copies of the same article into one source.`,
+      );
+    }
+    if (report.crossHostCopyCount > 0) {
+      appendUniqueWarning(
+        output,
+        `Collapsed ${report.crossHostCopyCount} syndicated copy/copies hosted on a different domain; agreement with the original is not independent corroboration.`,
+      );
+    }
+    if (report.independence.level === "low") {
+      appendUniqueWarning(
+        output,
+        `Only ${report.independence.independentDomains} independent domain(s) back this result set; treat numeric agreement as potentially copied.`,
+      );
+    }
+    if (report.conflictingDateCount > 0) {
+      appendUniqueWarning(
+        output,
+        `${report.conflictingDateCount} merged source group(s) had conflicting publishedAt values; the retained source's date was kept.`,
+      );
+    }
+    return output;
   }
 
   async webSearch(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
@@ -277,6 +365,14 @@ export class SearchService {
       if (input.rerank === true || quality !== "fast") {
         warnings.push("The deepseek-native backend does not use external-provider rank fusion.");
       }
+      const identified = this.identifySources(freshness.sources);
+      const mergedWarnings = this.identityWarnings(identified.report!, warnings);
+      appendUniqueWarning(
+        mergedWarnings,
+        this.config.freshnessIntentWarning
+          ? freshnessIntentWarning(input.query, input.freshness, input.freshnessMode)
+          : undefined,
+      );
       return {
         query: input.query,
         scope: resolveScope(input.query, input.scope),
@@ -290,13 +386,19 @@ export class SearchService {
           status: "ok",
           elapsedMs,
         }],
-        sources: freshness.sources.slice(0, input.maxResults),
+        sources: identified.sources.slice(0, input.maxResults),
         answer: native.answerMarkdown,
-        warnings,
+        warnings: mergedWarnings,
         nativeSearchRequests: native.nativeSearchRequests,
         nativeSearchCalls: native.nativeSearchCalls,
         nativeSearchDegraded: false,
-        freshness: freshness.report,
+        freshness: combineFreshnessReports(
+          [freshness.report],
+          input.freshness,
+          input.freshnessMode ?? "soft",
+          input.query,
+        ),
+        sourceIdentity: identified.report,
       };
     } catch (error) {
       throw error instanceof ProviderError
@@ -328,8 +430,7 @@ export class SearchService {
         const call = await this.searchProvider(providerId, providerInput, scope, signal);
         const elapsedMs = Math.round(performance.now() - started);
         const freshness = freshnessForProvider(providerId, input, call.result.sources);
-        freshnessReports.push(freshness.report);
-        const freshnessMessage = freshnessWarning(freshness.report);
+        const freshnessMessage = freshnessWarning(freshness.report, providerId);
         appendUniqueWarning(warnings, freshnessMessage);
         if (freshness.sources.length === 0) {
           attempts.push({
@@ -341,6 +442,11 @@ export class SearchService {
           warnings.push(`${providerId} returned no results`);
           continue;
         }
+        // Only providers that actually contributed to the returned set may
+        // describe the overall freshness status. Aggregating a provider whose
+        // results were all filtered out reports "unmet" for sources that did
+        // satisfy the constraint.
+        freshnessReports.push(freshness.report);
         attempts.push({
           provider: providerId,
           status: "ok",
@@ -349,6 +455,14 @@ export class SearchService {
         });
         warnings.push(...call.result.warnings);
         const cleaned = this.cleanFastSources(input, freshness.sources);
+        const identified = this.identifySources(cleaned.sources);
+        const mergedWarnings = this.identityWarnings(identified.report!, warnings);
+        appendUniqueWarning(
+          mergedWarnings,
+          this.config.freshnessIntentWarning
+            ? freshnessIntentWarning(input.query, input.freshness, input.freshnessMode)
+            : undefined,
+        );
         return {
           query: input.query,
           scope,
@@ -358,15 +472,17 @@ export class SearchService {
           provider: providerId,
           fallbackUsed: attempts.length > 1,
           attempts,
-          sources: cleaned.sources.slice(0, input.maxResults),
+          sources: identified.sources.slice(0, input.maxResults),
           ...(call.result.answer === undefined ? {} : { answer: call.result.answer }),
-          warnings,
+          warnings: mergedWarnings,
           freshness: combineFreshnessReports(
             freshnessReports,
             input.freshness,
             input.freshnessMode ?? "soft",
+            input.query,
           ),
           fastCleaning: cleaned.metadata,
+          sourceIdentity: identified.report,
         };
       } catch (error) {
         const elapsedMs = Math.round(performance.now() - started);
@@ -456,8 +572,7 @@ export class SearchService {
         warnings.push(`${item.providerId} failed: ${item.error.message}`);
         continue;
       }
-      freshnessReports.push(item.freshnessReport);
-      const freshnessMessage = freshnessWarning(item.freshnessReport);
+      const freshnessMessage = freshnessWarning(item.freshnessReport, item.providerId);
       appendUniqueWarning(warnings, freshnessMessage);
       if (item.result.sources.length === 0) {
         attempts.push({
@@ -469,6 +584,7 @@ export class SearchService {
         warnings.push(`${item.providerId} returned no results`);
         continue;
       }
+      freshnessReports.push(item.freshnessReport);
       successfulProviders.push(item.providerId);
       if (item.providerId === "deepseek-native") {
         nativeSucceeded = true;
@@ -492,7 +608,8 @@ export class SearchService {
       input,
       dedupeSources(mergeProviderSources(sourceGroups, true)),
     );
-    const sources = cleaned.sources.slice(0, input.maxResults);
+    const identified = this.identifySources(cleaned.sources);
+    const sources = identified.sources.slice(0, input.maxResults);
     if (sources.length === 0) {
       throw new ProviderError(
         "service",
@@ -500,6 +617,13 @@ export class SearchService {
         `All search providers failed for query "${input.query}"`,
       );
     }
+    const mergedWarnings = this.identityWarnings(identified.report!, warnings);
+    appendUniqueWarning(
+      mergedWarnings,
+      this.config.freshnessIntentWarning
+        ? freshnessIntentWarning(input.query, input.freshness, input.freshnessMode)
+        : undefined,
+    );
 
     return {
       query: input.query,
@@ -514,13 +638,15 @@ export class SearchService {
       attempts,
       sources,
       ...(answers[0] === undefined ? {} : { answer: answers[0] }),
-      warnings,
+      warnings: mergedWarnings,
       freshness: combineFreshnessReports(
         freshnessReports,
         input.freshness,
         input.freshnessMode ?? "soft",
+        input.query,
       ),
       fastCleaning: cleaned.metadata,
+      sourceIdentity: identified.report,
       nativeSearchRequests,
       nativeSearchCalls,
       nativeSearchDegraded: nativeAttempted && !nativeSucceeded,
@@ -596,8 +722,7 @@ export class SearchService {
         warnings.push(`${item.providerId} failed: ${item.error.message}`);
         continue;
       }
-      freshnessReports.push(item.freshnessReport);
-      const freshnessMessage = freshnessWarning(item.freshnessReport);
+      const freshnessMessage = freshnessWarning(item.freshnessReport, item.providerId);
       appendUniqueWarning(warnings, freshnessMessage);
       if (item.result.sources.length === 0) {
         attempts.push({
@@ -609,6 +734,7 @@ export class SearchService {
         warnings.push(`${item.providerId} returned no results`);
         continue;
       }
+      freshnessReports.push(item.freshnessReport);
       successCount += 1;
       if (item.providerId === "deepseek-native") {
         nativeSucceeded = true;
@@ -628,9 +754,10 @@ export class SearchService {
       }
     }
 
-    const uniqueCandidates = dedupeSources(
-      mergeProviderSources(sourceGroups, hybrid),
-    ).slice(0, target);
+    const identifiedCandidates = this.identifySources(
+      dedupeSources(mergeProviderSources(sourceGroups, hybrid)),
+    );
+    const uniqueCandidates = identifiedCandidates.sources.slice(0, target);
     if (uniqueCandidates.length === 0) {
       throw new ProviderError(
         "service",
@@ -638,6 +765,14 @@ export class SearchService {
         `All search providers failed for query "${input.query}"`,
       );
     }
+
+    const mergedWarnings = this.identityWarnings(identifiedCandidates.report!, warnings);
+    appendUniqueWarning(
+      mergedWarnings,
+      this.config.freshnessIntentWarning
+        ? freshnessIntentWarning(input.query, input.freshness, input.freshnessMode)
+        : undefined,
+    );
 
     const base = {
       query: input.query,
@@ -651,12 +786,14 @@ export class SearchService {
       fallbackUsed: successCount < order.length,
       attempts,
       ...(answers[0] === undefined ? {} : { answer: answers[0] }),
-      warnings,
+      warnings: mergedWarnings,
       freshness: combineFreshnessReports(
         freshnessReports,
         input.freshness,
         input.freshnessMode ?? "soft",
+        input.query,
       ),
+      sourceIdentity: identifiedCandidates.report,
       ...(hybrid
         ? {
           nativeSearchRequests,
@@ -713,7 +850,7 @@ export class SearchService {
       const rerankError = error instanceof ProviderError
         ? error
         : new ProviderError(this.reranker.id, "unknown", errorText(error), { cause: error });
-      warnings.push(`Rerank failed; returned provider order: ${rerankError.message}`);
+      mergedWarnings.push(`Rerank failed; returned provider order: ${rerankError.message}`);
       return {
         ...base,
         sources: uniqueCandidates.slice(0, input.maxResults),
@@ -881,20 +1018,45 @@ export class SearchService {
         );
       }
       const freshnessMessage = freshnessWarning(freshness.report);
-      const quality = sourceQuality(input.query, freshness.sources);
-      const sourceWarnings = quality.officialSources === 0
-        ? ["No primary or official source was detected; verify key claims against an authoritative source."]
-        : [];
+      const identified = this.identifySources(freshness.sources);
+      const independence = analyzeSourceIndependence(identified.sources, {
+        mergedCount: identified.report?.mergedCount ?? 0,
+        crossHostCopyCount: identified.report?.crossHostCopyCount ?? 0,
+      });
+      const quality = {
+        ...sourceQuality(input.query, identified.sources),
+        independentDomains: independence.independentDomains,
+        independence: independence.independence,
+      };
+      const sourceWarnings: string[] = [
+        ...independence.notes,
+        ...(quality.officialSources === 0
+          ? ["No primary or official source was detected; verify key claims against an authoritative source."]
+          : []),
+      ];
+      const warnings = this.identityWarnings(identified.report!, [
+        ...native.warnings,
+        ...(freshnessMessage === undefined ? [] : [freshnessMessage]),
+        ...sourceWarnings,
+      ]);
+      appendUniqueWarning(
+        warnings,
+        this.config.freshnessIntentWarning
+          ? freshnessIntentWarning(input.query, input.freshness, input.freshnessMode)
+          : undefined,
+      );
       return {
         ...native,
-        sources: freshness.sources,
-        warnings: [...new Set([
-          ...native.warnings,
-          ...(freshnessMessage === undefined ? [] : [freshnessMessage]),
-          ...sourceWarnings,
-        ])],
-        freshness: freshness.report,
+        sources: identified.sources,
+        warnings: [...new Set(warnings)],
+        freshness: combineFreshnessReports(
+          [freshness.report],
+          input.freshness,
+          input.freshnessMode ?? "soft",
+          input.query,
+        ),
         sourceQuality: quality,
+        sourceIdentity: identified.report,
         degraded: false,
       };
     } catch (error) {
@@ -929,6 +1091,7 @@ export class SearchService {
           ...fallback.warnings,
         ],
         ...(fallback.freshness === undefined ? {} : { freshness: fallback.freshness }),
+        ...(fallback.sourceIdentity === undefined ? {} : { sourceIdentity: fallback.sourceIdentity }),
         sourceQuality: sourceQuality(input.query, fallback.sources),
         degraded: true,
       };
@@ -970,6 +1133,7 @@ export class SearchService {
         .join(", ")}`,
       `Follow-up question: ${input.question}`,
       "Do not copy previous model prose. Use previous source URLs only as retrieval hints and verify claims with current primary sources.",
+      "Prefer a primary or official publisher over aggregators, content farms, and translated copies of the same article.",
     ].join("\n");
     const result = await this.webResearch({
       query,

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { loadConfig } from "../src/config.js";
 import { ProviderError } from "../src/errors.js";
 import { hybridProviderOrder, SearchService, providerOrder } from "../src/service.js";
+import { ResearchSessionStore } from "../src/research-session.js";
+import type { ProviderRegistry } from "../src/service.js";
 import type {
   DeepSeekNativeProvider,
   ResearchResult,
@@ -371,5 +373,275 @@ describe("research session service", () => {
     expect(followed.turn).toBe(2);
     expect(followed.sources.length).toBeGreaterThan(0);
     expect(service.researchClose(started.sessionId).closed).toBe(true);
+  });
+});
+
+describe("source identity integration", () => {
+  const translatedCopies: SearchSource[] = [
+    { url: "https://techsy.io/it/deepseek-v4-release-notes", title: "DeepSeek V4 release notes", provider: "tavily" },
+    { url: "https://techsy.io/ar/deepseek-v4-release-notes", title: "ملاحظات إصدار V4", provider: "tavily" },
+    { url: "https://api-docs.deepseek.com/news/deepseek-v4", title: "DeepSeek V4 official release notes", provider: "tavily" },
+  ];
+
+  function identityProviders(): ProviderRegistry {
+    return {
+      anysearch: { id: "anysearch", async search() { return { provider: "anysearch", sources: [], warnings: [] }; } },
+      tavily: { id: "tavily", async search() { return { provider: "tavily", sources: translatedCopies, warnings: [] }; } },
+      searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+    };
+  }
+
+  it("collapses translated copies before the reranker sees candidates", async () => {
+    const seen: SearchSource[][] = [];
+    const reranker: Reranker = {
+      id: "openrouter-rerank",
+      async rerank(_query, sources) {
+        seen.push(sources);
+        return {
+          sources: sources.map((item) => ({ ...item, rerankScore: 0.9 })),
+          model: "test-reranker",
+          elapsedMs: 1,
+          inputCount: sources.length,
+        };
+      },
+      async health() {
+        return 1;
+      },
+    };
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "k" }),
+      identityProviders(),
+      successfulNative(),
+      reranker,
+    );
+    const result = await service.webSearch({
+      query: "DeepSeek V4 benchmark numbers",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "balanced",
+      backend: "external",
+    });
+
+    expect(seen[0]?.map((item) => item.url)).toEqual([
+      "https://techsy.io/it/deepseek-v4-release-notes",
+      "https://api-docs.deepseek.com/news/deepseek-v4",
+    ]);
+    expect(result.sourceIdentity?.languageVariantCount).toBe(1);
+    expect(result.sourceIdentity?.mergedCount).toBe(1);
+    expect(result.warnings).toContain("Collapsed 1 translated copy/copies of the same article into one source.");
+  });
+
+  it("reports independence limits for content-farm dominated results", async () => {
+    const service = new SearchService(
+      loadConfig({}),
+      {
+        anysearch: { id: "anysearch", async search() { return { provider: "anysearch", sources: [], warnings: [] }; } },
+        tavily: {
+          id: "tavily",
+          async search() {
+            return {
+              provider: "tavily",
+              sources: [
+                { url: "https://ofox.ai/ai-tool-roundup", title: "AI tool roundup", provider: "tavily" },
+                { url: "https://taskade.com/ai-tool-roundup", title: "AI tool roundup", provider: "tavily" },
+              ],
+              warnings: [],
+            };
+          },
+        },
+        searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+      },
+      successfulNative(),
+    );
+    const result = await service.webSearch({
+      query: "ai tool roundup",
+      scope: "global",
+      maxResults: 5,
+      freshness: "any",
+      backend: "external",
+    });
+
+    expect(result.sourceIdentity?.independence.level).toBe("low");
+    expect(result.sourceIdentity?.crossHostCopyCount).toBe(1);
+    expect(result.warnings.join(" ")).toMatch(/not independent corroboration/u);
+  });
+
+  it("can be turned off with SOURCE_IDENTITY_MODE=off", async () => {
+    const service = new SearchService(loadConfig({ SOURCE_IDENTITY_MODE: "off" }), identityProviders(), successfulNative());
+    const result = await service.webSearch({
+      query: "DeepSeek V4 release notes",
+      scope: "global",
+      maxResults: 5,
+      freshness: "any",
+      backend: "external",
+    });
+
+    expect(result.sources.map((item) => item.url)).toHaveLength(3);
+    expect(result.sourceIdentity?.applied).toBe(false);
+  });
+
+  it("keeps one identity when a follow-up returns a translated copy", async () => {
+    const store = new ResearchSessionStore(60_000, 4);
+    const first = store.start(
+      { query: "DeepSeek V4", maxTurns: 3 },
+      {
+        query: "DeepSeek V4",
+        provider: "deepseek-native",
+        answerMarkdown: "answer",
+        sources: [
+          { url: "https://techsy.io/en/deepseek-v4-release-notes", provider: "deepseek-native" },
+        ],
+        nativeSearchRequests: 1,
+        nativeSearchCalls: [],
+        warnings: [],
+        degraded: false,
+      },
+    );
+    store.append(store.get(first.id), "more", {
+      query: "more",
+      provider: "deepseek-native",
+      answerMarkdown: "answer-2",
+      sources: [
+        { url: "https://techsy.io/it/deepseek-v4-release-notes", provider: "deepseek-native" },
+        { url: "https://api-docs.deepseek.com/news/v4", provider: "deepseek-native" },
+      ],
+      nativeSearchRequests: 1,
+      nativeSearchCalls: [],
+      warnings: [],
+      degraded: false,
+    });
+
+    expect(store.get(first.id).sources.map((item) => item.url)).toEqual([
+      "https://techsy.io/en/deepseek-v4-release-notes",
+      "https://api-docs.deepseek.com/news/v4",
+    ]);
+  });
+});
+
+describe("freshness intent integration", () => {
+  it("recommends strict freshness for a fast-changing query without changing the request", async () => {
+    const service = new SearchService(
+      loadConfig({}),
+      {
+        anysearch: { id: "anysearch", async search() { return { provider: "anysearch", sources: [], warnings: [] }; } },
+        tavily: {
+          id: "tavily",
+          async search() {
+            return {
+              provider: "tavily",
+              sources: [{ url: "https://api-docs.deepseek.com/news/v4", provider: "tavily" }],
+              warnings: [],
+            };
+          },
+        },
+        searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+      },
+      successfulNative(),
+    );
+    const result = await service.webSearch({
+      query: "DeepSeek latest model version",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      backend: "external",
+    });
+
+    expect(result.warnings.join(" ")).toMatch(/time-sensitive/u);
+    expect(result.warnings.join(" ")).toMatch(/freshness_mode="strict"/u);
+    expect(result.freshness?.intent?.timeSensitive).toBe(true);
+    expect(result.freshness?.mode).toBe("soft");
+  });
+
+  it("does not warn when the caller already used strict with a window", async () => {
+    const service = new SearchService(
+      loadConfig({}),
+      {
+        anysearch: { id: "anysearch", async search() { return { provider: "anysearch", sources: [], warnings: [] }; } },
+        tavily: {
+          id: "tavily",
+          async search() {
+            return {
+              provider: "tavily",
+              sources: [
+                {
+                  url: "https://api-docs.deepseek.com/news/v4",
+                  provider: "tavily",
+                  publishedAt: new Date().toISOString(),
+                },
+              ],
+              warnings: [],
+            };
+          },
+        },
+        searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+      },
+      successfulNative(),
+    );
+    const result = await service.webSearch({
+      query: "DeepSeek latest model version",
+      scope: "global",
+      maxResults: 3,
+      freshness: "month",
+      freshnessMode: "strict",
+      backend: "external",
+    });
+
+    expect(result.warnings.join(" ")).not.toMatch(/time-sensitive/u);
+    expect(result.freshness?.status).toBe("verified");
+  });
+});
+
+describe("freshness report describes the sources actually returned", () => {
+  const recent = new Date().toISOString();
+  const stale = "2020-01-01T00:00:00.000Z";
+
+  it("does not report unmet when only the dropped provider failed the cutoff", async () => {
+    const service = new SearchService(
+      loadConfig({}),
+      {
+        anysearch: {
+          id: "anysearch",
+          async search() {
+            return { provider: "anysearch", sources: [], warnings: [] };
+          },
+        },
+        // Every tavily result is stale, so strict drops all of them.
+        tavily: {
+          id: "tavily",
+          async search() {
+            return {
+              provider: "tavily",
+              sources: [{ url: "https://tavily.example.com/old", provider: "tavily", publishedAt: stale }],
+              warnings: [],
+            };
+          },
+        },
+        // searxng satisfies the cutoff and is what the caller actually receives.
+        searxng: {
+          id: "searxng",
+          async search() {
+            return {
+              provider: "searxng",
+              sources: [{ url: "https://searxng.example.com/new", provider: "searxng", publishedAt: recent }],
+              warnings: [],
+            };
+          },
+        },
+      },
+      successfulNative(),
+    );
+    const result = await service.webSearch({
+      query: "current release notes",
+      scope: "global",
+      maxResults: 5,
+      freshness: "month",
+      freshnessMode: "strict",
+      backend: "external",
+    });
+
+    expect(result.sources.map((item) => item.url)).toEqual(["https://searxng.example.com/new"]);
+    expect(result.freshness?.status).toBe("verified");
+    expect(result.freshness?.status).not.toBe("unmet");
   });
 });

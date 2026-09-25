@@ -28,12 +28,124 @@ const exploratoryQueries = [
   "provider aware rank fusion",
   "DeepSeek web search integration",
 ];
+const syndicationQueries = [
+  "DeepSeek V4 benchmark results",
+  "SearXNG 1.0 changes",
+  "Tavily pricing tiers",
+  "MCP server security guidance",
+  "Reranker model comparison",
+];
+const aggregatorDominanceQueries = [
+  "DeepSeek API rate limits",
+  "SearXNG rate limit configuration",
+  "Tavily search API quotas",
+  "MCP protocol transport types",
+  "SSE reconnect backoff",
+];
 const categories = [
   { name: "official", queries: officialQueries, scope: "global" },
   { name: "current", queries: currentQueries, scope: "cn" },
   { name: "ambiguous", queries: ambiguousQueries, scope: "global" },
   { name: "exploratory", queries: exploratoryQueries, scope: "global" },
 ];
+
+/**
+ * Cases that reproduce the real-world citation problems: the same article
+ * republished in several languages, mirrored across content-farm hosts, and a
+ * missing official page. Only the official URL carries relevance 3.
+ */
+function makeSyndicationCase(query, index) {
+  const slug = query.toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "").slice(0, 36);
+  const official = `https://docs-${slug}.example.com/announcement`;
+  const title = `${query} full analysis`;
+  const languageVariants = ["it", "ar", "en"].map((language) => `https://techsy.io/${language}/${slug}-full-analysis`);
+  const mirror = `https://ofox.ai/${slug}-full-analysis`;
+  const farm = `https://taskade.com/${slug}-notes`;
+  const providers = [
+    { provider: "tavily", status: "ok", elapsedMs: 90 + index, sources: [
+      source(languageVariants[0], "tavily", title, 0.88),
+      source(mirror, "tavily", title, 0.85),
+    ] },
+    { provider: "searxng", status: "ok", elapsedMs: 130 + index, sources: [
+      source(official, "searxng", `${query} official announcement`, 0.8),
+      source(languageVariants[1], "searxng", title, 0.7),
+    ] },
+    { provider: "anysearch", status: "ok", elapsedMs: 170 + index, sources: [
+      source(farm, "anysearch", `${query} notes`, 0.66),
+      source(languageVariants[2], "anysearch", title, 0.61),
+    ] },
+    { provider: "deepseek-native", status: "ok", elapsedMs: 480 + index, sources: [
+      source(mirror, "deepseek-native", title, 0.59),
+      source(farm, "deepseek-native", `${query} notes`, 0.55),
+    ] },
+  ];
+  return {
+    id: `syndication-${String(index + 1).padStart(3, "0")}`,
+    split: "held-out",
+    datasetKind: "synthetic",
+    query,
+    scope: "global",
+    freshness: "any",
+    providers,
+    rerank: { status: "ok", model: "fixture-reranker", elapsedMs: 70 + index, sources: [] },
+    labels: { [official]: 3, [languageVariants[0]]: 1, [mirror]: 1, [farm]: 0, [languageVariants[1]]: 1, [languageVariants[2]]: 1 },
+  };
+}
+
+/**
+ * Cases where a low-quality aggregator outranks the official page in the raw
+ * provider order. This is the only fixture shape that can actually measure
+ * whether authority reordering helps, so it must not be omitted.
+ */
+function makeAggregatorDominanceCase(query, index) {
+  const slug = query.toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "").slice(0, 36);
+  const official = `https://docs-${slug}.example.com/reference`;
+  const reddit = `https://www.reddit.com/r/${slug}/comments/1`;
+  const medium = `https://medium.com/@writer/${slug}-explained`;
+  const video = `https://www.youtube.com/watch?v=${index + 1}`;
+  const farm = `https://techsy.io/en/${slug}-complete-guide`;
+  const providers = [
+    { provider: "tavily", status: "ok", elapsedMs: 100 + index, sources: [
+      source(reddit, "tavily", `${query} discussion thread`, 0.95),
+      source(official, "tavily", `${query} official reference`, 0.72),
+    ] },
+    { provider: "searxng", status: "ok", elapsedMs: 150 + index, sources: [
+      source(medium, "searxng", `${query} explained simply`, 0.9),
+      source(farm, "searxng", `${query} complete guide`, 0.68),
+    ] },
+    { provider: "anysearch", status: "ok", elapsedMs: 190 + index, sources: [
+      source(video, "anysearch", `${query} video walkthrough`, 0.86),
+    ] },
+    { provider: "deepseek-native", status: "ok", elapsedMs: 520 + index, sources: [
+      source(farm, "deepseek-native", `${query} complete guide`, 0.6),
+    ] },
+  ];
+  return {
+    id: `aggregator-dominance-${String(index + 1).padStart(3, "0")}`,
+    category: "aggregator-dominance",
+    split: "held-out",
+    datasetKind: "synthetic",
+    query,
+    scope: "global",
+    freshness: "any",
+    providers,
+    rerank: {
+      status: "ok",
+      model: "fixture-reranker",
+      elapsedMs: 80 + index,
+      // The reranker has the same weakness the real nemotron model showed: it
+      // scores the tutorial-shaped aggregator above the official reference.
+      sources: [
+        { ...providers[1].sources[0], rerankScore: 0.98 },
+        { ...providers[0].sources[1], rerankScore: 0.037 },
+        { ...providers[0].sources[0], rerankScore: 0.006 },
+        { ...providers[2].sources[0], rerankScore: 0.4 },
+        { ...providers[1].sources[1], rerankScore: 0.2 },
+      ],
+    },
+    labels: { [official]: 3, [reddit]: 1, [medium]: 1, [video]: 0, [farm]: 1 },
+  };
+}
 
 function source(url, provider, title, score, publishedAt) {
   return {
@@ -49,8 +161,10 @@ function makeCase(category, query, index) {
   const slug = query.toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, "").slice(0, 36);
   const official = `https://docs-${slug}.example.com/reference`;
   const repository = `https://github.com/example/${slug}`;
-  const news = `https://news-${slug}.example.com/latest`;
-  const community = `https://community-${slug}.example.com/thread`;
+  // Distinct registrable domains: putting every host under example.com would
+  // make domainCap=2 look like a diversity failure when it is not one.
+  const news = `https://news-${slug}.example.org/latest`;
+  const community = `https://community-${slug}.example.net/thread`;
   const freshness = category === "current" ? "day" : "any";
   const currentDate = "2026-09-24T12:00:00.000Z";
   const providers = [
@@ -71,6 +185,7 @@ function makeCase(category, query, index) {
     .map((item, rank) => ({ ...item, rerankScore: Math.max(0.05, 0.92 - rank * 0.17) }));
   return {
     id: `${category.name}-${String(index + 1).padStart(3, "0")}`,
+    category: category.name,
     split: index < 30 ? "development" : "held-out",
     datasetKind: "synthetic",
     query,
@@ -90,10 +205,21 @@ for (let repeat = 0; repeat < 3; repeat += 1) {
     expanded.push({
       ...item,
       id: `${item.id}-r${repeat + 1}`,
+      category: item.category ?? item.id.split("-")[0],
       query: repeat === 0 ? item.query : `${item.query} variant ${repeat + 1}`,
       split: expanded.length < 30 ? "development" : "held-out",
     });
   }
+}
+// Syndication cases are appended after the split so they are always held-out
+// and never influence any development-set decision.
+for (const [index, query] of syndicationQueries.entries()) {
+  const item = makeSyndicationCase(query, index);
+  expanded.push({ ...item, id: `${item.id}-h${index + 1}`, category: "syndication" });
+}
+for (const [index, query] of aggregatorDominanceQueries.entries()) {
+  const item = makeAggregatorDominanceCase(query, index);
+  expanded.push({ ...item, id: `${item.id}-h${index + 1}` });
 }
 const output = new URL("../work/quality/replay-fixture.json", import.meta.url);
 await writeFile(output, `${JSON.stringify(expanded, null, 2)}\n`);

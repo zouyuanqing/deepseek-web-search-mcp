@@ -75,6 +75,7 @@ export interface SearchResult {
   nativeSearchCalls?: NativeSearchCall[];
   nativeSearchDegraded?: boolean;
   freshness?: FreshnessReport;
+  sourceIdentity?: SourceIdentityReport;
   fastCleaning?: {
     mode: FastCleaningMode;
     applied: boolean;
@@ -108,6 +109,34 @@ export interface FreshnessReport {
   cutoff?: string;
   filteredCount: number;
   providerCapabilities: Record<string, "native" | "soft" | "unsupported">;
+  intent?: {
+    timeSensitive: boolean;
+    signals: string[];
+    recommendedFreshness?: Exclude<Freshness, "any">;
+    recommendedMode?: "strict";
+  };
+}
+
+export interface SourceIdentityReport {
+  applied: boolean;
+  inputCount: number;
+  mergedCount: number;
+  languageVariantCount: number;
+  crossHostCopyCount: number;
+  conflictingDateCount: number;
+  independence: {
+    independentDomains: number;
+    dominantDomainShare: number;
+    lowAuthorityShare: number;
+    level: "high" | "medium" | "low";
+  };
+  groups?: Array<{
+    keptUrl: string;
+    mergedUrls: string[];
+    hosts: string[];
+    reason: "same-url" | "language-variant" | "syndicated-copy";
+    dateConflict: boolean;
+  }>;
 }
 
 export interface NativeSearchCall {
@@ -130,7 +159,10 @@ export interface ResearchResult {
   sourceQuality?: {
     officialSources: number;
     totalSources: number;
+    independentDomains?: number;
+    independence?: "high" | "medium" | "low";
   };
+  sourceIdentity?: SourceIdentityReport;
 }
 
 export interface SearchProvider {

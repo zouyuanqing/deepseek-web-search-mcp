@@ -6,6 +6,7 @@ import type {
   SearchProviderId,
   SearchSource,
 } from "./types.js";
+import { detectFreshnessIntent } from "./freshness-intent.js";
 import { dedupeSources } from "./utils.js";
 
 type FreshnessProviderId = SearchProviderId | NativeSearchProviderId;
@@ -21,6 +22,26 @@ export const FRESHNESS_CAPABILITIES: Record<FreshnessProviderId, FreshnessCapabi
 export interface FreshnessApplication {
   sources: SearchSource[];
   report: FreshnessReport;
+}
+
+function intentFields(query: string | undefined): FreshnessReport["intent"] {
+  if (query === undefined) return undefined;
+  const intent = detectFreshnessIntent(query);
+  if (!intent.timeSensitive) return undefined;
+  return {
+    timeSensitive: true,
+    signals: intent.signals,
+    recommendedFreshness: intent.recommendedFreshness,
+    recommendedMode: "strict",
+  };
+}
+
+function withIntent(
+  report: FreshnessReport,
+  query: string | undefined,
+): FreshnessReport {
+  const intent = intentFields(query);
+  return intent === undefined ? report : { ...report, intent };
 }
 
 export function freshnessCutoff(
@@ -70,6 +91,7 @@ export function applyFreshnessPolicy(
   freshness: Freshness,
   mode: FreshnessMode = "soft",
   now = new Date(),
+  query?: string,
 ): FreshnessApplication {
   const merged = mergeDates(sources);
   const capability = FRESHNESS_CAPABILITIES[provider];
@@ -106,14 +128,17 @@ export function applyFreshnessPolicy(
 
   return {
     sources: filtered,
-    report: {
-      requested: freshness,
-      mode,
-      status,
-      ...(cutoff === undefined ? {} : { cutoff: cutoff.toISOString() }),
-      filteredCount: merged.length - filtered.length,
-      providerCapabilities: { [provider]: capability },
-    },
+    report: withIntent(
+      {
+        requested: freshness,
+        mode,
+        status,
+        ...(cutoff === undefined ? {} : { cutoff: cutoff.toISOString() }),
+        filteredCount: merged.length - filtered.length,
+        providerCapabilities: { [provider]: capability },
+      },
+      query,
+    ),
   };
 }
 
@@ -121,15 +146,16 @@ export function combineFreshnessReports(
   reports: FreshnessReport[],
   requested: Freshness,
   mode: FreshnessMode,
+  query?: string,
 ): FreshnessReport {
   if (reports.length === 0) {
-    return {
+    return withIntent({
       requested,
       mode,
       status: requested === "any" ? "not-requested" : "unknown",
       filteredCount: 0,
       providerCapabilities: {},
-    };
+    }, query);
   }
   const statuses = reports.map((report) => report.status);
   const status: FreshnessReport["status"] = requested === "any"
@@ -143,7 +169,7 @@ export function combineFreshnessReports(
           : "verified";
   const providerCapabilities: FreshnessReport["providerCapabilities"] = {};
   for (const report of reports) Object.assign(providerCapabilities, report.providerCapabilities);
-  return {
+  return withIntent({
     requested,
     mode,
     status,
@@ -152,13 +178,17 @@ export function combineFreshnessReports(
       : { cutoff: reports.find((report) => report.cutoff !== undefined)?.cutoff as string }),
     filteredCount: reports.reduce((sum, report) => sum + report.filteredCount, 0),
     providerCapabilities,
-  };
+  }, query);
 }
 
-export function freshnessWarning(report: FreshnessReport): string | undefined {
+export function freshnessWarning(
+  report: FreshnessReport,
+  providerLabel?: string,
+): string | undefined {
   if (report.requested === "any" || report.status === "verified") return undefined;
+  const prefix = providerLabel === undefined ? "" : `${providerLabel}: `;
   if (report.status === "unmet") {
-    return `Freshness constraint was not met; filtered ${report.filteredCount} source(s).`;
+    return `${prefix}freshness constraint was not met; filtered ${report.filteredCount} source(s).`;
   }
-  return `Freshness is soft or estimated for this request; ${report.filteredCount} source(s) were filtered or lacked verifiable dates.`;
+  return `${prefix}freshness is soft or estimated; ${report.filteredCount} source(s) were filtered or lacked verifiable dates.`;
 }

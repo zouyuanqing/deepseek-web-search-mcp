@@ -56,6 +56,20 @@ export function searchMarkdown(result: SearchResult): string {
   }
   if (result.freshness !== undefined) {
     lines.push(`Freshness: ${result.freshness.status} (${result.freshness.mode})`);
+    if (result.freshness.intent?.timeSensitive === true) {
+      lines.push(
+        `Time-sensitivity: detected (${result.freshness.intent.signals.join(", ")}); recommended freshness_mode="strict"`,
+      );
+    }
+  }
+  if (result.sourceIdentity !== undefined) {
+    lines.push(
+      `Source identity: ${result.sourceIdentity.mergedCount} duplicate(s) merged`
+      + ` (${result.sourceIdentity.languageVariantCount} language variant(s),`
+      + ` ${result.sourceIdentity.crossHostCopyCount} syndicated copy/copies)`,
+      `Independence: ${result.sourceIdentity.independence.level}`
+      + ` (${result.sourceIdentity.independence.independentDomains} independent domain(s))`,
+    );
   }
   if (result.fastCleaning !== undefined) {
     lines.push(`Fast cleaning: ${result.fastCleaning.mode} (${result.fastCleaning.applied ? "applied" : "shadow"})`);
@@ -79,6 +93,19 @@ export function researchMarkdown(result: ResearchResult): string {
   }
   if (result.sourceQuality !== undefined) {
     lines.push(`Primary/official sources: ${result.sourceQuality.officialSources}/${result.sourceQuality.totalSources}`);
+    if (result.sourceQuality.independence !== undefined) {
+      lines.push(
+        `Source independence: ${result.sourceQuality.independence}`
+        + ` (${result.sourceQuality.independentDomains ?? 0} independent domain(s))`,
+      );
+    }
+  }
+  if (result.sourceIdentity !== undefined) {
+    lines.push(
+      `Duplicate sources merged: ${result.sourceIdentity.mergedCount}`
+      + ` (${result.sourceIdentity.languageVariantCount} language variant(s),`
+      + ` ${result.sourceIdentity.crossHostCopyCount} syndicated copy/copies)`,
+    );
   }
   if (result.warnings.length > 0) {
     lines.push("", "Warnings:", ...result.warnings.map((warning) => `- ${warning}`));
@@ -90,7 +117,7 @@ export function createMcpServer(config: AppConfig): McpServer {
   const service = new SearchService(config);
   const server = new McpServer({
     name: "deepseek-web-search-mcp",
-    version: "1.4.0",
+    version: "1.5.0",
   });
 
   server.registerTool(
@@ -111,7 +138,7 @@ export function createMcpServer(config: AppConfig): McpServer {
         max_results: z.number().int().min(1).max(20).default(8),
         freshness: freshnessSchema,
         freshness_mode: freshnessModeSchema.optional().describe(
-          "Freshness policy. soft preserves provider results with a warning; strict requires verifiable published dates.",
+          "Freshness policy. soft preserves provider results with a warning; strict requires verifiable published dates. Use strict for fast-changing topics such as model versions or pricing.",
         ),
         quality: qualitySchema.optional().describe(
           "Search quality. Defaults to fast; balanced/deep enable rank fusion.",
@@ -165,7 +192,7 @@ export function createMcpServer(config: AppConfig): McpServer {
         max_sources: z.number().int().min(1).max(20).default(5),
         freshness: freshnessSchema,
         freshness_mode: freshnessModeSchema.optional().describe(
-          "Freshness policy for the research request.",
+          "Freshness policy for the research request. Use strict for fast-changing topics such as model versions or pricing.",
         ),
       },
     },

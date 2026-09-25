@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { ResearchResult, SearchSource } from "./types.js";
+import { dedupeSourceIdentities } from "./source-identity.js";
 import { dedupeSources } from "./utils.js";
 
 export interface ResearchSession {
@@ -30,6 +31,7 @@ export class ResearchSessionStore {
   ): ResearchSession {
     this.prune();
     const now = Date.now();
+    const sources = dedupeSourceIdentities(result.sources).sources;
     const session: ResearchSession = {
       id: randomUUID(),
       originalQuery: input.query,
@@ -39,7 +41,7 @@ export class ResearchSessionStore {
       createdAt: now,
       expiresAt: now + this.ttlMs,
       answerMarkdown: result.answerMarkdown,
-      sources: [...result.sources],
+      sources,
       claims: result.answerMarkdown.length > 0 ? [result.answerMarkdown] : [],
       gaps: [...result.warnings],
     };
@@ -68,7 +70,9 @@ export class ResearchSessionStore {
     session.turn += 1;
     session.expiresAt = Date.now() + this.ttlMs;
     session.answerMarkdown = result.answerMarkdown;
-    session.sources = dedupeSources([...session.sources, ...result.sources]);
+    session.sources = dedupeSourceIdentities(
+      dedupeSources([...session.sources, ...result.sources]),
+    ).sources;
     if (result.answerMarkdown.length > 0) session.claims.push(result.answerMarkdown);
     session.gaps = [...new Set([...session.gaps, ...result.warnings])];
     this.sessions.set(session.id, session);

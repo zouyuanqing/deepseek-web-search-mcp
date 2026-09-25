@@ -62,6 +62,21 @@ describe("official authority prior", () => {
   it("keeps public authority signals for Chinese-only queries", () => {
     expect(authorityScore("上海天气 官方", source("http://sh.cma.gov.cn/"))).toBe(0.7);
   });
+
+  it("never gives an authority prior to reported content farms", () => {
+    for (const url of [
+      "https://ofox.ai/ai-tools",
+      "https://techsy.io/en/ai-tools",
+      "https://taskade.com/ai-tools",
+    ]) {
+      expect(authorityScore("ai tools", source(url)), url).toBe(0);
+    }
+  });
+
+  it("does not demote unknown domains to make room for a content farm", () => {
+    expect(authorityScore("kubernetes ingress", source("https://docs.k8s.io/guide"))).toBe(0.7);
+    expect(authorityScore("kubernetes ingress", source("https://unknown-blog.example/guide"))).toBe(0);
+  });
 });
 
 describe("rank fusion", () => {

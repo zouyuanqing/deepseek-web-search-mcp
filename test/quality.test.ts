@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanFastSources, providerAwareRrf } from "../src/quality.js";
+import { cleanFastSources, nearDuplicate, providerAwareRrf } from "../src/quality.js";
 import type { SearchSource } from "../src/types.js";
 
 function source(url: string, provider: SearchSource["provider"]): SearchSource {
@@ -84,5 +84,39 @@ describe("fast source cleaning", () => {
     expect(result.applied).toBe(false);
     expect(result.sources).toEqual(sources);
     expect(result.shadowSources[0]?.url).toBe("https://api-docs.deepseek.com/");
+  });
+
+  it("does not treat two query-echoing titles as the same article", () => {
+    const query = "multi source search research workflow";
+    expect(nearDuplicate(
+      { url: "https://github.com/example/a", provider: "searxng", title: `${query} source repository` },
+      { url: "https://community.example.net/b", provider: "tavily", title: `${query} native research` },
+      query,
+    )).toBe(false);
+  });
+
+  it("still collapses two real copies of the same article", () => {
+    const query = "DeepSeek V4 benchmark results";
+    expect(nearDuplicate(
+      { url: "https://a.example.com/x", provider: "tavily", title: `${query} complete roundup analysis` },
+      { url: "https://b.example.net/y", provider: "searxng", title: `${query} complete roundup analysis` },
+      query,
+    )).toBe(true);
+  });
+
+  it("keeps every distinct result when titles only share the query", () => {
+    const query = "multi source search research workflow";
+    const result = cleanFastSources(
+      query,
+      [
+        { ...source("https://docs-x.example.com/reference", "tavily"), title: `${query} official reference` },
+        { ...source("https://github.com/example/x", "searxng"), title: `${query} source repository` },
+        { ...source("https://news-x.example.org/latest", "anysearch"), title: `${query} recent result` },
+        { ...source("https://community-x.example.net/thread", "deepseek-native"), title: `${query} native research` },
+      ],
+      { mode: "on", maxResults: 5, domainCap: 2 },
+    );
+
+    expect(result.selectedCount).toBe(4);
   });
 });

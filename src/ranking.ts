@@ -1,5 +1,11 @@
 import type { Quality, SearchInput, SearchSource } from "./types.js";
 import { canonicalizeUrl } from "./utils.js";
+import {
+  isAggregatorHost,
+  isDocumentationHostOrPath,
+  isLowAuthorityHost,
+  isPublicAuthorityHost,
+} from "./hosts.js";
 
 export interface QualityProfile {
   providerLimit: number;
@@ -58,17 +64,6 @@ const TOKEN_STOP_WORDS = new Set([
   "with",
 ]);
 
-const AGGREGATOR_HOSTS = [
-  "reddit.com",
-  "medium.com",
-  "juejin.cn",
-  "csdn.net",
-  "zhihu.com",
-  "cnblogs.com",
-  "segmentfault.com",
-  "dev.to",
-];
-
 export interface RankedSource extends SearchSource {
   originalRank: number;
   rerankRank: number;
@@ -118,12 +113,6 @@ function queryTokens(query: string): string[] {
   return [...tokens];
 }
 
-function isAggregatorHost(host: string): boolean {
-  return AGGREGATOR_HOSTS.some(
-    (aggregator) => host === aggregator || host.endsWith(`.${aggregator}`),
-  );
-}
-
 function hasMatchingHostLabel(host: string, tokens: string[]): boolean {
   const labels = host.split(".");
   return tokens.some((token) => labels.includes(token));
@@ -142,15 +131,6 @@ function hasMatchingNpmPackage(pathname: string, tokens: string[]): boolean {
   return tokens.some((token) => packagePath.includes(token));
 }
 
-function isDocumentationHostOrPath(host: string, pathname: string): boolean {
-  return /^(?:docs|developers|api|api-docs)\./u.test(host)
-    || /\/(?:docs?|reference|api)(?:\/|$)/iu.test(pathname);
-}
-
-function isPublicAuthorityHost(host: string): boolean {
-  return host.split(".").some((label) => label === "gov" || label === "edu");
-}
-
 export function authorityScore(query: string, source: SearchSource): number {
   let parsed: URL;
   try {
@@ -161,6 +141,7 @@ export function authorityScore(query: string, source: SearchSource): number {
 
   const host = parsed.hostname.toLowerCase();
   if (isAggregatorHost(host)) return 0;
+  if (isLowAuthorityHost(source.url)) return 0;
 
   const tokens = queryTokens(query);
   if (tokens.length > 0) {

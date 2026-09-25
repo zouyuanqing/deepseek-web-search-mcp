@@ -1,10 +1,16 @@
 import type { DocumentationQueryMode, FastCleaningMode, SearchBackend } from "./types.js";
 
+export type SourceIdentityMode = "off" | "on";
+
 export interface AppConfig {
   webSearchBackend?: SearchBackend;
   fastCleaningMode: FastCleaningMode;
   fastDomainCap: number;
   documentationQueryMode: DocumentationQueryMode;
+  sourceIdentityMode: SourceIdentityMode;
+  sourceIdentityCrossHost: boolean;
+  sourceIdentityVerbose: boolean;
+  freshnessIntentWarning: boolean;
   researchSessionTtlMs: number;
   researchSessionMaxSessions: number;
   researchSessionMaxTurns: number;
@@ -73,6 +79,16 @@ function documentationQueryMode(value: string | undefined): DocumentationQueryMo
   return optional(value) === "deep" ? "deep" : "fast";
 }
 
+function sourceIdentityMode(value: string | undefined): SourceIdentityMode {
+  return optional(value) === "off" ? "off" : "on";
+}
+
+function booleanEnv(value: string | undefined, fallback: boolean): boolean {
+  const normalized = optional(value)?.toLowerCase();
+  if (normalized === undefined) return fallback;
+  return normalized !== "off" && normalized !== "false" && normalized !== "0";
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const deepseekApiKey = optional(env.DEEPSEEK_API_KEY);
   const anySearchApiKey = optional(env.ANYSEARCH_API_KEY);
@@ -84,6 +100,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     fastCleaningMode: fastCleaningMode(env.FAST_CLEANING_MODE),
     fastDomainCap: positiveInt(env.FAST_DOMAIN_CAP, 2),
     documentationQueryMode: documentationQueryMode(env.DOCUMENTATION_QUERY_MODE),
+    sourceIdentityMode: sourceIdentityMode(env.SOURCE_IDENTITY_MODE),
+    sourceIdentityCrossHost: booleanEnv(env.SOURCE_IDENTITY_CROSS_HOST, true),
+    sourceIdentityVerbose: booleanEnv(env.SOURCE_IDENTITY_VERBOSE, false),
+    freshnessIntentWarning: booleanEnv(env.FRESHNESS_INTENT_WARNING, true),
     researchSessionTtlMs: positiveInt(env.RESEARCH_SESSION_TTL_MS, 1_800_000),
     researchSessionMaxSessions: positiveInt(env.RESEARCH_SESSION_MAX_SESSIONS, 100),
     researchSessionMaxTurns: positiveInt(env.RESEARCH_SESSION_MAX_TURNS, 8),

@@ -7,6 +7,7 @@ import type {
   SearchSource,
 } from "./types.js";
 import { authorityScore, hasOfficialIntent } from "./ranking.js";
+import { domainKey as registrableDomainKey, isLowAuthorityHost } from "./hosts.js";
 import { canonicalizeUrl, dedupeSources } from "./utils.js";
 
 export type QualityProviderId = SearchProviderId | NativeSearchProviderId;
@@ -74,18 +75,6 @@ export interface FastCleaningResult {
   providerCoverage: number;
 }
 
-const AGGREGATOR_HOSTS = new Set([
-  "reddit.com",
-  "medium.com",
-  "youtube.com",
-  "youtu.be",
-  "sohu.com",
-  "zhihu.com",
-  "csdn.net",
-  "juejin.cn",
-  "toutiao.com",
-]);
-
 function hostKey(url: string): string {
   try {
     return new URL(url).hostname.toLowerCase().replace(/^www\./u, "");
@@ -94,29 +83,48 @@ function hostKey(url: string): string {
   }
 }
 
-function domainKey(url: string): string {
-  const host = hostKey(url);
-  const parts = host.split(".");
-  if (parts.length <= 2) return host;
-  const suffix = parts.slice(-2).join(".");
-  if (["co.uk", "com.cn", "org.cn", "gov.cn", "ac.uk"].includes(suffix)) {
-    return parts.slice(-3).join(".");
-  }
-  return suffix;
-}
-
 function normalizedText(value: string | undefined): string {
   return (value ?? "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 }
 
-function nearDuplicate(left: SearchSource, right: SearchSource): boolean {
-  const leftTitle = new Set(normalizedText(left.title).split(" ").filter(Boolean));
-  const rightTitle = new Set(normalizedText(right.title).split(" ").filter(Boolean));
-  if (leftTitle.size >= 3 && rightTitle.size >= 3) {
-    let overlap = 0;
-    for (const token of leftTitle) if (rightTitle.has(token)) overlap += 1;
-    if (overlap / Math.max(leftTitle.size, rightTitle.size) >= 0.8) return true;
-  }
+function tokenSet(value: string | undefined): Set<string> {
+  return new Set(normalizedText(value).split(" ").filter(Boolean));
+}
+
+function overlapRatio(left: ReadonlySet<string>, right: ReadonlySet<string>): number {
+  if (left.size < 3 || right.size < 3) return 0;
+  let shared = 0;
+  for (const token of left) if (right.has(token)) shared += 1;
+  return shared / Math.max(left.size, right.size);
+}
+
+function residualTokens(
+  title: string | undefined,
+  queryTokens: ReadonlySet<string>,
+): Set<string> {
+  const residual = tokenSet(title);
+  for (const token of queryTokens) residual.delete(token);
+  return residual;
+}
+
+/**
+ * Two titles that merely echo the same query are not the same article. Only
+ * the tokens that distinguish the title from the query are compared, so
+ * "q source repository" and "q native research" stay separate while two real
+ * copies of one syndicated page still collapse.
+ */
+export function nearDuplicate(
+  left: SearchSource,
+  right: SearchSource,
+  query: string,
+): boolean {
+  const queryTokens = tokenSet(query);
+  const leftResidual = residualTokens(left.title, queryTokens);
+  const rightResidual = residualTokens(right.title, queryTokens);
+  if (overlapRatio(leftResidual, rightResidual) >= 0.8) return true;
+  // Titles with no distinguishing residual cannot be compared by title at all.
+  if (leftResidual.size >= 2 && rightResidual.size >= 2) return false;
+  if (overlapRatio(tokenSet(left.title), tokenSet(right.title)) >= 0.9) return true;
   const leftSnippet = normalizedText(left.snippet);
   const rightSnippet = normalizedText(right.snippet);
   return leftSnippet.length > 80
@@ -125,13 +133,15 @@ function nearDuplicate(left: SearchSource, right: SearchSource): boolean {
 
 function fastSourceScore(query: string, source: SearchSource, index: number): number {
   const authority = authorityScore(query, source);
-  const host = hostKey(source.url);
-  const aggregatorPenalty = AGGREGATOR_HOSTS.has(host)
-    || [...AGGREGATOR_HOSTS].some((aggregator) => host.endsWith(`.${aggregator}`))
-    ? 0.12
-    : 0;
+  const lowAuthority = isLowAuthorityHost(source.url);
   const authorityBoost = hasOfficialIntent(query) ? 0.4 : 0.08;
-  return 1 / (index + 1) + authority * authorityBoost - aggregatorPenalty;
+  // The reciprocal-rank term spans 0.2..1.0, so a bounded additive penalty can
+  // never displace a rank-1 low-authority hit (measured: reddit at rank 1 scored
+  // 0.88 vs 0.78 for a rank-2 official page). The demotion is therefore
+  // multiplicative: an explicit aggregator/content-farm signal must be able to
+  // outrank a better raw position. Unknown domains are untouched.
+  const lowAuthorityFactor = lowAuthority ? 0.35 : 1;
+  return (1 / (index + 1) + authority * authorityBoost) * lowAuthorityFactor;
 }
 
 export function cleanFastSources(
@@ -171,9 +181,9 @@ export function cleanFastSources(
       || left.source.url.localeCompare(right.source.url));
     const next = remaining.shift();
     if (next === undefined) break;
-    const domain = domainKey(next.source.url);
+    const domain = registrableDomainKey(next.source.url);
     if ((selectedDomains.get(domain) ?? 0) >= options.domainCap) continue;
-    if (selected.some((source) => nearDuplicate(source, next.source))) continue;
+    if (selected.some((source) => nearDuplicate(source, next.source, query))) continue;
     selected.push(next.source);
     selectedDomains.set(domain, (selectedDomains.get(domain) ?? 0) + 1);
     representedProviders.add(next.source.provider);

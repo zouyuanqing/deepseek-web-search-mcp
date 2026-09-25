@@ -43,11 +43,23 @@ npm run quality:fixture
 npm run quality:replay
 ```
 
-fixture 生成 50 个分层 synthetic query；结果写入 `work/quality/baseline-report.json`。
+fixture 生成 70 个分层 synthetic query（30 development / 40 held-out）；结果写入
+`work/quality/baseline-report.json`。
 fixture 保存各 provider 的原始顺序、
 状态、延迟、来源和可选 rerank 结果，用于比较当前 baseline 与 provider-aware RRF
 shadow challenger；synthetic 数据只用于工程回归，不替代人工 relevance 标注，
 shadow 结果不会改变 MCP 生产返回。
+
+`npm run quality:summary` 打印各方法聚合指标和分类明细；`npm run quality:diff`
+列出清洗后 nDCG@5 下降的具体 case；`node scripts/quality-inspect.mjs <caseId>`
+打印单个 case 的输入、保留和被丢弃的来源。
+
+除 `official` / `current` / `ambiguous` / `exploratory` 四类外，fixture 还包含两类
+专门复现实测反馈的 held-out case：
+
+- `syndication`：同一篇文章的 `/it/`、`/ar/`、`/en/` 多语言副本 + 跨域转载
+- `aggregator-dominance`：聚合站排在官方文档页之前，且 rerank 给出与线上实测
+  一致的低分（官方页 0.037 / 0.006）
 
 需要采集真实四路原始运行时数据时执行：
 
@@ -71,6 +83,14 @@ provider 响应或凭据提交到仓库。
 - `FAST_DOMAIN_CAP`：fast 清洗的同域名保留上限，默认 `2`
 - `DOCUMENTATION_QUERY_MODE`：官方文档/API/source code 类 query 的质量路由，
   默认 `fast`，避免低分第三方页面被 deep rerank 压过；可设为 `deep` opt-in
+- `SOURCE_IDENTITY_MODE`：同一篇文章的重复来源折叠，默认 `on`；设为 `off` 恢复
+  仅按精确 URL 去重的旧行为
+- `SOURCE_IDENTITY_CROSS_HOST`：跨域转载检测，默认 `on`；设为 `off` 时只折叠
+  同域的重复 URL 和多语言副本
+- `SOURCE_IDENTITY_VERBOSE`：默认 `off`；设为 `on` 时在 `sourceIdentity.groups`
+  中返回每个合并组的保留 URL、被合并 URL 和冲突标记
+- `FRESHNESS_INTENT_WARNING`：默认 `on`。检测到时效性 query 但调用方没有主动
+  使用 `strict` 时，返回一条建议性 warning（不改变本次请求行为）
 - `RESEARCH_SESSION_TTL_MS`、`RESEARCH_SESSION_MAX_SESSIONS`、
   `RESEARCH_SESSION_MAX_TURNS`：研究 session 生命周期和容量
 - `ANYSEARCH_API_KEY`：可选，匿名模式限额更低
@@ -84,6 +104,19 @@ provider 响应或凭据提交到仓库。
 `freshness` 继续支持 `any/day/week/month/year`。`freshness_mode` 默认是 `soft`：
 支持原生时间过滤的 provider 会传递时间范围，其他 provider 只提供查询提示并返回
 未严格验证 warning。`strict` 模式只保留有可解析 `publishedAt` 且满足 cutoff 的来源。
+
+调研快速演变的题目（模型版本、定价、发布说明、今天的状态）时建议显式传
+`freshness_mode: "strict"`。`soft` 只给 warning，不会把无法证明时间的新来源剔除。
+
+### 时效性建议
+
+`web_search`、`web_research`、`research_start` 和 `research_followup` 都会检测
+query 的时效性信号（`latest`、`current`、`changelog`、`version`、`最新`、`当前`、
+`版本`、`实时` 等）。检测到信号但调用方没有使用 `strict` 时，返回一条明确的
+建议 warning，并在 `freshness.intent` 中给出 `recommendedFreshness`。
+
+本项目不会静默切换模式：warning 只提示应该传什么，本次请求仍按调用方传入的参数
+执行。`FRESHNESS_INTENT_WARNING=off` 可关闭该提示。
 
 ## `web_search` 后端兼容
 
@@ -130,6 +163,63 @@ DeepSeek key 的客户端默认会把 native 纳入四源候选池。完全保�
 只保留来源 URL 作为检索提示；native provider 会被要求优先引用 primary/official
 source。
 
+## 引用质量与来源独立性
+
+合成答案里最常见的两个问题不是"排错了"，而是"同一篇文章被当成多个来源"和
+"多源数字一致其实是互相抄"。1.5.0 针对这两点做了显式处理。
+
+### 同一篇文章只算一个来源
+
+`SOURCE_IDENTITY_MODE=on`（默认）会在重排和 rerank **之前**折叠重复来源：
+
+- 规范化 URL：去 tracking 参数、`/amp`、`index.html`、尾斜杠
+- 折叠语言前缀：`/it/…`、`/ar/…`、`/en/…` 指向同一篇文章时合并为一条
+- 折叠 `?lang=` / `?locale=` / `?hl=` 之类的语言参数
+- 跨域转载检测：不同域名下 slug 相同且标题高度相似时合并
+
+合并时保留低权威风险的一方（官方/文档站优先于未知域名，未知域名优先于聚合站和
+内容农场），并只回填缺失字段，不会覆盖已保留来源自己的标题或日期。日期冲突会
+计入 `sourceIdentity.conflictingDateCount` 并产生 warning，而不是静默选一个。
+
+返回结构新增：
+
+```json
+{
+  "sourceIdentity": {
+    "applied": true,
+    "inputCount": 5,
+    "mergedCount": 2,
+    "languageVariantCount": 1,
+    "crossHostCopyCount": 1,
+    "conflictingDateCount": 0,
+    "independence": {
+      "independentDomains": 2,
+      "dominantDomainShare": 0.6,
+      "lowAuthorityShare": 0.4,
+      "level": "low"
+    }
+  }
+}
+```
+
+`research_*` 系列的 `sourceQuality` 同时返回 `independentDomains` 和
+`independence`，用于判断这个答案是"多源印证"还是"单一来源改写"。
+
+### 聚合站和内容农场
+
+`src/hosts.ts` 维护显式名单，包含实测中反复出现的内容农场
+（`ofox.ai`、`techsy.io`、`taskade.com` 等）。名单内的域名：
+
+- 永远不获得权威性加分
+- fast 清洗中被乘性降权（系数 `0.35`）
+
+乘性而非加性是有原因的：实测中排名第 1 的 Reddit 结果得分为
+`1/1 + 0 − 0.12 = 0.88`，而排名第 2 的官方文档页只有
+`1/2 + 0.7×0.4 = 0.78`——有界的加性惩罚**永远无法**把第一名挤下去。乘性降权
+才可以让明确的低质信号压过更好的原始位置。
+
+未知域名保持中立，不做猜测性惩罚。
+
 ## 隐私
 
 本项目不收集也不上传任何遥测数据。查询只会发送给你自己配置的检索/重排提供商，
@@ -158,6 +248,26 @@ DeepSeek key 时会把 native 加入多源候选池，没有 key 时退回 exter
 fast 默认使用 `FAST_CLEANING_MODE=shadow`：会计算权威性、聚合站降权、同域名
 上限和 provider coverage，但不改变旧客户端的返回顺序。完成 held-out 评估后可
 切换为 `on`；`off` 完全关闭清洗。
+
+offline replay（`npm run quality:replay`，70 个 synthetic case）当前测得：
+
+| 方法 | mean nDCG@5 | officialInTop1 | 重复来源占比 | 独立来源数 |
+| --- | ---: | ---: | ---: | ---: |
+| `current`（清洗前） | 0.9383 | 0.857 | 0.029 | 3.73 |
+| `productionFast`（清洗+去重） | 0.9552 | 0.929 | 0.000 | 3.66 |
+
+收益集中在实测反馈对应的两类 query：
+
+- `aggregator-dominance`（聚合站排在官方页之前）：nDCG@5 0.7414 → 0.9949，
+  `officialInTop1` 0 → 1
+- `official` / `current` / `ambiguous` / `exploratory`：0.9811 → 0.9811，无回退
+- `syndication`（同一文章多语言 + 跨域转载）：重复槽位占比降到 0，
+  低权威来源占比 0.80 → 0.67
+
+这些数字全部来自 **synthetic fixture**，只作为工程回归信号，不构成真实相关性
+证明，因此 `FAST_CLEANING_MODE` 默认仍是 `shadow`；确认真实标注数据后可切到 `on`。
+与之相对，`SOURCE_IDENTITY_MODE` 默认是 `on`，因为折叠"同一篇文章的重复 URL"是
+正确性修复而不是排序偏好，不存在此消彼长的取舍。
 
 | quality | provider 候选 | 候选目标 | 行为 |
 | --- | ---: | ---: | --- |
