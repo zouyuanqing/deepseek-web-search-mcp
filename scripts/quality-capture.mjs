@@ -5,7 +5,7 @@ import { buildProviderRegistry, hybridProviderOrder } from "../dist/service.js";
 import { OpenRouterReranker } from "../dist/providers/openrouter-rerank.js";
 import { dedupeSources, resolveScope } from "../dist/utils.js";
 
-const query = process.argv[2] ?? "DeepSeek official API documentation";
+const query = (process.argv[2] ?? "DeepSeek official API documentation").replaceAll("^", "");
 const scope = resolveScope(query, "auto");
 const config = loadConfig(process.env);
 const providers = buildProviderRegistry(config);

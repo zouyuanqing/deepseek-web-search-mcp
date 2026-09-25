@@ -11,11 +11,11 @@ import { dedupeSources, normalizeWhitespace, withTimeout } from "../utils.js";
 
 interface SearxngResponse {
   results?: Array<{
-    title?: string;
+    title?: string | null;
     url?: string;
-    content?: string;
-    score?: number;
-    publishedDate?: string;
+    content?: string | null;
+    score?: number | null;
+    publishedDate?: string | null;
     engine?: string;
   }>;
 }
@@ -62,12 +62,14 @@ export class SearxngProvider implements SearchProvider {
             .map((item) => ({
               url: item.url,
               provider: this.id,
-              ...(item.title === undefined ? {} : { title: item.title }),
-              ...(item.content === undefined
-                ? {}
-                : { snippet: normalizeWhitespace(item.content) }),
-              ...(item.score === undefined ? {} : { score: item.score }),
-              ...(item.publishedDate === undefined ? {} : { publishedAt: item.publishedDate }),
+              ...(typeof item.title === "string" ? { title: item.title } : {}),
+              ...(typeof item.content === "string"
+                ? { snippet: normalizeWhitespace(item.content) }
+                : {}),
+              ...(typeof item.score === "number" ? { score: item.score } : {}),
+              ...(typeof item.publishedDate === "string"
+                ? { publishedAt: item.publishedDate }
+                : {}),
             }));
           return {
             provider: this.id,

@@ -1,78 +1,5870 @@
 [
   {
-    "id": "official-tech-001",
+    "id": "official-001-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
     "query": "DeepSeek official API documentation",
     "scope": "global",
     "freshness": "any",
     "providers": [
-      { "provider": "tavily", "status": "ok", "elapsedMs": 120, "sources": [
-        { "url": "https://api-docs.deepseek.com/", "provider": "tavily", "title": "DeepSeek API Docs" }
-      ] },
-      { "provider": "searxng", "status": "ok", "elapsedMs": 180, "sources": [
-        { "url": "https://github.com/deepseek-ai", "provider": "searxng", "title": "DeepSeek GitHub" }
-      ] },
-      { "provider": "anysearch", "status": "ok", "elapsedMs": 220, "sources": [
-        { "url": "https://api-docs.deepseek.com/guides/anthropic_api/", "provider": "anysearch", "title": "Anthropic API" }
-      ] },
-      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 900, "sources": [
-        { "url": "https://api-docs.deepseek.com/guides/responses_api/", "provider": "deepseek-native", "title": "Responses API" }
-      ] }
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek official API documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-official-api-documentation",
+            "provider": "searxng",
+            "title": "DeepSeek official API documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
     ],
-    "rerank": { "status": "ok", "model": "fixture-reranker", "elapsedMs": 80, "sources": [
-      { "url": "https://api-docs.deepseek.com/", "provider": "tavily", "rerankScore": 0.91 },
-      { "url": "https://api-docs.deepseek.com/guides/responses_api/", "provider": "deepseek-native", "rerankScore": 0.83 }
-    ] },
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek official API documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
+          "title": "DeepSeek official API documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
     "labels": {
-      "https://api-docs.deepseek.com/": 3,
-      "https://api-docs.deepseek.com/guides/anthropic_api/": 3,
-      "https://api-docs.deepseek.com/guides/responses_api/": 2,
-      "https://github.com/deepseek-ai": 1
+      "https://docs-deepseek-official-api-documentation.example.com/reference": 3,
+      "https://github.com/example/deepseek-official-api-documentation": 2,
+      "https://news-deepseek-official-api-documentation.example.com/latest": 1,
+      "https://community-deepseek-official-api-documentation.example.com/thread": 1
     }
   },
   {
-    "id": "current-weather-001",
+    "id": "official-002-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "OpenAI official MCP documentation",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI official MCP documentation official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-official-mcp-documentation",
+            "provider": "searxng",
+            "title": "OpenAI official MCP documentation source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI official MCP documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI official MCP documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI official MCP documentation official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-official-mcp-documentation",
+          "provider": "searxng",
+          "title": "OpenAI official MCP documentation source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI official MCP documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI official MCP documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-official-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/openai-official-mcp-documentation": 2,
+      "https://news-openai-official-mcp-documentation.example.com/latest": 1,
+      "https://community-openai-official-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-003-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "SearXNG official Docker documentation",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG official Docker documentation official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-official-docker-documentatio",
+            "provider": "searxng",
+            "title": "SearXNG official Docker documentation source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG official Docker documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG official Docker documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG official Docker documentation official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "title": "SearXNG official Docker documentation source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG official Docker documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG official Docker documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-official-docker-documentatio.example.com/reference": 3,
+      "https://github.com/example/searxng-official-docker-documentatio": 2,
+      "https://news-searxng-official-docker-documentatio.example.com/latest": 1,
+      "https://community-searxng-official-docker-documentatio.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-004-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Tavily official search API documentation",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily official search API documentation official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-official-search-api-documenta",
+            "provider": "searxng",
+            "title": "Tavily official search API documentation source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily official search API documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily official search API documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily official search API documentation official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "title": "Tavily official search API documentation source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily official search API documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily official search API documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-official-search-api-documenta.example.com/reference": 3,
+      "https://github.com/example/tavily-official-search-api-documenta": 2,
+      "https://news-tavily-official-search-api-documenta.example.com/latest": 1,
+      "https://community-tavily-official-search-api-documenta.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-005-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Anthropic official Messages API reference",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+            "provider": "tavily",
+            "title": "Anthropic official Messages API reference official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/anthropic-official-messages-api-refe",
+            "provider": "searxng",
+            "title": "Anthropic official Messages API reference source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+            "provider": "anysearch",
+            "title": "Anthropic official Messages API reference recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Anthropic official Messages API reference native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "title": "Anthropic official Messages API reference official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "title": "Anthropic official Messages API reference source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "title": "Anthropic official Messages API reference recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Anthropic official Messages API reference native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-anthropic-official-messages-api-refe.example.com/reference": 3,
+      "https://github.com/example/anthropic-official-messages-api-refe": 2,
+      "https://news-anthropic-official-messages-api-refe.example.com/latest": 1,
+      "https://community-anthropic-official-messages-api-refe.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-001-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
     "query": "上海天气 2026年9月25日",
     "scope": "cn",
-    "freshness": "day",
+    "freshness": "any",
     "providers": [
-      { "provider": "anysearch", "status": "ok", "elapsedMs": 300, "sources": [
-        { "url": "https://weather.cma.cn/web/weather/58367.html", "provider": "anysearch", "title": "中国气象局" }
-      ] },
-      { "provider": "searxng", "status": "ok", "elapsedMs": 280, "sources": [
-        { "url": "https://www.tianqi.com/shanghai", "provider": "searxng", "title": "上海天气预报" }
-      ] },
-      { "provider": "tavily", "status": "empty", "elapsedMs": 350, "sources": [] },
-      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 1200, "sources": [
-        { "url": "https://weather.com.cn/weather/101020600.shtml", "provider": "deepseek-native", "title": "上海天气" }
-      ] }
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-2026-9-25.example.com/reference",
+            "provider": "tavily",
+            "title": "上海天气 2026年9月25日 official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/2026-9-25",
+            "provider": "searxng",
+            "title": "上海天气 2026年9月25日 source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
     ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "title": "上海天气 2026年9月25日 official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "title": "上海天气 2026年9月25日 source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
     "labels": {
-      "https://weather.cma.cn/web/weather/58367.html": 3,
-      "https://www.tianqi.com/shanghai": 2,
-      "https://weather.com.cn/weather/101020600.shtml": 2
+      "https://docs-2026-9-25.example.com/reference": 3,
+      "https://github.com/example/2026-9-25": 2,
+      "https://news-2026-9-25.example.com/latest": 1,
+      "https://community-2026-9-25.example.com/thread": 1
     }
   },
   {
-    "id": "ambiguous-001",
+    "id": "current-002-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek latest model release",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek latest model release official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-latest-model-release",
+            "provider": "searxng",
+            "title": "DeepSeek latest model release source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-deepseek-latest-model-release.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek latest model release recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-deepseek-latest-model-release.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek latest model release native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek latest model release official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "title": "DeepSeek latest model release source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek latest model release recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek latest model release native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-latest-model-release.example.com/reference": 3,
+      "https://github.com/example/deepseek-latest-model-release": 2,
+      "https://news-deepseek-latest-model-release.example.com/latest": 1,
+      "https://community-deepseek-latest-model-release.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-003-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "OpenAI latest API changelog",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI latest API changelog official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-latest-api-changelog",
+            "provider": "searxng",
+            "title": "OpenAI latest API changelog source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-openai-latest-api-changelog.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI latest API changelog recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-openai-latest-api-changelog.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI latest API changelog native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI latest API changelog official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "title": "OpenAI latest API changelog source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI latest API changelog recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI latest API changelog native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-latest-api-changelog.example.com/reference": 3,
+      "https://github.com/example/openai-latest-api-changelog": 2,
+      "https://news-openai-latest-api-changelog.example.com/latest": 1,
+      "https://community-openai-latest-api-changelog.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-004-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "SearXNG latest release notes",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG latest release notes official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-latest-release-notes",
+            "provider": "searxng",
+            "title": "SearXNG latest release notes source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-searxng-latest-release-notes.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG latest release notes recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-searxng-latest-release-notes.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG latest release notes native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG latest release notes official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "title": "SearXNG latest release notes source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG latest release notes recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG latest release notes native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-latest-release-notes.example.com/reference": 3,
+      "https://github.com/example/searxng-latest-release-notes": 2,
+      "https://news-searxng-latest-release-notes.example.com/latest": 1,
+      "https://community-searxng-latest-release-notes.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-005-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Tavily latest product update",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-tavily-latest-product-update.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily latest product update official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-latest-product-update",
+            "provider": "searxng",
+            "title": "Tavily latest product update source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-tavily-latest-product-update.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily latest product update recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-tavily-latest-product-update.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily latest product update native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily latest product update official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "title": "Tavily latest product update source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily latest product update recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily latest product update native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-latest-product-update.example.com/reference": 3,
+      "https://github.com/example/tavily-latest-product-update": 2,
+      "https://news-tavily-latest-product-update.example.com/latest": 1,
+      "https://community-tavily-latest-product-update.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-001-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
     "query": "MCP documentation",
     "scope": "global",
     "freshness": "any",
     "providers": [
-      { "provider": "tavily", "status": "ok", "elapsedMs": 150, "sources": [
-        { "url": "https://developers.openai.com/learn/docs-mcp", "provider": "tavily", "title": "OpenAI Docs MCP" }
-      ] },
-      { "provider": "searxng", "status": "ok", "elapsedMs": 200, "sources": [
-        { "url": "https://modelcontextprotocol.io/", "provider": "searxng", "title": "Model Context Protocol" }
-      ] },
-      { "provider": "anysearch", "status": "error", "elapsedMs": 500, "sources": [], "errorCode": "network_error", "errorMessage": "fixture error" },
-      { "provider": "deepseek-native", "status": "ok", "elapsedMs": 950, "sources": [
-        { "url": "https://github.com/modelcontextprotocol/specification", "provider": "deepseek-native", "title": "MCP Specification" }
-      ] }
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "MCP documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/mcp-documentation",
+            "provider": "searxng",
+            "title": "MCP documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
     ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "MCP documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "title": "MCP documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
     "labels": {
-      "https://developers.openai.com/learn/docs-mcp": 3,
-      "https://modelcontextprotocol.io/": 2,
-      "https://github.com/modelcontextprotocol/specification": 3
+      "https://docs-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/mcp-documentation": 2,
+      "https://news-mcp-documentation.example.com/latest": 1,
+      "https://community-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-002-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "best web search API",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-best-web-search-api.example.com/reference",
+            "provider": "tavily",
+            "title": "best web search API official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/best-web-search-api",
+            "provider": "searxng",
+            "title": "best web search API source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-best-web-search-api.example.com/latest",
+            "provider": "anysearch",
+            "title": "best web search API recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-best-web-search-api.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "best web search API native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "title": "best web search API official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "title": "best web search API source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "title": "best web search API recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "best web search API native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-best-web-search-api.example.com/reference": 3,
+      "https://github.com/example/best-web-search-api": 2,
+      "https://news-best-web-search-api.example.com/latest": 1,
+      "https://community-best-web-search-api.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-003-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek research tools",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-research-tools.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek research tools official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-research-tools",
+            "provider": "searxng",
+            "title": "DeepSeek research tools source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-deepseek-research-tools.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek research tools recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-deepseek-research-tools.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek research tools native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek research tools official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "title": "DeepSeek research tools source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek research tools recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek research tools native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-research-tools.example.com/reference": 3,
+      "https://github.com/example/deepseek-research-tools": 2,
+      "https://news-deepseek-research-tools.example.com/latest": 1,
+      "https://community-deepseek-research-tools.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-004-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "OpenAI agents framework",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-openai-agents-framework.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI agents framework official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-agents-framework",
+            "provider": "searxng",
+            "title": "OpenAI agents framework source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-openai-agents-framework.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI agents framework recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-openai-agents-framework.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI agents framework native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI agents framework official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "title": "OpenAI agents framework source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI agents framework recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI agents framework native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-agents-framework.example.com/reference": 3,
+      "https://github.com/example/openai-agents-framework": 2,
+      "https://news-openai-agents-framework.example.com/latest": 1,
+      "https://community-openai-agents-framework.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-005-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "SearXNG vs Tavily",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-searxng-vs-tavily.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG vs Tavily official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-vs-tavily",
+            "provider": "searxng",
+            "title": "SearXNG vs Tavily source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-searxng-vs-tavily.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG vs Tavily recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-searxng-vs-tavily.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG vs Tavily native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG vs Tavily official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "title": "SearXNG vs Tavily source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG vs Tavily recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG vs Tavily native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-vs-tavily.example.com/reference": 3,
+      "https://github.com/example/searxng-vs-tavily": 2,
+      "https://news-searxng-vs-tavily.example.com/latest": 1,
+      "https://community-searxng-vs-tavily.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-001-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "how to compare web search providers",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+            "provider": "tavily",
+            "title": "how to compare web search providers official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/how-to-compare-web-search-providers",
+            "provider": "searxng",
+            "title": "how to compare web search providers source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "title": "how to compare web search providers official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "title": "how to compare web search providers source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-how-to-compare-web-search-providers.example.com/reference": 3,
+      "https://github.com/example/how-to-compare-web-search-providers": 2,
+      "https://news-how-to-compare-web-search-providers.example.com/latest": 1,
+      "https://community-how-to-compare-web-search-providers.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-002-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "multi source search research workflow",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+            "provider": "tavily",
+            "title": "multi source search research workflow official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/multi-source-search-research-workflo",
+            "provider": "searxng",
+            "title": "multi source search research workflow source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+            "provider": "anysearch",
+            "title": "multi source search research workflow recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "multi source search research workflow native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "title": "multi source search research workflow official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "title": "multi source search research workflow source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "title": "multi source search research workflow recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "multi source search research workflow native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-multi-source-search-research-workflo.example.com/reference": 3,
+      "https://github.com/example/multi-source-search-research-workflo": 2,
+      "https://news-multi-source-search-research-workflo.example.com/latest": 1,
+      "https://community-multi-source-search-research-workflo.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-003-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "freshness aware web search",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-freshness-aware-web-search.example.com/reference",
+            "provider": "tavily",
+            "title": "freshness aware web search official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/freshness-aware-web-search",
+            "provider": "searxng",
+            "title": "freshness aware web search source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-freshness-aware-web-search.example.com/latest",
+            "provider": "anysearch",
+            "title": "freshness aware web search recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-freshness-aware-web-search.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "freshness aware web search native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "title": "freshness aware web search official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "title": "freshness aware web search source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "title": "freshness aware web search recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "freshness aware web search native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-freshness-aware-web-search.example.com/reference": 3,
+      "https://github.com/example/freshness-aware-web-search": 2,
+      "https://news-freshness-aware-web-search.example.com/latest": 1,
+      "https://community-freshness-aware-web-search.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-004-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "provider aware rank fusion",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+            "provider": "tavily",
+            "title": "provider aware rank fusion official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/provider-aware-rank-fusion",
+            "provider": "searxng",
+            "title": "provider aware rank fusion source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+            "provider": "anysearch",
+            "title": "provider aware rank fusion recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "provider aware rank fusion native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "title": "provider aware rank fusion official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "title": "provider aware rank fusion source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "title": "provider aware rank fusion recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "provider aware rank fusion native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-provider-aware-rank-fusion.example.com/reference": 3,
+      "https://github.com/example/provider-aware-rank-fusion": 2,
+      "https://news-provider-aware-rank-fusion.example.com/latest": 1,
+      "https://community-provider-aware-rank-fusion.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-005-r1",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek web search integration",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek web search integration official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-web-search-integration",
+            "provider": "searxng",
+            "title": "DeepSeek web search integration source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-deepseek-web-search-integration.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek web search integration recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-deepseek-web-search-integration.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek web search integration native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek web search integration official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "title": "DeepSeek web search integration source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek web search integration recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek web search integration native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-web-search-integration.example.com/reference": 3,
+      "https://github.com/example/deepseek-web-search-integration": 2,
+      "https://news-deepseek-web-search-integration.example.com/latest": 1,
+      "https://community-deepseek-web-search-integration.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-001-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek official API documentation variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek official API documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-official-api-documentation",
+            "provider": "searxng",
+            "title": "DeepSeek official API documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek official API documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
+          "title": "DeepSeek official API documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-official-api-documentation.example.com/reference": 3,
+      "https://github.com/example/deepseek-official-api-documentation": 2,
+      "https://news-deepseek-official-api-documentation.example.com/latest": 1,
+      "https://community-deepseek-official-api-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-002-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "OpenAI official MCP documentation variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI official MCP documentation official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-official-mcp-documentation",
+            "provider": "searxng",
+            "title": "OpenAI official MCP documentation source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI official MCP documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI official MCP documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI official MCP documentation official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-official-mcp-documentation",
+          "provider": "searxng",
+          "title": "OpenAI official MCP documentation source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI official MCP documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI official MCP documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-official-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/openai-official-mcp-documentation": 2,
+      "https://news-openai-official-mcp-documentation.example.com/latest": 1,
+      "https://community-openai-official-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-003-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "SearXNG official Docker documentation variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG official Docker documentation official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-official-docker-documentatio",
+            "provider": "searxng",
+            "title": "SearXNG official Docker documentation source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG official Docker documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG official Docker documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG official Docker documentation official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "title": "SearXNG official Docker documentation source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG official Docker documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG official Docker documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-official-docker-documentatio.example.com/reference": 3,
+      "https://github.com/example/searxng-official-docker-documentatio": 2,
+      "https://news-searxng-official-docker-documentatio.example.com/latest": 1,
+      "https://community-searxng-official-docker-documentatio.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-004-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Tavily official search API documentation variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily official search API documentation official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-official-search-api-documenta",
+            "provider": "searxng",
+            "title": "Tavily official search API documentation source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily official search API documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily official search API documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily official search API documentation official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "title": "Tavily official search API documentation source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily official search API documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily official search API documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-official-search-api-documenta.example.com/reference": 3,
+      "https://github.com/example/tavily-official-search-api-documenta": 2,
+      "https://news-tavily-official-search-api-documenta.example.com/latest": 1,
+      "https://community-tavily-official-search-api-documenta.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-005-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Anthropic official Messages API reference variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+            "provider": "tavily",
+            "title": "Anthropic official Messages API reference official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/anthropic-official-messages-api-refe",
+            "provider": "searxng",
+            "title": "Anthropic official Messages API reference source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+            "provider": "anysearch",
+            "title": "Anthropic official Messages API reference recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Anthropic official Messages API reference native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "title": "Anthropic official Messages API reference official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "title": "Anthropic official Messages API reference source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "title": "Anthropic official Messages API reference recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Anthropic official Messages API reference native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-anthropic-official-messages-api-refe.example.com/reference": 3,
+      "https://github.com/example/anthropic-official-messages-api-refe": 2,
+      "https://news-anthropic-official-messages-api-refe.example.com/latest": 1,
+      "https://community-anthropic-official-messages-api-refe.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-001-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "上海天气 2026年9月25日 variant 2",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-2026-9-25.example.com/reference",
+            "provider": "tavily",
+            "title": "上海天气 2026年9月25日 official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/2026-9-25",
+            "provider": "searxng",
+            "title": "上海天气 2026年9月25日 source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "title": "上海天气 2026年9月25日 official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "title": "上海天气 2026年9月25日 source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-2026-9-25.example.com/reference": 3,
+      "https://github.com/example/2026-9-25": 2,
+      "https://news-2026-9-25.example.com/latest": 1,
+      "https://community-2026-9-25.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-002-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek latest model release variant 2",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek latest model release official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-latest-model-release",
+            "provider": "searxng",
+            "title": "DeepSeek latest model release source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-deepseek-latest-model-release.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek latest model release recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-deepseek-latest-model-release.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek latest model release native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek latest model release official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "title": "DeepSeek latest model release source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek latest model release recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek latest model release native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-latest-model-release.example.com/reference": 3,
+      "https://github.com/example/deepseek-latest-model-release": 2,
+      "https://news-deepseek-latest-model-release.example.com/latest": 1,
+      "https://community-deepseek-latest-model-release.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-003-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "OpenAI latest API changelog variant 2",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI latest API changelog official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-latest-api-changelog",
+            "provider": "searxng",
+            "title": "OpenAI latest API changelog source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-openai-latest-api-changelog.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI latest API changelog recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-openai-latest-api-changelog.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI latest API changelog native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI latest API changelog official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "title": "OpenAI latest API changelog source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI latest API changelog recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI latest API changelog native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-latest-api-changelog.example.com/reference": 3,
+      "https://github.com/example/openai-latest-api-changelog": 2,
+      "https://news-openai-latest-api-changelog.example.com/latest": 1,
+      "https://community-openai-latest-api-changelog.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-004-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "SearXNG latest release notes variant 2",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG latest release notes official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-latest-release-notes",
+            "provider": "searxng",
+            "title": "SearXNG latest release notes source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-searxng-latest-release-notes.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG latest release notes recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-searxng-latest-release-notes.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG latest release notes native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG latest release notes official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "title": "SearXNG latest release notes source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG latest release notes recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG latest release notes native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-latest-release-notes.example.com/reference": 3,
+      "https://github.com/example/searxng-latest-release-notes": 2,
+      "https://news-searxng-latest-release-notes.example.com/latest": 1,
+      "https://community-searxng-latest-release-notes.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-005-r2",
+    "split": "development",
+    "datasetKind": "synthetic",
+    "query": "Tavily latest product update variant 2",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-tavily-latest-product-update.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily latest product update official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-latest-product-update",
+            "provider": "searxng",
+            "title": "Tavily latest product update source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-tavily-latest-product-update.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily latest product update recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-tavily-latest-product-update.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily latest product update native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily latest product update official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "title": "Tavily latest product update source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily latest product update recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily latest product update native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-latest-product-update.example.com/reference": 3,
+      "https://github.com/example/tavily-latest-product-update": 2,
+      "https://news-tavily-latest-product-update.example.com/latest": 1,
+      "https://community-tavily-latest-product-update.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-001-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "MCP documentation variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "MCP documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/mcp-documentation",
+            "provider": "searxng",
+            "title": "MCP documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "MCP documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "title": "MCP documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/mcp-documentation": 2,
+      "https://news-mcp-documentation.example.com/latest": 1,
+      "https://community-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-002-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "best web search API variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-best-web-search-api.example.com/reference",
+            "provider": "tavily",
+            "title": "best web search API official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/best-web-search-api",
+            "provider": "searxng",
+            "title": "best web search API source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-best-web-search-api.example.com/latest",
+            "provider": "anysearch",
+            "title": "best web search API recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-best-web-search-api.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "best web search API native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "title": "best web search API official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "title": "best web search API source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "title": "best web search API recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "best web search API native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-best-web-search-api.example.com/reference": 3,
+      "https://github.com/example/best-web-search-api": 2,
+      "https://news-best-web-search-api.example.com/latest": 1,
+      "https://community-best-web-search-api.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-003-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek research tools variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-research-tools.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek research tools official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-research-tools",
+            "provider": "searxng",
+            "title": "DeepSeek research tools source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-deepseek-research-tools.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek research tools recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-deepseek-research-tools.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek research tools native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek research tools official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "title": "DeepSeek research tools source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek research tools recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek research tools native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-research-tools.example.com/reference": 3,
+      "https://github.com/example/deepseek-research-tools": 2,
+      "https://news-deepseek-research-tools.example.com/latest": 1,
+      "https://community-deepseek-research-tools.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-004-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "OpenAI agents framework variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-openai-agents-framework.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI agents framework official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-agents-framework",
+            "provider": "searxng",
+            "title": "OpenAI agents framework source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-openai-agents-framework.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI agents framework recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-openai-agents-framework.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI agents framework native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI agents framework official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "title": "OpenAI agents framework source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI agents framework recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI agents framework native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-agents-framework.example.com/reference": 3,
+      "https://github.com/example/openai-agents-framework": 2,
+      "https://news-openai-agents-framework.example.com/latest": 1,
+      "https://community-openai-agents-framework.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-005-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "SearXNG vs Tavily variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-searxng-vs-tavily.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG vs Tavily official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-vs-tavily",
+            "provider": "searxng",
+            "title": "SearXNG vs Tavily source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-searxng-vs-tavily.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG vs Tavily recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-searxng-vs-tavily.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG vs Tavily native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG vs Tavily official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "title": "SearXNG vs Tavily source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG vs Tavily recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG vs Tavily native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-vs-tavily.example.com/reference": 3,
+      "https://github.com/example/searxng-vs-tavily": 2,
+      "https://news-searxng-vs-tavily.example.com/latest": 1,
+      "https://community-searxng-vs-tavily.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-001-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "how to compare web search providers variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+            "provider": "tavily",
+            "title": "how to compare web search providers official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/how-to-compare-web-search-providers",
+            "provider": "searxng",
+            "title": "how to compare web search providers source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "title": "how to compare web search providers official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "title": "how to compare web search providers source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-how-to-compare-web-search-providers.example.com/reference": 3,
+      "https://github.com/example/how-to-compare-web-search-providers": 2,
+      "https://news-how-to-compare-web-search-providers.example.com/latest": 1,
+      "https://community-how-to-compare-web-search-providers.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-002-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "multi source search research workflow variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+            "provider": "tavily",
+            "title": "multi source search research workflow official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/multi-source-search-research-workflo",
+            "provider": "searxng",
+            "title": "multi source search research workflow source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+            "provider": "anysearch",
+            "title": "multi source search research workflow recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "multi source search research workflow native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "title": "multi source search research workflow official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "title": "multi source search research workflow source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "title": "multi source search research workflow recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "multi source search research workflow native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-multi-source-search-research-workflo.example.com/reference": 3,
+      "https://github.com/example/multi-source-search-research-workflo": 2,
+      "https://news-multi-source-search-research-workflo.example.com/latest": 1,
+      "https://community-multi-source-search-research-workflo.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-003-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "freshness aware web search variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-freshness-aware-web-search.example.com/reference",
+            "provider": "tavily",
+            "title": "freshness aware web search official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/freshness-aware-web-search",
+            "provider": "searxng",
+            "title": "freshness aware web search source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-freshness-aware-web-search.example.com/latest",
+            "provider": "anysearch",
+            "title": "freshness aware web search recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-freshness-aware-web-search.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "freshness aware web search native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "title": "freshness aware web search official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "title": "freshness aware web search source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "title": "freshness aware web search recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "freshness aware web search native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-freshness-aware-web-search.example.com/reference": 3,
+      "https://github.com/example/freshness-aware-web-search": 2,
+      "https://news-freshness-aware-web-search.example.com/latest": 1,
+      "https://community-freshness-aware-web-search.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-004-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "provider aware rank fusion variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+            "provider": "tavily",
+            "title": "provider aware rank fusion official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/provider-aware-rank-fusion",
+            "provider": "searxng",
+            "title": "provider aware rank fusion source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+            "provider": "anysearch",
+            "title": "provider aware rank fusion recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "provider aware rank fusion native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "title": "provider aware rank fusion official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "title": "provider aware rank fusion source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "title": "provider aware rank fusion recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "provider aware rank fusion native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-provider-aware-rank-fusion.example.com/reference": 3,
+      "https://github.com/example/provider-aware-rank-fusion": 2,
+      "https://news-provider-aware-rank-fusion.example.com/latest": 1,
+      "https://community-provider-aware-rank-fusion.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-005-r2",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek web search integration variant 2",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek web search integration official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-web-search-integration",
+            "provider": "searxng",
+            "title": "DeepSeek web search integration source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-deepseek-web-search-integration.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek web search integration recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-deepseek-web-search-integration.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek web search integration native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek web search integration official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "title": "DeepSeek web search integration source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek web search integration recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek web search integration native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-web-search-integration.example.com/reference": 3,
+      "https://github.com/example/deepseek-web-search-integration": 2,
+      "https://news-deepseek-web-search-integration.example.com/latest": 1,
+      "https://community-deepseek-web-search-integration.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-001-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek official API documentation variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek official API documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-official-api-documentation",
+            "provider": "searxng",
+            "title": "DeepSeek official API documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek official API documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
+          "title": "DeepSeek official API documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-official-api-documentation.example.com/reference": 3,
+      "https://github.com/example/deepseek-official-api-documentation": 2,
+      "https://news-deepseek-official-api-documentation.example.com/latest": 1,
+      "https://community-deepseek-official-api-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-002-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "OpenAI official MCP documentation variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI official MCP documentation official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-official-mcp-documentation",
+            "provider": "searxng",
+            "title": "OpenAI official MCP documentation source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI official MCP documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI official MCP documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI official MCP documentation official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-official-mcp-documentation",
+          "provider": "searxng",
+          "title": "OpenAI official MCP documentation source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI official MCP documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI official MCP documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-official-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/openai-official-mcp-documentation": 2,
+      "https://news-openai-official-mcp-documentation.example.com/latest": 1,
+      "https://community-openai-official-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-003-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "SearXNG official Docker documentation variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG official Docker documentation official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-official-docker-documentatio",
+            "provider": "searxng",
+            "title": "SearXNG official Docker documentation source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG official Docker documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG official Docker documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG official Docker documentation official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "title": "SearXNG official Docker documentation source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG official Docker documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG official Docker documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-official-docker-documentatio.example.com/reference": 3,
+      "https://github.com/example/searxng-official-docker-documentatio": 2,
+      "https://news-searxng-official-docker-documentatio.example.com/latest": 1,
+      "https://community-searxng-official-docker-documentatio.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-004-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "Tavily official search API documentation variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily official search API documentation official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-official-search-api-documenta",
+            "provider": "searxng",
+            "title": "Tavily official search API documentation source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily official search API documentation recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily official search API documentation native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily official search API documentation official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "title": "Tavily official search API documentation source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily official search API documentation recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily official search API documentation native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-official-search-api-documenta.example.com/reference": 3,
+      "https://github.com/example/tavily-official-search-api-documenta": 2,
+      "https://news-tavily-official-search-api-documenta.example.com/latest": 1,
+      "https://community-tavily-official-search-api-documenta.example.com/thread": 1
+    }
+  },
+  {
+    "id": "official-005-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "Anthropic official Messages API reference variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+            "provider": "tavily",
+            "title": "Anthropic official Messages API reference official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/anthropic-official-messages-api-refe",
+            "provider": "searxng",
+            "title": "Anthropic official Messages API reference source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+            "provider": "anysearch",
+            "title": "Anthropic official Messages API reference recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Anthropic official Messages API reference native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "title": "Anthropic official Messages API reference official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "title": "Anthropic official Messages API reference source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "title": "Anthropic official Messages API reference recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Anthropic official Messages API reference native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-anthropic-official-messages-api-refe.example.com/reference": 3,
+      "https://github.com/example/anthropic-official-messages-api-refe": 2,
+      "https://news-anthropic-official-messages-api-refe.example.com/latest": 1,
+      "https://community-anthropic-official-messages-api-refe.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-001-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "上海天气 2026年9月25日 variant 3",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-2026-9-25.example.com/reference",
+            "provider": "tavily",
+            "title": "上海天气 2026年9月25日 official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/2026-9-25",
+            "provider": "searxng",
+            "title": "上海天气 2026年9月25日 source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "title": "上海天气 2026年9月25日 official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "title": "上海天气 2026年9月25日 source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-2026-9-25.example.com/reference": 3,
+      "https://github.com/example/2026-9-25": 2,
+      "https://news-2026-9-25.example.com/latest": 1,
+      "https://community-2026-9-25.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-002-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek latest model release variant 3",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek latest model release official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-latest-model-release",
+            "provider": "searxng",
+            "title": "DeepSeek latest model release source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-deepseek-latest-model-release.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek latest model release recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-deepseek-latest-model-release.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek latest model release native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek latest model release official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "title": "DeepSeek latest model release source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek latest model release recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek latest model release native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-latest-model-release.example.com/reference": 3,
+      "https://github.com/example/deepseek-latest-model-release": 2,
+      "https://news-deepseek-latest-model-release.example.com/latest": 1,
+      "https://community-deepseek-latest-model-release.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-003-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "OpenAI latest API changelog variant 3",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI latest API changelog official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-latest-api-changelog",
+            "provider": "searxng",
+            "title": "OpenAI latest API changelog source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-openai-latest-api-changelog.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI latest API changelog recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-openai-latest-api-changelog.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI latest API changelog native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI latest API changelog official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "title": "OpenAI latest API changelog source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI latest API changelog recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI latest API changelog native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-latest-api-changelog.example.com/reference": 3,
+      "https://github.com/example/openai-latest-api-changelog": 2,
+      "https://news-openai-latest-api-changelog.example.com/latest": 1,
+      "https://community-openai-latest-api-changelog.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-004-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "SearXNG latest release notes variant 3",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG latest release notes official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-latest-release-notes",
+            "provider": "searxng",
+            "title": "SearXNG latest release notes source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-searxng-latest-release-notes.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG latest release notes recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-searxng-latest-release-notes.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG latest release notes native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG latest release notes official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "title": "SearXNG latest release notes source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG latest release notes recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG latest release notes native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-latest-release-notes.example.com/reference": 3,
+      "https://github.com/example/searxng-latest-release-notes": 2,
+      "https://news-searxng-latest-release-notes.example.com/latest": 1,
+      "https://community-searxng-latest-release-notes.example.com/thread": 1
+    }
+  },
+  {
+    "id": "current-005-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "Tavily latest product update variant 3",
+    "scope": "cn",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-tavily-latest-product-update.example.com/reference",
+            "provider": "tavily",
+            "title": "Tavily latest product update official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/tavily-latest-product-update",
+            "provider": "searxng",
+            "title": "Tavily latest product update source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-tavily-latest-product-update.example.com/latest",
+            "provider": "anysearch",
+            "title": "Tavily latest product update recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-tavily-latest-product-update.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "Tavily latest product update native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "title": "Tavily latest product update official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "title": "Tavily latest product update source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "title": "Tavily latest product update recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "Tavily latest product update native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-tavily-latest-product-update.example.com/reference": 3,
+      "https://github.com/example/tavily-latest-product-update": 2,
+      "https://news-tavily-latest-product-update.example.com/latest": 1,
+      "https://community-tavily-latest-product-update.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-001-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "MCP documentation variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-mcp-documentation.example.com/reference",
+            "provider": "tavily",
+            "title": "MCP documentation official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/mcp-documentation",
+            "provider": "searxng",
+            "title": "MCP documentation source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "title": "MCP documentation official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "title": "MCP documentation source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-mcp-documentation.example.com/reference": 3,
+      "https://github.com/example/mcp-documentation": 2,
+      "https://news-mcp-documentation.example.com/latest": 1,
+      "https://community-mcp-documentation.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-002-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "best web search API variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-best-web-search-api.example.com/reference",
+            "provider": "tavily",
+            "title": "best web search API official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/best-web-search-api",
+            "provider": "searxng",
+            "title": "best web search API source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-best-web-search-api.example.com/latest",
+            "provider": "anysearch",
+            "title": "best web search API recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-best-web-search-api.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "best web search API native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "title": "best web search API official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "title": "best web search API source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "title": "best web search API recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "best web search API native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-best-web-search-api.example.com/reference": 3,
+      "https://github.com/example/best-web-search-api": 2,
+      "https://news-best-web-search-api.example.com/latest": 1,
+      "https://community-best-web-search-api.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-003-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek research tools variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-research-tools.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek research tools official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-research-tools",
+            "provider": "searxng",
+            "title": "DeepSeek research tools source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-deepseek-research-tools.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek research tools recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-deepseek-research-tools.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek research tools native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek research tools official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "title": "DeepSeek research tools source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek research tools recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek research tools native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-research-tools.example.com/reference": 3,
+      "https://github.com/example/deepseek-research-tools": 2,
+      "https://news-deepseek-research-tools.example.com/latest": 1,
+      "https://community-deepseek-research-tools.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-004-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "OpenAI agents framework variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-openai-agents-framework.example.com/reference",
+            "provider": "tavily",
+            "title": "OpenAI agents framework official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/openai-agents-framework",
+            "provider": "searxng",
+            "title": "OpenAI agents framework source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-openai-agents-framework.example.com/latest",
+            "provider": "anysearch",
+            "title": "OpenAI agents framework recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-openai-agents-framework.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "OpenAI agents framework native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "title": "OpenAI agents framework official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "title": "OpenAI agents framework source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "title": "OpenAI agents framework recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "OpenAI agents framework native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-openai-agents-framework.example.com/reference": 3,
+      "https://github.com/example/openai-agents-framework": 2,
+      "https://news-openai-agents-framework.example.com/latest": 1,
+      "https://community-openai-agents-framework.example.com/thread": 1
+    }
+  },
+  {
+    "id": "ambiguous-005-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "SearXNG vs Tavily variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-searxng-vs-tavily.example.com/reference",
+            "provider": "tavily",
+            "title": "SearXNG vs Tavily official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/searxng-vs-tavily",
+            "provider": "searxng",
+            "title": "SearXNG vs Tavily source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-searxng-vs-tavily.example.com/latest",
+            "provider": "anysearch",
+            "title": "SearXNG vs Tavily recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-searxng-vs-tavily.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "SearXNG vs Tavily native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "title": "SearXNG vs Tavily official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "title": "SearXNG vs Tavily source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "title": "SearXNG vs Tavily recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "SearXNG vs Tavily native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-searxng-vs-tavily.example.com/reference": 3,
+      "https://github.com/example/searxng-vs-tavily": 2,
+      "https://news-searxng-vs-tavily.example.com/latest": 1,
+      "https://community-searxng-vs-tavily.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-001-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "how to compare web search providers variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 100,
+        "sources": [
+          {
+            "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+            "provider": "tavily",
+            "title": "how to compare web search providers official reference",
+            "score": 0.91
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 140,
+        "sources": [
+          {
+            "url": "https://github.com/example/how-to-compare-web-search-providers",
+            "provider": "searxng",
+            "title": "how to compare web search providers source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "empty",
+        "elapsedMs": 180,
+        "sources": []
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "error",
+        "elapsedMs": 500,
+        "sources": [],
+        "errorCode": "timeout",
+        "errorMessage": "synthetic timeout"
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 80,
+      "sources": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "title": "how to compare web search providers official reference",
+          "score": 0.91,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "title": "how to compare web search providers source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-how-to-compare-web-search-providers.example.com/reference": 3,
+      "https://github.com/example/how-to-compare-web-search-providers": 2,
+      "https://news-how-to-compare-web-search-providers.example.com/latest": 1,
+      "https://community-how-to-compare-web-search-providers.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-002-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "multi source search research workflow variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 101,
+        "sources": [
+          {
+            "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+            "provider": "tavily",
+            "title": "multi source search research workflow official reference",
+            "score": 0.88
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 141,
+        "sources": [
+          {
+            "url": "https://github.com/example/multi-source-search-research-workflo",
+            "provider": "searxng",
+            "title": "multi source search research workflow source repository",
+            "score": 0.74
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 181,
+        "sources": [
+          {
+            "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+            "provider": "anysearch",
+            "title": "multi source search research workflow recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 501,
+        "sources": [
+          {
+            "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "multi source search research workflow native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 81,
+      "sources": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "title": "multi source search research workflow official reference",
+          "score": 0.88,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "title": "multi source search research workflow source repository",
+          "score": 0.74,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "title": "multi source search research workflow recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "multi source search research workflow native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-multi-source-search-research-workflo.example.com/reference": 3,
+      "https://github.com/example/multi-source-search-research-workflo": 2,
+      "https://news-multi-source-search-research-workflo.example.com/latest": 1,
+      "https://community-multi-source-search-research-workflo.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-003-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "freshness aware web search variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 102,
+        "sources": [
+          {
+            "url": "https://docs-freshness-aware-web-search.example.com/reference",
+            "provider": "tavily",
+            "title": "freshness aware web search official reference",
+            "score": 0.8500000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 142,
+        "sources": [
+          {
+            "url": "https://github.com/example/freshness-aware-web-search",
+            "provider": "searxng",
+            "title": "freshness aware web search source repository",
+            "score": 0.72
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 182,
+        "sources": [
+          {
+            "url": "https://news-freshness-aware-web-search.example.com/latest",
+            "provider": "anysearch",
+            "title": "freshness aware web search recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 502,
+        "sources": [
+          {
+            "url": "https://community-freshness-aware-web-search.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "freshness aware web search native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 82,
+      "sources": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "title": "freshness aware web search official reference",
+          "score": 0.8500000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "title": "freshness aware web search source repository",
+          "score": 0.72,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "title": "freshness aware web search recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "freshness aware web search native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-freshness-aware-web-search.example.com/reference": 3,
+      "https://github.com/example/freshness-aware-web-search": 2,
+      "https://news-freshness-aware-web-search.example.com/latest": 1,
+      "https://community-freshness-aware-web-search.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-004-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "provider aware rank fusion variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 103,
+        "sources": [
+          {
+            "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+            "provider": "tavily",
+            "title": "provider aware rank fusion official reference",
+            "score": 0.8200000000000001
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 143,
+        "sources": [
+          {
+            "url": "https://github.com/example/provider-aware-rank-fusion",
+            "provider": "searxng",
+            "title": "provider aware rank fusion source repository",
+            "score": 0.7
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 183,
+        "sources": [
+          {
+            "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+            "provider": "anysearch",
+            "title": "provider aware rank fusion recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 503,
+        "sources": [
+          {
+            "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "provider aware rank fusion native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 83,
+      "sources": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "title": "provider aware rank fusion official reference",
+          "score": 0.8200000000000001,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "title": "provider aware rank fusion source repository",
+          "score": 0.7,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "title": "provider aware rank fusion recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "provider aware rank fusion native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-provider-aware-rank-fusion.example.com/reference": 3,
+      "https://github.com/example/provider-aware-rank-fusion": 2,
+      "https://news-provider-aware-rank-fusion.example.com/latest": 1,
+      "https://community-provider-aware-rank-fusion.example.com/thread": 1
+    }
+  },
+  {
+    "id": "exploratory-005-r3",
+    "split": "held-out",
+    "datasetKind": "synthetic",
+    "query": "DeepSeek web search integration variant 3",
+    "scope": "global",
+    "freshness": "any",
+    "providers": [
+      {
+        "provider": "tavily",
+        "status": "ok",
+        "elapsedMs": 104,
+        "sources": [
+          {
+            "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+            "provider": "tavily",
+            "title": "DeepSeek web search integration official reference",
+            "score": 0.79
+          }
+        ]
+      },
+      {
+        "provider": "searxng",
+        "status": "ok",
+        "elapsedMs": 144,
+        "sources": [
+          {
+            "url": "https://github.com/example/deepseek-web-search-integration",
+            "provider": "searxng",
+            "title": "DeepSeek web search integration source repository",
+            "score": 0.76
+          }
+        ]
+      },
+      {
+        "provider": "anysearch",
+        "status": "ok",
+        "elapsedMs": 184,
+        "sources": [
+          {
+            "url": "https://news-deepseek-web-search-integration.example.com/latest",
+            "provider": "anysearch",
+            "title": "DeepSeek web search integration recent result",
+            "score": 0.63
+          }
+        ]
+      },
+      {
+        "provider": "deepseek-native",
+        "status": "ok",
+        "elapsedMs": 504,
+        "sources": [
+          {
+            "url": "https://community-deepseek-web-search-integration.example.com/thread",
+            "provider": "deepseek-native",
+            "title": "DeepSeek web search integration native research",
+            "score": 0.58
+          }
+        ]
+      }
+    ],
+    "rerank": {
+      "status": "ok",
+      "model": "fixture-reranker",
+      "elapsedMs": 84,
+      "sources": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "title": "DeepSeek web search integration official reference",
+          "score": 0.79,
+          "rerankScore": 0.92
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "title": "DeepSeek web search integration source repository",
+          "score": 0.76,
+          "rerankScore": 0.75
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "title": "DeepSeek web search integration recent result",
+          "score": 0.63,
+          "rerankScore": 0.5800000000000001
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "title": "DeepSeek web search integration native research",
+          "score": 0.58,
+          "rerankScore": 0.41000000000000003
+        }
+      ]
+    },
+    "labels": {
+      "https://docs-deepseek-web-search-integration.example.com/reference": 3,
+      "https://github.com/example/deepseek-web-search-integration": 2,
+      "https://news-deepseek-web-search-integration.example.com/latest": 1,
+      "https://community-deepseek-web-search-integration.example.com/thread": 1
     }
   }
 ]

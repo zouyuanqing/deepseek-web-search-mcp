@@ -1,11 +1,13 @@
 import type {
+  FastCleaningMode,
   Freshness,
   NativeSearchProviderId,
   ResolvedScope,
   SearchProviderId,
   SearchSource,
 } from "./types.js";
-import { canonicalizeUrl } from "./utils.js";
+import { authorityScore, hasOfficialIntent } from "./ranking.js";
+import { canonicalizeUrl, dedupeSources } from "./utils.js";
 
 export type QualityProviderId = SearchProviderId | NativeSearchProviderId;
 
@@ -55,6 +57,137 @@ export interface ProviderAwareRankedSource extends SearchSource {
   fusionScore: number;
   rerankRank?: number;
   rerankContribution: number;
+}
+
+export interface FastCleaningOptions {
+  mode: FastCleaningMode;
+  maxResults: number;
+  domainCap: number;
+}
+
+export interface FastCleaningResult {
+  sources: SearchSource[];
+  shadowSources: SearchSource[];
+  applied: boolean;
+  candidateCount: number;
+  selectedCount: number;
+  providerCoverage: number;
+}
+
+const AGGREGATOR_HOSTS = new Set([
+  "reddit.com",
+  "medium.com",
+  "youtube.com",
+  "youtu.be",
+  "sohu.com",
+  "zhihu.com",
+  "csdn.net",
+  "juejin.cn",
+  "toutiao.com",
+]);
+
+function hostKey(url: string): string {
+  try {
+    return new URL(url).hostname.toLowerCase().replace(/^www\./u, "");
+  } catch {
+    return url.toLowerCase();
+  }
+}
+
+function domainKey(url: string): string {
+  const host = hostKey(url);
+  const parts = host.split(".");
+  if (parts.length <= 2) return host;
+  const suffix = parts.slice(-2).join(".");
+  if (["co.uk", "com.cn", "org.cn", "gov.cn", "ac.uk"].includes(suffix)) {
+    return parts.slice(-3).join(".");
+  }
+  return suffix;
+}
+
+function normalizedText(value: string | undefined): string {
+  return (value ?? "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
+
+function nearDuplicate(left: SearchSource, right: SearchSource): boolean {
+  const leftTitle = new Set(normalizedText(left.title).split(" ").filter(Boolean));
+  const rightTitle = new Set(normalizedText(right.title).split(" ").filter(Boolean));
+  if (leftTitle.size >= 3 && rightTitle.size >= 3) {
+    let overlap = 0;
+    for (const token of leftTitle) if (rightTitle.has(token)) overlap += 1;
+    if (overlap / Math.max(leftTitle.size, rightTitle.size) >= 0.8) return true;
+  }
+  const leftSnippet = normalizedText(left.snippet);
+  const rightSnippet = normalizedText(right.snippet);
+  return leftSnippet.length > 80
+    && leftSnippet === rightSnippet;
+}
+
+function fastSourceScore(query: string, source: SearchSource, index: number): number {
+  const authority = authorityScore(query, source);
+  const host = hostKey(source.url);
+  const aggregatorPenalty = AGGREGATOR_HOSTS.has(host)
+    || [...AGGREGATOR_HOSTS].some((aggregator) => host.endsWith(`.${aggregator}`))
+    ? 0.12
+    : 0;
+  const authorityBoost = hasOfficialIntent(query) ? 0.4 : 0.08;
+  return 1 / (index + 1) + authority * authorityBoost - aggregatorPenalty;
+}
+
+export function cleanFastSources(
+  query: string,
+  sources: SearchSource[],
+  options: FastCleaningOptions,
+): FastCleaningResult {
+  const unique = dedupeSources(sources);
+  if (options.mode === "off") {
+    return {
+      sources: unique,
+      shadowSources: unique,
+      applied: false,
+      candidateCount: unique.length,
+      selectedCount: Math.min(unique.length, options.maxResults),
+      providerCoverage: new Set(unique.map((source) => source.provider)).size,
+    };
+  }
+
+  const ranked = unique
+    .map((source, index) => ({ source, index, score: fastSourceScore(query, source, index) }))
+    .sort((left, right) =>
+      right.score - left.score
+      || left.index - right.index
+      || left.source.url.localeCompare(right.source.url));
+
+  const selected: SearchSource[] = [];
+  const selectedDomains = new Map<string, number>();
+  const representedProviders = new Set<string>();
+  const remaining = [...ranked];
+  while (selected.length < options.maxResults && remaining.length > 0) {
+    const missingProviderBonus = (item: typeof remaining[number]): number =>
+      representedProviders.has(item.source.provider) ? 0 : 0.04;
+    remaining.sort((left, right) =>
+      (right.score + missingProviderBonus(right)) - (left.score + missingProviderBonus(left))
+      || left.index - right.index
+      || left.source.url.localeCompare(right.source.url));
+    const next = remaining.shift();
+    if (next === undefined) break;
+    const domain = domainKey(next.source.url);
+    if ((selectedDomains.get(domain) ?? 0) >= options.domainCap) continue;
+    if (selected.some((source) => nearDuplicate(source, next.source))) continue;
+    selected.push(next.source);
+    selectedDomains.set(domain, (selectedDomains.get(domain) ?? 0) + 1);
+    representedProviders.add(next.source.provider);
+  }
+
+  const providerCoverage = new Set(selected.map((source) => source.provider)).size;
+  return {
+    sources: options.mode === "on" ? selected : unique,
+    shadowSources: selected,
+    applied: options.mode === "on",
+    candidateCount: unique.length,
+    selectedCount: selected.length,
+    providerCoverage,
+  };
 }
 
 interface CandidateAccumulator {

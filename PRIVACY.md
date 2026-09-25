@@ -25,6 +25,7 @@ configure:
 | `web_search` (`backend: "deepseek-native"`) | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
 | `web_search` (`backend: "auto"`) | the query to DeepSeek and/or the selected external providers depending on configuration | DeepSeek and/or the selected external provider |
 | `web_research` | the query | `DEEPSEEK_SEARCH_BASE_URL` (default `api.deepseek.com`) |
+| `research_start` / `research_followup` | the research question or follow-up question | `DEEPSEEK_SEARCH_BASE_URL` and, on fallback, configured external providers |
 
 No other network calls are made. In particular there is no analytics, no crash
 reporting, and no update check.
@@ -37,7 +38,7 @@ anywhere except the provider they belong to.
 
 ## Local storage and retention
 
-Search and rerank caches are held in memory only and are discarded when the MCP
+Search, rerank, and research-session state are held in memory only and are discarded when the MCP
 process exits. The server does not write query data to disk. Retention on the
 provider side is governed by each provider's own policy:
 

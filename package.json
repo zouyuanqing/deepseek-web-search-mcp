@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search-mcp",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "description": "MCP server for DeepSeek native web search and research plus AnySearch, Tavily, and self-hosted SearXNG fallback.",
@@ -14,6 +14,7 @@
     "test:mcp": "npm run build --silent && node scripts/mcp-smoke.mjs",
     "quality:replay": "npm run build --silent && node scripts/quality-replay.mjs",
     "quality:capture": "npm run build --silent && node scripts/quality-capture.mjs",
+    "quality:fixture": "node scripts/generate-quality-fixture.mjs",
     "start": "node dist/index.js",
     "doctor": "npm run build --silent && node dist/index.js --doctor"
   },

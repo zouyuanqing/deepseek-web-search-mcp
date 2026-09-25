@@ -1,6 +1,8 @@
 export type Scope = "auto" | "cn" | "global";
 export type ResolvedScope = Exclude<Scope, "auto">;
 export type Freshness = "any" | "day" | "week" | "month" | "year";
+export type FreshnessMode = "soft" | "strict";
+export type FastCleaningMode = "off" | "shadow" | "on";
 export type Quality = "fast" | "balanced" | "deep";
 export type SearchBackend = "auto" | "external" | "deepseek-native" | "hybrid";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng";
@@ -12,6 +14,7 @@ export interface SearchInput {
   scope: Scope;
   maxResults: number;
   freshness: Freshness;
+  freshnessMode?: FreshnessMode;
   quality?: Quality;
   rerank?: boolean;
   backend?: SearchBackend;
@@ -21,6 +24,7 @@ export interface ResearchInput {
   query: string;
   maxSources: number;
   freshness: Freshness;
+  freshnessMode?: FreshnessMode;
 }
 
 export interface SearchSource {
@@ -69,6 +73,14 @@ export interface SearchResult {
   nativeSearchRequests?: number;
   nativeSearchCalls?: NativeSearchCall[];
   nativeSearchDegraded?: boolean;
+  freshness?: FreshnessReport;
+  fastCleaning?: {
+    mode: FastCleaningMode;
+    applied: boolean;
+    candidateCount: number;
+    selectedCount: number;
+    providerCoverage: number;
+  };
   rerank?: {
     requested: boolean;
     applied: boolean;
@@ -88,6 +100,15 @@ export interface SearchResult {
   };
 }
 
+export interface FreshnessReport {
+  requested: Freshness;
+  mode: FreshnessMode;
+  status: "not-requested" | "verified" | "estimated" | "unknown" | "unmet";
+  cutoff?: string;
+  filteredCount: number;
+  providerCapabilities: Record<string, "native" | "soft" | "unsupported">;
+}
+
 export interface NativeSearchCall {
   id?: string;
   type: "server_tool_use";
@@ -104,6 +125,7 @@ export interface ResearchResult {
   usage?: Record<string, unknown>;
   warnings: string[];
   degraded: boolean;
+  freshness?: FreshnessReport;
 }
 
 export interface SearchProvider {

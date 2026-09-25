@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { providerAwareRrf } from "../src/quality.js";
+import { cleanFastSources, providerAwareRrf } from "../src/quality.js";
 import type { SearchSource } from "../src/types.js";
 
 function source(url: string, provider: SearchSource["provider"]): SearchSource {
@@ -50,5 +50,39 @@ describe("provider-aware RRF shadow challenger", () => {
 
     expect(result).toHaveLength(1);
     expect(result[0]?.providerRanks).toEqual({ searxng: 1 });
+  });
+});
+
+describe("fast source cleaning", () => {
+  it("keeps authoritative sources ahead of low-quality aggregators", () => {
+    const result = cleanFastSources(
+      "DeepSeek official API documentation",
+      [
+        source("https://www.reddit.com/r/deepseek/comments/1", "tavily"),
+        { ...source("https://api-docs.deepseek.com/", "tavily"), title: "DeepSeek API Docs" },
+        { ...source("https://youtube.com/watch?v=1", "searxng"), title: "DeepSeek video" },
+      ],
+      { mode: "on", maxResults: 3, domainCap: 2 },
+    );
+
+    expect(result.applied).toBe(true);
+    expect(result.sources[0]?.url).toBe("https://api-docs.deepseek.com/");
+    expect(result.sources[0]?.url).not.toContain("reddit.com");
+  });
+
+  it("supports shadow mode without changing returned sources", () => {
+    const sources = [
+      source("https://reddit.com/r/deepseek", "tavily"),
+      source("https://api-docs.deepseek.com/", "tavily"),
+    ];
+    const result = cleanFastSources("DeepSeek official API", sources, {
+      mode: "shadow",
+      maxResults: 2,
+      domainCap: 2,
+    });
+
+    expect(result.applied).toBe(false);
+    expect(result.sources).toEqual(sources);
+    expect(result.shadowSources[0]?.url).toBe("https://api-docs.deepseek.com/");
   });
 });

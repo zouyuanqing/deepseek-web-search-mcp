@@ -2,12 +2,14 @@
 
 [![M8ven Verified](https://m8ven.ai/badge/mcp/zouyuanqing/deepseek-web-search-mcp?variant=verified)](https://m8ven.ai/mcp/zouyuanqing/deepseek-web-search-mcp)
 
-一个独立的 stdio MCP 服务器，向 Codex 等客户端暴露两个工具：
+一个独立的 stdio MCP 服务器，向 Codex 等客户端暴露搜索、研究和多轮研究工具：
 
 - `web_search`：保留 AnySearch、SearXNG、Tavily 外部源，也可把 DeepSeek 原生搜索
   作为第四个源加入同一候选池，再统一去重、融合和排序。
 - `web_research`：通过 DeepSeek 官方 Anthropic 兼容 Messages API 调用
   `web_search_20250305`，返回回答、结构化来源和引用摘要。
+- `research_start` / `research_followup` / `research_close`：带 TTL 和最大轮数的
+  内存研究 session，用于多轮追问。
 
 ## DeepSeek 协议
 
@@ -37,12 +39,15 @@ npm test
 质量计划的离线 replay 使用无密钥 fixture，不会调用线上 provider：
 
 ```powershell
+npm run quality:fixture
 npm run quality:replay
 ```
 
-结果写入 `work/quality/baseline-report.json`。fixture 保存各 provider 的原始顺序、
+fixture 生成 50 个分层 synthetic query；结果写入 `work/quality/baseline-report.json`。
+fixture 保存各 provider 的原始顺序、
 状态、延迟、来源和可选 rerank 结果，用于比较当前 baseline 与 provider-aware RRF
-shadow challenger；shadow 结果不会改变 MCP 生产返回。
+shadow challenger；synthetic 数据只用于工程回归，不替代人工 relevance 标注，
+shadow 结果不会改变 MCP 生产返回。
 
 需要采集真实四路原始运行时数据时执行：
 
@@ -61,6 +66,11 @@ provider 响应或凭据提交到仓库。
   `web_search(backend="deepseek-native")`
 - `WEB_SEARCH_BACKEND`：`web_search` 的默认后端，可选 `auto`（默认）、
   `external`、`hybrid` 或 `deepseek-native`
+- `FAST_CLEANING_MODE`：fast 清洗模式，可选 `shadow`（默认，只计算不改变结果）、
+  `on` 或 `off`
+- `FAST_DOMAIN_CAP`：fast 清洗的同域名保留上限，默认 `2`
+- `RESEARCH_SESSION_TTL_MS`、`RESEARCH_SESSION_MAX_SESSIONS`、
+  `RESEARCH_SESSION_MAX_TURNS`：研究 session 生命周期和容量
 - `ANYSEARCH_API_KEY`：可选，匿名模式限额更低
 - `TAVILY_API_KEY`：全球搜索
 - `OPENROUTER_API_KEY`：`web_search(rerank=true)` 使用的可选重排
@@ -68,6 +78,10 @@ provider 响应或凭据提交到仓库。
 
 `DEEPSEEK_SEARCH_BASE_URL` 是 Anthropic SDK 的 base URL，SDK 会自动追加
 `/v1/messages`。默认值是 `https://api.deepseek.com/anthropic`。
+
+`freshness` 继续支持 `any/day/week/month/year`。`freshness_mode` 默认是 `soft`：
+支持原生时间过滤的 provider 会传递时间范围，其他 provider 只提供查询提示并返回
+未严格验证 warning。`strict` 模式只保留有可解析 `publishedAt` 且满足 cutoff 的来源。
 
 ## `web_search` 后端兼容
 
@@ -105,6 +119,10 @@ DeepSeek key 的客户端默认会把 native 纳入四源候选池。完全保�
 被理解为严格的服务端时间过滤。需要完全排除 DeepSeek native 时使用 `external`；
 需要保留 native 参与统一融合时使用 `hybrid` 或默认 `auto`。
 
+`deep` 仍表示多 provider 召回加一次 rerank，不表示多轮对话。多轮研究请使用
+`research_start` 开启 session，再用 `research_followup` 继续，最后用
+`research_close` 释放内存状态；MCP 进程重启会清空 session。
+
 ## 隐私
 
 本项目不收集也不上传任何遥测数据。查询只会发送给你自己配置的检索/重排提供商，
@@ -129,6 +147,10 @@ OpenRouter。项目本身不包含遥测。
 `web_search` 未配置后端时默认使用 `quality: "fast"` 和 `backend: "auto"`；有
 DeepSeek key 时会把 native 加入多源候选池，没有 key 时退回 external。启用外部
 重排后，候选结果摘要才会发送给 OpenRouter。
+
+fast 默认使用 `FAST_CLEANING_MODE=shadow`：会计算权威性、聚合站降权、同域名
+上限和 provider coverage，但不改变旧客户端的返回顺序。完成 held-out 评估后可
+切换为 `on`；`off` 完全关闭清洗。
 
 | quality | provider 候选 | 候选目标 | 行为 |
 | --- | ---: | ---: | --- |

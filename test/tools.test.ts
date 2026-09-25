@@ -13,7 +13,7 @@ const EXPECTED_ANNOTATIONS = {
 
 async function listToolSurface() {
   const server = createMcpServer(loadConfig({}));
-  const client = new Client({ name: "tools-test", version: "1.3.0" });
+  const client = new Client({ name: "tools-test", version: "1.4.0" });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
   try {
@@ -28,7 +28,13 @@ async function listToolSurface() {
 describe("tool surface", () => {
   it("exposes web_search and web_research", async () => {
     const tools = await listToolSurface();
-    expect(tools.map((tool) => tool.name).sort()).toEqual(["web_research", "web_search"]);
+    expect(tools.map((tool) => tool.name).sort()).toEqual([
+      "research_close",
+      "research_followup",
+      "research_start",
+      "web_research",
+      "web_search",
+    ]);
   });
 
   it("declares all four annotations on web_search and web_research", async () => {
@@ -51,5 +57,20 @@ describe("tool surface", () => {
         },
       },
     });
+  });
+
+  it("exposes freshness modes and the research session lifecycle", async () => {
+    const tools = await listToolSurface();
+    const search = tools.find((candidate) => candidate.name === "web_search");
+    expect(search?.inputSchema).toMatchObject({
+      properties: {
+        freshness_mode: {
+          type: "string",
+          enum: ["soft", "strict"],
+        },
+      },
+    });
+    expect(tools.find((candidate) => candidate.name === "research_close")?.annotations)
+      .toMatchObject({ destructiveHint: true, readOnlyHint: false });
   });
 });

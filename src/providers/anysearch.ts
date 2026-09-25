@@ -3,7 +3,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import type { AppConfig } from "../config.js";
 import { ProviderError, errorText, normalizeProviderError } from "../errors.js";
 import type { ProviderResult, SearchInput, SearchProvider, SearchSource } from "../types.js";
-import { dedupeSources, normalizeWhitespace, withTimeout } from "../utils.js";
+import { applyFreshnessToQuery, dedupeSources, normalizeWhitespace, withTimeout } from "../utils.js";
 
 export function parseAnySearchMarkdown(markdown: string): SearchSource[] {
   const lines = markdown.split(/\r?\n/);
@@ -55,7 +55,7 @@ export class AnySearchProvider implements SearchProvider {
 
   async search(input: SearchInput, signal?: AbortSignal): Promise<ProviderResult> {
     const headers: Record<string, string> = {
-        "X-Anysearch-Client": "deepseek-web-search-mcp/1.3.0",
+        "X-Anysearch-Client": "deepseek-web-search-mcp/1.4.0",
     };
     if (this.config.anySearchApiKey !== undefined) {
       headers.Authorization = `Bearer ${this.config.anySearchApiKey}`;
@@ -69,7 +69,7 @@ export class AnySearchProvider implements SearchProvider {
           });
           const client = new Client({
             name: "deepseek-web-search-mcp",
-            version: "1.3.0",
+            version: "1.4.0",
           });
           try {
             await client.connect(transport as never);
@@ -77,7 +77,7 @@ export class AnySearchProvider implements SearchProvider {
               {
                 name: "search",
                 arguments: {
-                  query: input.query,
+                  query: applyFreshnessToQuery(input.query, input.freshness),
                   max_results: input.maxResults,
                 },
               },

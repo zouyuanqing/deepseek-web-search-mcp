@@ -273,3 +273,78 @@ describe("web_search native backend compatibility", () => {
     expect(seen[0]?.some((source) => source.provider === "tavily")).toBe(true);
   });
 });
+
+describe("fast cleaning integration", () => {
+  it("can promote an official source without changing the default shadow mode", async () => {
+    const providers = {
+      anysearch: successfulProvider("anysearch"),
+      tavily: {
+        id: "tavily" as const,
+        async search() {
+          return {
+            provider: "tavily" as const,
+            sources: [
+              { url: "https://reddit.com/r/deepseek", provider: "tavily" as const },
+              { url: "https://api-docs.deepseek.com/", provider: "tavily" as const, title: "DeepSeek API Docs" },
+            ],
+            warnings: [],
+          };
+        },
+      },
+      searxng: successfulProvider("searxng"),
+    };
+    const shadow = new SearchService(loadConfig({}), providers, successfulNative());
+    const shadowResult = await shadow.webSearch({
+      query: "DeepSeek official API documentation",
+      scope: "global",
+      maxResults: 2,
+      freshness: "any",
+      backend: "external",
+      quality: "fast",
+    });
+    const on = new SearchService(loadConfig({ FAST_CLEANING_MODE: "on" }), providers, successfulNative());
+    const onResult = await on.webSearch({
+      query: "DeepSeek official API documentation",
+      scope: "global",
+      maxResults: 2,
+      freshness: "any",
+      backend: "external",
+      quality: "fast",
+    });
+
+    expect(shadowResult.fastCleaning?.applied).toBe(false);
+    expect(onResult.fastCleaning?.applied).toBe(true);
+    expect(onResult.sources[0]?.url).toBe("https://api-docs.deepseek.com/");
+  });
+});
+
+describe("research session service", () => {
+  it("starts, follows up, and closes a research session", async () => {
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key", RESEARCH_SESSION_MAX_TURNS: "2" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+      },
+      successfulNative(),
+    );
+
+    const started = await service.researchStart({
+      query: "DeepSeek API",
+      maxSources: 3,
+      freshness: "any",
+    });
+    const followed = await service.researchFollowup({
+      sessionId: started.sessionId,
+      question: "What endpoint?",
+      maxSources: 3,
+      freshness: "any",
+    });
+
+    expect(started.turn).toBe(1);
+    expect(followed.turn).toBe(2);
+    expect(followed.sources.length).toBeGreaterThan(0);
+    expect(service.researchClose(started.sessionId).closed).toBe(true);
+  });
+});

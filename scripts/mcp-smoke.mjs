@@ -10,13 +10,22 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "deepseek-web-search-smoke", version: "1.3.0" });
+const client = new Client({ name: "deepseek-web-search-smoke", version: "1.4.0" });
 
 try {
   await client.connect(transport);
   const tools = await client.listTools();
   const toolNames = tools.tools.map((tool) => tool.name).sort();
-  if (JSON.stringify(toolNames) !== JSON.stringify(["web_research", "web_search"])) {
+  if (
+    JSON.stringify(toolNames)
+    !== JSON.stringify([
+      "research_close",
+      "research_followup",
+      "research_start",
+      "web_research",
+      "web_search",
+    ])
+  ) {
     throw new Error(`Unexpected tools: ${toolNames.join(", ")}`);
   }
 
@@ -57,6 +66,41 @@ try {
   });
   if (research.isError === true) {
     throw new Error(`web_research failed: ${JSON.stringify(research.content)}`);
+  }
+
+  const sessionStart = await client.callTool({
+    name: "research_start",
+    arguments: {
+      query: "DeepSeek official web search API",
+      max_sources: 2,
+      freshness: "any",
+    },
+  });
+  if (sessionStart.isError === true) {
+    throw new Error(`research_start failed: ${JSON.stringify(sessionStart.content)}`);
+  }
+  const sessionId = sessionStart.structuredContent?.sessionId;
+  if (typeof sessionId !== "string") {
+    throw new Error(`research_start returned no session id: ${JSON.stringify(sessionStart.structuredContent)}`);
+  }
+  const followup = await client.callTool({
+    name: "research_followup",
+    arguments: {
+      session_id: sessionId,
+      question: "What official endpoint does it use?",
+      max_sources: 2,
+      freshness: "any",
+    },
+  });
+  if (followup.isError === true) {
+    throw new Error(`research_followup failed: ${JSON.stringify(followup.content)}`);
+  }
+  const close = await client.callTool({
+    name: "research_close",
+    arguments: { session_id: sessionId },
+  });
+  if (close.isError === true || close.structuredContent?.closed !== true) {
+    throw new Error(`research_close failed: ${JSON.stringify(close.content ?? close.structuredContent)}`);
   }
 
   const hybridSearch = await client.callTool({
@@ -116,6 +160,11 @@ try {
       sources: Array.isArray(researchResult?.sources) ? researchResult.sources.length : 0,
       nativeSearchRequests: researchResult?.nativeSearchRequests,
       degraded: researchResult?.degraded,
+    },
+    session: {
+      startTurn: sessionStart.structuredContent?.turn,
+      followupTurn: followup.structuredContent?.turn,
+      closed: close.structuredContent?.closed,
     },
     hybridSearch: {
       backend: hybridSearchResult?.backend,

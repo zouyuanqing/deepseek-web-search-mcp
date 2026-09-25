@@ -2,29 +2,72 @@
   "schemaVersion": 1,
   "baselineCommit": "a9c0f3b",
   "productionDefaultChanged": false,
+  "datasetKind": "synthetic",
   "k": 60,
-  "caseCount": 3,
+  "caseCount": 60,
+  "developmentCases": 30,
+  "heldOutCases": 30,
+  "latencyMs": {
+    "p50": 144,
+    "p95": 503
+  },
+  "aggregate": {
+    "current": {
+      "meanNdcg5": 0.9811,
+      "meanNdcg10": 0.9811,
+      "meanMrr": 1,
+      "top1RelevantRate": 1
+    },
+    "cleanedFast": {
+      "meanNdcg5": 0.946,
+      "meanNdcg10": 0.946,
+      "meanMrr": 1,
+      "top1RelevantRate": 1
+    },
+    "challenger": {
+      "meanNdcg5": 0.9811,
+      "meanNdcg10": 0.9811,
+      "meanMrr": 1,
+      "top1RelevantRate": 1
+    }
+  },
   "cases": [
     {
-      "id": "official-tech-001",
-      "providerCount": 4,
+      "id": "official-001-r1",
+      "providerCount": 2,
       "current": {
-        "ndcg5": 0.9308,
-        "ndcg10": 0.9308,
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
         "mrr": 1,
         "top1Relevant": true,
-        "providerCoverage": 4
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
       },
       "challenger": {
-        "ndcg5": 0.9608,
-        "ndcg10": 0.9608,
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
         "mrr": 1,
         "top1Relevant": true,
-        "providerCoverage": 4
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
       },
       "challengerTop5": [
         {
-          "url": "https://api-docs.deepseek.com/",
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
           "provider": "tavily",
           "providerRanks": {
             "tavily": 1
@@ -33,127 +76,4425 @@
           "fusionScore": 0.02459016
         },
         {
-          "url": "https://api-docs.deepseek.com/guides/responses_api/",
-          "provider": "deepseek-native",
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
           "providerRanks": {
-            "deepseek-native": 1
+            "searxng": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02445796
-        },
-        {
-          "url": "https://api-docs.deepseek.com/guides/anthropic_api/",
-          "provider": "anysearch",
-          "providerRanks": {
-            "anysearch": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
-        },
-        {
-          "url": "https://github.com/deepseek-ai",
-          "provider": "searxng",
-          "providerRanks": {
-            "searxng": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
         }
-      ]
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
     },
     {
-      "id": "current-weather-001",
-      "providerCount": 3,
+      "id": "official-002-r1",
+      "providerCount": 4,
       "current": {
         "ndcg5": 1,
         "ndcg10": 1,
         "mrr": 1,
         "top1Relevant": true,
-        "providerCoverage": 3
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
       },
       "challenger": {
         "ndcg5": 1,
         "ndcg10": 1,
         "mrr": 1,
         "top1Relevant": true,
-        "providerCoverage": 3
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
       },
       "challengerTop5": [
         {
-          "url": "https://weather.cma.cn/web/weather/58367.html",
-          "provider": "anysearch",
-          "providerRanks": {
-            "anysearch": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
-        },
-        {
-          "url": "https://weather.com.cn/weather/101020600.shtml",
-          "provider": "deepseek-native",
-          "providerRanks": {
-            "deepseek-native": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
-        },
-        {
-          "url": "https://www.tianqi.com/shanghai",
-          "provider": "searxng",
-          "providerRanks": {
-            "searxng": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
-        }
-      ]
-    },
-    {
-      "id": "ambiguous-001",
-      "providerCount": 3,
-      "current": {
-        "ndcg5": 0.9595,
-        "ndcg10": 0.9595,
-        "mrr": 1,
-        "top1Relevant": true,
-        "providerCoverage": 3
-      },
-      "challenger": {
-        "ndcg5": 1,
-        "ndcg10": 1,
-        "mrr": 1,
-        "top1Relevant": true,
-        "providerCoverage": 3
-      },
-      "challengerTop5": [
-        {
-          "url": "https://developers.openai.com/learn/docs-mcp",
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
           "provider": "tavily",
           "providerRanks": {
             "tavily": 1
           },
           "providerCoverage": 1,
-          "fusionScore": 0.01639344
+          "fusionScore": 0.02459016
         },
         {
-          "url": "https://github.com/modelcontextprotocol/specification",
-          "provider": "deepseek-native",
-          "providerRanks": {
-            "deepseek-native": 1
-          },
-          "providerCoverage": 1,
-          "fusionScore": 0.01639344
-        },
-        {
-          "url": "https://modelcontextprotocol.io/",
+          "url": "https://github.com/example/openai-official-mcp-documentation",
           "provider": "searxng",
           "providerRanks": {
             "searxng": 1
           },
           "providerCoverage": 1,
-          "fusionScore": 0.01639344
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
         }
-      ]
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "official-003-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "official-004-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "official-005-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "current-001-r1",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "current-002-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "current-003-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "current-004-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "current-005-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "ambiguous-001-r1",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "ambiguous-002-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "ambiguous-003-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "ambiguous-004-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "ambiguous-005-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "exploratory-001-r1",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "exploratory-002-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "exploratory-003-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "exploratory-004-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "exploratory-005-r1",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "official-001-r2",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "official-002-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-official-mcp-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "official-003-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "official-004-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "official-005-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "current-001-r2",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "current-002-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "current-003-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "current-004-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "current-005-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "ambiguous-001-r2",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "ambiguous-002-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "ambiguous-003-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "ambiguous-004-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "ambiguous-005-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "exploratory-001-r2",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "exploratory-002-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "exploratory-003-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "exploratory-004-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "exploratory-005-r2",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "official-001-r3",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-official-api-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-official-api-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "official-002-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-official-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-official-mcp-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-official-mcp-documentation.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-official-mcp-documentation.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "official-003-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-official-docker-documentatio.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-official-docker-documentatio",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-official-docker-documentatio.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-official-docker-documentatio.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "official-004-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-official-search-api-documenta.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-official-search-api-documenta",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-official-search-api-documenta.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-official-search-api-documenta.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "official-005-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-anthropic-official-messages-api-refe.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/anthropic-official-messages-api-refe",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-anthropic-official-messages-api-refe.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-anthropic-official-messages-api-refe.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "current-001-r3",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-2026-9-25.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/2026-9-25",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "current-002-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-latest-model-release.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-latest-model-release",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-latest-model-release.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-latest-model-release.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "current-003-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-latest-api-changelog.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-latest-api-changelog",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-latest-api-changelog.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-latest-api-changelog.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "current-004-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-latest-release-notes.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-latest-release-notes",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-latest-release-notes.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-latest-release-notes.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "current-005-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-tavily-latest-product-update.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/tavily-latest-product-update",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-tavily-latest-product-update.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-tavily-latest-product-update.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "ambiguous-001-r3",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-mcp-documentation.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/mcp-documentation",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "ambiguous-002-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-best-web-search-api.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/best-web-search-api",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-best-web-search-api.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-best-web-search-api.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "ambiguous-003-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-research-tools.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-research-tools",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-research-tools.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-research-tools.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "ambiguous-004-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-openai-agents-framework.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/openai-agents-framework",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-openai-agents-framework.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-openai-agents-framework.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "ambiguous-005-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-searxng-vs-tavily.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/searxng-vs-tavily",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-searxng-vs-tavily.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-searxng-vs-tavily.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
+    },
+    {
+      "id": "exploratory-001-r3",
+      "providerCount": 2,
+      "current": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 0.9053,
+        "ndcg10": 0.9053,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 2,
+        "distinctDomains": 2,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-how-to-compare-web-search-providers.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/how-to-compare-web-search-providers",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 100,
+        "searxng": 140,
+        "anysearch": 180,
+        "deepseek-native": 500
+      }
+    },
+    {
+      "id": "exploratory-002-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-multi-source-search-research-workflo.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/multi-source-search-research-workflo",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-multi-source-search-research-workflo.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-multi-source-search-research-workflo.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 101,
+        "searxng": 141,
+        "anysearch": 181,
+        "deepseek-native": 501
+      }
+    },
+    {
+      "id": "exploratory-003-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-freshness-aware-web-search.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/freshness-aware-web-search",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-freshness-aware-web-search.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-freshness-aware-web-search.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 102,
+        "searxng": 142,
+        "anysearch": 182,
+        "deepseek-native": 502
+      }
+    },
+    {
+      "id": "exploratory-004-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-provider-aware-rank-fusion.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/provider-aware-rank-fusion",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-provider-aware-rank-fusion.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-provider-aware-rank-fusion.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 103,
+        "searxng": 143,
+        "anysearch": 183,
+        "deepseek-native": 503
+      }
+    },
+    {
+      "id": "exploratory-005-r3",
+      "providerCount": 4,
+      "current": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "cleanedFast": {
+        "ndcg5": 0.9562,
+        "ndcg10": 0.9562,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 3,
+        "distinctDomains": 3,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challenger": {
+        "ndcg5": 1,
+        "ndcg10": 1,
+        "mrr": 1,
+        "top1Relevant": true,
+        "providerCoverage": 4,
+        "distinctDomains": 4,
+        "datedSourceRate": 0,
+        "authoritySourceRate": 0
+      },
+      "challengerTop5": [
+        {
+          "url": "https://docs-deepseek-web-search-integration.example.com/reference",
+          "provider": "tavily",
+          "providerRanks": {
+            "tavily": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02459016
+        },
+        {
+          "url": "https://github.com/example/deepseek-web-search-integration",
+          "provider": "searxng",
+          "providerRanks": {
+            "searxng": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02445796
+        },
+        {
+          "url": "https://news-deepseek-web-search-integration.example.com/latest",
+          "provider": "anysearch",
+          "providerRanks": {
+            "anysearch": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02432995
+        },
+        {
+          "url": "https://community-deepseek-web-search-integration.example.com/thread",
+          "provider": "deepseek-native",
+          "providerRanks": {
+            "deepseek-native": 1
+          },
+          "providerCoverage": 1,
+          "fusionScore": 0.02420594
+        }
+      ],
+      "providerLatencyMs": {
+        "tavily": 104,
+        "searxng": 144,
+        "anysearch": 184,
+        "deepseek-native": 504
+      }
     }
   ]
 }
