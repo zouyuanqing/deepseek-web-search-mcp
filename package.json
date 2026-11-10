@@ -1,9 +1,9 @@
 {
   "name": "deepseek-web-search-mcp",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
-  "description": "MCP server for the DeepSeek official Search API, DeepSeek native web research, and AnySearch/Tavily/SearXNG fallback.",
+  "description": "MCP server for the DeepSeek official Search API, DeepSeek native web research, and AnySearch/Tavily/SearXNG fallback, with optional OpenRouter rerank, semantic dedupe and docs-intent routing.",
   "engines": {
     "node": ">=22"
   },
@@ -18,7 +18,10 @@
     "quality:capture": "npm run build --silent && node scripts/quality-capture.mjs",
     "quality:fixture": "node scripts/generate-quality-fixture.mjs",
     "start": "node dist/index.js",
-    "doctor": "npm run build --silent && node dist/index.js --doctor"
+    "doctor": "npm run build --silent && node dist/index.js --doctor",
+    "eval:capture": "npm run build --silent && node scripts/eval/capture.mjs",
+    "eval:replay": "npm run build --silent && node scripts/eval/replay.mjs",
+    "eval:accept": "node scripts/eval/accept.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.126.0",

@@ -30,6 +30,7 @@ import {
 } from "./ranking.js";
 import type {
   DeepSeekNativeProvider,
+  EmbeddingReport,
   FreshnessReport,
   HealthReport,
   NativeSearchCall,
@@ -49,6 +50,13 @@ import type {
 } from "./types.js";
 import { cleanFastSources } from "./quality.js";
 import { ResearchSessionStore } from "./research-session.js";
+import { DocsIntentResolver } from "./docs-intent.js";
+import { OpenRouterClient } from "./providers/openrouter-client.js";
+import { OpenRouterDecisions } from "./providers/openrouter-decisions.js";
+import { OpenRouterEmbedder, resolveEmbeddingThreshold } from "./providers/openrouter-embed.js";
+import type { Embedder } from "./providers/openrouter-embed.js";
+import { dedupeSourceIdentitiesSemantic } from "./semantic-dedupe.js";
+import type { SemanticDedupeGroup } from "./semantic-dedupe.js";
 import {
   applyFreshnessToQuery,
   canonicalizeUrl,
@@ -162,6 +170,8 @@ function sourceQuality(query: string, sources: SearchSource[]): NonNullable<Rese
 export class SearchService {
   private readonly nativeProvider: DeepSeekNativeProvider;
   private readonly reranker: Reranker;
+  private readonly docsIntentResolver: DocsIntentResolver;
+  private readonly embedder: Embedder;
   private readonly searchCache: TtlLruCache<string, ProviderResult>;
   private readonly rerankCache: TtlLruCache<string, RerankResult>;
   private readonly researchSessions: ResearchSessionStore;
@@ -171,9 +181,20 @@ export class SearchService {
     private readonly providers: ProviderRegistry = buildProviderRegistry(config),
     nativeProvider?: DeepSeekNativeProvider,
     reranker?: Reranker,
+    deps: {
+      docsIntent?: DocsIntentResolver;
+      embedder?: Embedder;
+      openRouterClient?: OpenRouterClient;
+    } = {},
   ) {
+    const client = deps.openRouterClient ?? new OpenRouterClient(config);
     this.nativeProvider = nativeProvider ?? new DeepSeekNativeSearchProvider(config);
-    this.reranker = reranker ?? new OpenRouterReranker(config);
+    this.reranker = reranker ?? new OpenRouterReranker(config, client);
+    this.docsIntentResolver = deps.docsIntent ?? new DocsIntentResolver(
+      config,
+      new OpenRouterDecisions(config, client),
+    );
+    this.embedder = deps.embedder ?? new OpenRouterEmbedder(config, client);
     this.searchCache = new TtlLruCache({
       ttlMs: config.searchCacheTtlMs,
       maxEntries: config.searchCacheMaxEntries,
@@ -191,6 +212,7 @@ export class SearchService {
   private cleanFastSources(
     input: SearchInput,
     sources: SearchSource[],
+    officialIntent: boolean,
   ): {
     sources: SearchSource[];
     metadata: NonNullable<SearchResult["fastCleaning"]>;
@@ -199,6 +221,7 @@ export class SearchService {
       mode: this.config.fastCleaningMode,
       maxResults: input.maxResults,
       domainCap: this.config.fastDomainCap,
+      officialIntent,
     });
     return {
       sources: cleaned.applied ? cleaned.sources : sources,
@@ -281,6 +304,12 @@ export class SearchService {
         `Only ${report.independence.independentDomains} independent domain(s) back this result set; treat numeric agreement as potentially copied.`,
       );
     }
+    if (report.semanticCopyCount !== undefined && report.semanticCopyCount > 0) {
+      appendUniqueWarning(
+        output,
+        `Collapsed ${report.semanticCopyCount} semantically equivalent syndicated copy/copies; semantic similarity is not independent corroboration.`,
+      );
+    }
     if (report.conflictingDateCount > 0) {
       appendUniqueWarning(
         output,
@@ -292,8 +321,17 @@ export class SearchService {
 
   async webSearch(input: SearchInput, signal?: AbortSignal): Promise<SearchResult> {
     const requestedQuality = resolveQuality(input);
-    const quality = this.config.documentationQueryMode === "fast"
-      && hasOfficialIntent(input.query)
+    const regexOfficialIntent = hasOfficialIntent(input.query);
+    // One resolution per request: the decisions model (when enabled) may only
+    // veto the regex, never promote a non-docs query.
+    const docsIntent = await this.docsIntentResolver.resolve(
+      input.query,
+      requestedQuality,
+      regexOfficialIntent,
+      signal,
+    );
+    const officialIntent = docsIntent.resolvedOfficialIntent;
+    const quality = this.config.documentationQueryMode === "fast" && officialIntent
       ? "fast"
       : requestedQuality;
     const requestedBackend = input.backend ?? this.config.webSearchBackend ?? "auto";
@@ -304,11 +342,18 @@ export class SearchService {
     if (backend === "deepseek-native") {
       result = await this.webSearchNative(input, quality, signal);
     } else if (backend === "deepseek-search") {
-      result = await this.webSearchOfficial(input, quality, signal);
+      result = await this.webSearchOfficial(input, quality, officialIntent, signal);
     } else if (backend === "hybrid") {
-      result = await this.webSearchHybrid(input, quality, signal);
+      result = await this.webSearchHybrid(input, quality, officialIntent, signal);
     } else {
-      result = await this.webSearchExternal(input, quality, signal);
+      result = await this.webSearchExternal(input, quality, officialIntent, signal);
+    }
+    if (docsIntent.mode !== "off") result.decisions = docsIntent;
+    if (docsIntent.applied && docsIntent.verdict === "veto" && docsIntent.p !== undefined) {
+      result.warnings = [...new Set([
+        ...result.warnings,
+        `Documentation routing suppressed: query is not documentation (p=${docsIntent.p.toFixed(3)}); rerank kept.`,
+      ])];
     }
     if (quality !== requestedQuality) {
       result.warnings = [...new Set([
@@ -322,6 +367,7 @@ export class SearchService {
   private async webSearchExternal(
     input: SearchInput,
     quality: Quality,
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
@@ -330,6 +376,7 @@ export class SearchService {
       quality,
       providerOrder(scope),
       "external",
+      officialIntent,
       signal,
     );
   }
@@ -342,9 +389,17 @@ export class SearchService {
   private async webSearchOfficial(
     input: SearchInput,
     quality: Quality,
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
-    return this.webSearchProviderSet(input, quality, ["deepseek-search"], "deepseek-search", signal);
+    return this.webSearchProviderSet(
+      input,
+      quality,
+      ["deepseek-search"],
+      "deepseek-search",
+      officialIntent,
+      signal,
+    );
   }
 
   private async webSearchProviderSet(
@@ -352,22 +407,31 @@ export class SearchService {
     quality: Quality,
     order: SearchProviderId[],
     backend: "external" | "deepseek-search",
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     return QUALITY_PROFILES[quality].rerank
-      ? this.webSearchRanked(input, quality, order, backend, signal)
-      : this.webSearchFast(input, quality, order, backend, signal);
+      ? this.webSearchRanked(input, quality, order, backend, officialIntent, signal)
+      : this.webSearchFast(input, quality, order, backend, officialIntent, signal);
   }
 
   private async webSearchHybrid(
     input: SearchInput,
     quality: Quality,
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
     return QUALITY_PROFILES[quality].rerank
-      ? this.webSearchRanked(input, quality, hybridProviderOrder(scope), "hybrid", signal)
-      : this.webSearchAggregate(input, quality, signal);
+      ? this.webSearchRanked(
+        input,
+        quality,
+        hybridProviderOrder(scope),
+        "hybrid",
+        officialIntent,
+        signal,
+      )
+      : this.webSearchAggregate(input, quality, officialIntent, signal);
   }
 
   private async webSearchNative(
@@ -447,6 +511,7 @@ export class SearchService {
     quality: Quality,
     order: SearchProviderId[],
     backend: "external" | "deepseek-search",
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
@@ -491,7 +556,7 @@ export class SearchService {
           ...(call.cached ? { cached: true } : {}),
         });
         warnings.push(...call.result.warnings);
-        const cleaned = this.cleanFastSources(input, freshness.sources);
+        const cleaned = this.cleanFastSources(input, freshness.sources, officialIntent);
         const identified = this.identifySources(cleaned.sources);
         const mergedWarnings = this.identityWarnings(identified.report!, warnings);
         appendUniqueWarning(
@@ -557,6 +622,7 @@ export class SearchService {
   private async webSearchAggregate(
     input: SearchInput,
     quality: Quality,
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
@@ -643,6 +709,7 @@ export class SearchService {
     const cleaned = this.cleanFastSources(
       input,
       dedupeSources(mergeProviderSources(sourceGroups, true)),
+      officialIntent,
     );
     const identified = this.identifySources(cleaned.sources);
     const sources = identified.sources.slice(0, input.maxResults);
@@ -696,6 +763,7 @@ export class SearchService {
     quality: Quality,
     order: CandidateProviderId[],
     backend: SearchResult["backend"],
+    officialIntent: boolean,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
@@ -787,7 +855,40 @@ export class SearchService {
     const identifiedCandidates = this.identifySources(
       dedupeSources(mergeProviderSources(sourceGroups, hybrid)),
     );
-    const uniqueCandidates = identifiedCandidates.sources.slice(0, target);
+    const semantic = await this.applySemanticDedupe(identifiedCandidates.sources, signal);
+    const semanticApplied = semantic.semanticCopyCount > 0;
+    const postIdentity = semanticApplied
+      ? dedupeSourceIdentities(semantic.sources, {
+        crossHost: this.config.sourceIdentityCrossHost,
+      })
+      : undefined;
+    const postIndependence = postIdentity === undefined
+      ? identifiedCandidates.report.independence
+      : (() => {
+        const analysis = analyzeSourceIndependence(postIdentity.sources, postIdentity);
+        return {
+          independentDomains: analysis.independentDomains,
+          dominantDomainShare: analysis.dominantDomainShare,
+          lowAuthorityShare: analysis.lowAuthorityShare,
+          level: analysis.independence,
+        };
+      })();
+    const verboseGroups = this.config.sourceIdentityVerbose
+      ? [
+        ...(identifiedCandidates.report.groups ?? []),
+        ...semantic.groups.map((group) => ({ ...group })),
+      ]
+      : undefined;
+    const sourceIdentityReport: SourceIdentityReport = {
+      ...identifiedCandidates.report,
+      mergedCount: identifiedCandidates.report.mergedCount + semantic.semanticCopyCount,
+      conflictingDateCount:
+        identifiedCandidates.report.conflictingDateCount + semantic.dateConflicts,
+      independence: postIndependence,
+      ...(semanticApplied ? { semanticCopyCount: semantic.semanticCopyCount } : {}),
+      ...(verboseGroups === undefined ? {} : { groups: verboseGroups }),
+    };
+    const uniqueCandidates = semantic.sources.slice(0, target);
     if (uniqueCandidates.length === 0) {
       if (order.length === 1 && lastError instanceof ProviderError) throw lastError;
       const allEmpty = attempts.length > 0
@@ -802,7 +903,7 @@ export class SearchService {
       );
     }
 
-    const mergedWarnings = this.identityWarnings(identifiedCandidates.report!, warnings);
+    const mergedWarnings = this.identityWarnings(sourceIdentityReport, warnings);
     appendUniqueWarning(
       mergedWarnings,
       this.config.freshnessIntentWarning
@@ -829,7 +930,8 @@ export class SearchService {
         input.freshnessMode ?? "soft",
         input.query,
       ),
-      sourceIdentity: identifiedCandidates.report,
+      sourceIdentity: sourceIdentityReport,
+      ...(semantic.report === undefined ? {} : { embedding: semantic.report }),
     };
 
     if (uniqueCandidates.length <= input.maxResults) {
@@ -850,12 +952,27 @@ export class SearchService {
     }
 
     try {
-      const rerankCall = await this.rerankCandidates(input.query, uniqueCandidates, signal);
+      const rerankModel = this.resolveRerankModel(quality);
+      const rerankCall = await this.rerankCandidates(
+        input.query,
+        uniqueCandidates,
+        rerankModel,
+        signal,
+      );
+      const rerankModelUsed = rerankCall.result.model ?? rerankModel;
       const fused = fuseRankings(
         input.query,
         uniqueCandidates,
         rerankCall.result.sources,
+        {
+          officialIntent,
+          rerankModel: rerankModelUsed,
+          rerankNormalization: this.config.rerankNormalization,
+          confidenceFloor: this.config.rerankConfidenceFloor,
+          top1Min: this.config.rerankTop1Min,
+        },
       );
+      const calibration = fused.calibration;
       return {
         ...base,
         sources: fused.sources
@@ -867,12 +984,28 @@ export class SearchService {
           provider: this.reranker.id,
           strategy: "rank_fusion",
           weights: RANK_FUSION_WEIGHTS,
-          model: rerankCall.result.model,
+          model: rerankModelUsed,
           elapsedMs: rerankCall.result.elapsedMs,
           inputCount: rerankCall.result.inputCount,
           candidateCount: uniqueCandidates.length,
           ...(rerankCall.cached ? { cached: true } : {}),
           top1Protected: fused.top1Protected,
+          ...(calibration === undefined
+            ? {}
+            : {
+              normalization: calibration.mode,
+              ...(calibration.rawMin === undefined || calibration.rawMax === undefined
+                ? {}
+                : {
+                  scoreRange: {
+                    min: calibration.rawMin,
+                    max: calibration.rawMax,
+                    spread: calibration.spread ?? calibration.rawMax - calibration.rawMin,
+                  },
+                }),
+              signalQuality: calibration.signalQuality,
+            }),
+          ...(rerankCall.result.usage === undefined ? {} : { usage: rerankCall.result.usage }),
         },
       };
     } catch (error) {
@@ -999,12 +1132,13 @@ export class SearchService {
   private async rerankCandidates(
     query: string,
     sources: SearchSource[],
+    model: string,
     signal?: AbortSignal,
   ): Promise<RerankCall> {
     const key = hashCacheKey([
       "rerank",
       this.reranker.id,
-      this.config.openRouterRerankModel,
+      model,
       this.config.rerankInputChars,
       normalizeCacheQuery(query),
       sources.map((source) => ({
@@ -1022,12 +1156,66 @@ export class SearchService {
       };
     }
 
-    const result = await this.reranker.rerank(query, sources, signal);
+    const result = await this.reranker.rerank(query, sources, signal, { model });
     this.rerankCache.set(key, cloneRerankResult(result));
     return {
       result,
       cached: false,
     };
+  }
+
+  private resolveRerankModel(quality: Quality): string {
+    if (quality === "balanced") {
+      return this.config.openRouterRerankModelBalanced ?? this.config.openRouterRerankModel;
+    }
+    if (quality === "deep") {
+      return this.config.openRouterRerankModelDeep ?? this.config.openRouterRerankModel;
+    }
+    return this.config.openRouterRerankModel;
+  }
+
+  /**
+   * Optional semantic syndication dedupe. Only balanced/deep reach this path;
+   * off mode, missing credentials and any embedder failure degrade to the
+   * lexical source identity result, so the search itself never depends on the
+   * flaky free embedding endpoint.
+   */
+  private async applySemanticDedupe(
+    sources: SearchSource[],
+    signal?: AbortSignal,
+  ): Promise<{
+    sources: SearchSource[];
+    report?: EmbeddingReport;
+    semanticCopyCount: number;
+    groups: SemanticDedupeGroup[];
+    dateConflicts: number;
+  }> {
+    if (
+      this.config.embeddingMode === "off"
+      || this.config.openRouterApiKey === undefined
+    ) {
+      return { sources, semanticCopyCount: 0, groups: [], dateConflicts: 0 };
+    }
+    try {
+      const result = await dedupeSourceIdentitiesSemantic(sources, {
+        crossHost: this.config.sourceIdentityCrossHost,
+        mode: this.config.embeddingMode,
+        threshold: resolveEmbeddingThreshold(this.config, this.config.embeddingModel),
+        thresholdForModel: (model) => resolveEmbeddingThreshold(this.config, model),
+        maxPairs: this.config.embeddingMaxPairs,
+        embedder: this.embedder,
+        ...(signal === undefined ? {} : { signal }),
+      });
+      return {
+        sources: result.sources,
+        report: result.report,
+        semanticCopyCount: result.semanticCopyCount,
+        groups: result.groups,
+        dateConflicts: result.groups.filter((group) => group.dateConflict).length,
+      };
+    } catch {
+      return { sources, semanticCopyCount: 0, groups: [], dateConflicts: 0 };
+    }
   }
 
   async webResearch(input: ResearchInput, signal?: AbortSignal): Promise<ResearchResult> {

@@ -32,7 +32,25 @@ export function searchMarkdown(result: SearchResult): string {
         ? []
         : [`Rank fusion: ${result.rerank.strategy}`]),
       ...(result.rerank.reason === undefined ? [] : [`Rerank detail: ${result.rerank.reason}`]),
+      ...(result.rerank.normalization === undefined
+        ? []
+        : [`Rerank normalization: ${result.rerank.normalization} (${result.rerank.signalQuality ?? "unknown"} signal)`]),
+      ...(result.rerank.scoreRange === undefined
+        ? []
+        : [`Rerank score range: ${result.rerank.scoreRange.min.toFixed(3)}-${result.rerank.scoreRange.max.toFixed(3)}`]),
       "",
+    );
+  }
+  if (result.decisions !== undefined && result.decisions.mode !== "off") {
+    lines.push(
+      `Decisions: ${result.decisions.mode} ${result.decisions.verdict}`
+      + `${result.decisions.p === undefined ? "" : ` (p=${result.decisions.p.toFixed(3)})`}`,
+    );
+  }
+  if (result.embedding !== undefined && result.embedding.mode !== "off") {
+    lines.push(
+      `Embedding: ${result.embedding.mode} ${result.embedding.applied ? "applied" : "not applied"}`
+      + ` (${result.embedding.embedded}/${result.embedding.candidates} text(s), ${result.embedding.mergedPairs} merge(s))`,
     );
   }
   if (result.answer !== undefined && result.answer.length > 0) {

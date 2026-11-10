@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadConfig } from "../src/config.js";
+import { loadConfig, validateConfig } from "../src/config.js";
 
 describe("web search backend configuration", () => {
   it("uses auto by default so a configured native key can join the source pool", () => {
@@ -39,6 +39,63 @@ describe("web search backend configuration", () => {
     expect(config.deepseekSearchApiBaseUrl).toBe("https://search.example.test/v1");
     expect(config.deepseekSearchApiTimeoutMs).toBe(9_000);
     expect(config.deepseekSearchNeedContent).toBe(true);
+  });
+
+  it("defaults the OpenRouter rerank/embedding/decisions configuration", () => {
+    const config = loadConfig({});
+    expect(config.openRouterRerankModel).toBe("nvidia/nemotron-3.5-rerank-8b:free");
+    expect(config.openRouterRerankModelBalanced).toBe("nvidia/llama-nemotron-rerank-vl-1b-v2:free");
+    expect(config.openRouterRerankModelDeep).toBeUndefined();
+    expect(config.rerankNormalization).toBe("auto");
+    expect(config.rerankConfidenceFloor).toBe(0.35);
+    expect(config.rerankTop1Min).toBe(0.85);
+    expect(config.openRouterRerankTimeoutMs).toBe(0);
+    expect(config.embeddingMode).toBe("off");
+    expect(config.embeddingModel).toBe("nvidia/nemotron-3.5-embed-8b:free");
+    expect(config.embeddingFallbackModels).toEqual([
+      "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+      "baai/bge-m3",
+    ]);
+    expect(config.decisionsMode).toBe("off");
+    expect(config.openRouterDecisionsModel).toBe("parallel/decisions-fast:free");
+    expect(config.openRouterDecisionsThreshold).toBeCloseTo(0.3);
+    expect(config.rerankCandidateLimit).toBe(30);
+  });
+
+  it("accepts OpenRouter integration overrides and clamps unsafe values", () => {
+    const config = loadConfig({
+      OPENROUTER_RERANK_MODEL_BALANCED: "balanced/model",
+      OPENROUTER_RERANK_MODEL_DEEP: "deep/model",
+      RERANK_NORMALIZATION: "minmax",
+      RERANK_CONFIDENCE_FLOOR: "0.4",
+      RERANK_TOP1_MIN: "0.9",
+      RERANK_CANDIDATE_LIMIT: "50",
+      EMBEDDING_MODE: "shadow",
+      DECISIONS_MODE: "shadow",
+      WEB_SEARCH_DECISIONS_MODE: "on",
+      OPENROUTER_DECISIONS_THRESHOLD: "0.35",
+    });
+    expect(config.openRouterRerankModelBalanced).toBe("balanced/model");
+    expect(config.openRouterRerankModelDeep).toBe("deep/model");
+    expect(config.rerankNormalization).toBe("minmax");
+    expect(config.rerankConfidenceFloor).toBe(0.4);
+    expect(config.rerankTop1Min).toBe(0.9);
+    expect(config.rerankCandidateLimit).toBe(30);
+    expect(config.embeddingMode).toBe("shadow");
+    expect(config.decisionsMode).toBe("on");
+    expect(config.openRouterDecisionsThreshold).toBe(0.35);
+  });
+
+  it("treats an invalid embedding dedupe threshold as unset", () => {
+    expect(loadConfig({ EMBEDDING_DEDUPE_THRESHOLD: "not-a-number" }).embeddingDedupeThreshold)
+      .toBeUndefined();
+    expect(loadConfig({ EMBEDDING_DEDUPE_THRESHOLD: "0.7" }).embeddingDedupeThreshold).toBe(0.7);
+  });
+
+  it("warns when OpenRouter-backed modes are enabled without a key", () => {
+    const warnings = validateConfig(loadConfig({ EMBEDDING_MODE: "on", DECISIONS_MODE: "on" }));
+    expect(warnings.join(" ")).toContain("OPENROUTER_API_KEY");
+    expect(validateConfig(loadConfig({ OPENROUTER_API_KEY: "k" }))).toEqual([]);
   });
 
   it("falls back to auto for an unknown backend value", () => {

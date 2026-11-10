@@ -816,4 +816,315 @@ describe("freshness report describes the sources actually returned", () => {
     expect(result.freshness?.status).toBe("verified");
     expect(result.freshness?.status).not.toBe("unmet");
   });
+
+});
+
+describe("v1.7 OpenRouter integration wiring", () => {
+  const baseProviders = () => ({
+    anysearch: successfulProvider("anysearch"),
+    tavily: successfulProvider("tavily"),
+    searxng: successfulProvider("searxng"),
+    "deepseek-search": successfulProvider("deepseek-search"),
+  });
+
+  const fakeReranker = (seenModels: Array<string | undefined>): Reranker => ({
+    id: "openrouter-rerank",
+    async rerank(_query, sources, _signal, options) {
+      seenModels.push(options?.model);
+      return {
+        sources: sources.map((source, index) => ({
+          ...source,
+          rerankScore: 0.9 - index * 0.05,
+        })),
+        model: options?.model ?? "unknown",
+        elapsedMs: 1,
+        inputCount: sources.length,
+      };
+    },
+    async health() {
+      return 1;
+    },
+  });
+
+  it("keeps the requested quality when a docs-intent veto suppresses the regex", async () => {
+    const seenModels: Array<string | undefined> = [];
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key", DECISIONS_MODE: "on" }),
+      baseProviders(),
+      successfulNative(),
+      fakeReranker(seenModels),
+      {
+        docsIntent: {
+          async resolve() {
+            return {
+              mode: "on",
+              applied: true,
+              verdict: "veto",
+              p: 0.05,
+              threshold: 0.3,
+              regexOfficialIntent: true,
+              resolvedOfficialIntent: false,
+              cached: false,
+              elapsedMs: 5,
+            };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "best search API for AI agents",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "balanced",
+    });
+
+    expect(result.quality).toBe("balanced");
+    expect(result.rerank?.requested).toBe(true);
+    expect(result.decisions?.verdict).toBe("veto");
+    expect(result.warnings.join(" ")).toContain("Documentation routing suppressed");
+  });
+
+  it("routes to fast when the model confirms a docs-intent regex hit", async () => {
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key", DECISIONS_MODE: "on" }),
+      baseProviders(),
+      successfulNative(),
+      undefined,
+      {
+        docsIntent: {
+          async resolve() {
+            return {
+              mode: "on",
+              applied: true,
+              verdict: "keep",
+              p: 0.92,
+              threshold: 0.3,
+              regexOfficialIntent: true,
+              resolvedOfficialIntent: true,
+              cached: false,
+              elapsedMs: 5,
+            };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "OpenAI official MCP documentation",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      quality: "balanced",
+    });
+
+    expect(result.quality).toBe("fast");
+    expect(result.decisions?.verdict).toBe("keep");
+    expect(result.warnings.join(" ")).toContain("routed from quality=balanced to fast");
+  });
+
+  it("reports shadow-mode verdicts without changing behavior", async () => {
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key", DECISIONS_MODE: "shadow" }),
+      baseProviders(),
+      successfulNative(),
+      undefined,
+      {
+        docsIntent: {
+          async resolve() {
+            return {
+              mode: "shadow",
+              applied: false,
+              verdict: "veto",
+              p: 0.04,
+              threshold: 0.3,
+              regexOfficialIntent: true,
+              resolvedOfficialIntent: true,
+              cached: false,
+              elapsedMs: 5,
+            };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "OpenAI official MCP documentation",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      quality: "balanced",
+    });
+
+    expect(result.quality).toBe("fast");
+    expect(result.decisions?.mode).toBe("shadow");
+    expect(result.decisions?.verdict).toBe("veto");
+  });
+
+  it("resolves the rerank model per quality tier", async () => {
+    const seenModels: Array<string | undefined> = [];
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key" }),
+      baseProviders(),
+      successfulNative(),
+      fakeReranker(seenModels),
+    );
+
+    await service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "balanced",
+    });
+    await service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "deep",
+    });
+
+    expect(seenModels).toEqual([
+      "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
+      "nvidia/nemotron-3.5-rerank-8b:free",
+    ]);
+  });
+
+  it("does not call the embedder when embeddings are off", async () => {
+    let embedded = 0;
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key", EMBEDDING_MODE: "off" }),
+      baseProviders(),
+      successfulNative(),
+      fakeReranker([]),
+      {
+        embedder: {
+          async embed() {
+            embedded += 1;
+            return { vectors: [], model: "fake", dims: 2, partial: false };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "deep",
+    });
+
+    expect(embedded).toBe(0);
+    expect(result.embedding).toBeUndefined();
+    expect(result.decisions).toBeUndefined();
+  });
+  it("uses the fallback model threshold for semantic dedupe", async () => {
+    const provider: SearchProvider = {
+      id: "tavily",
+      async search() {
+        return {
+          provider: "tavily",
+          sources: [
+            {
+              url: "https://a.example.com/deepseek-v4-release",
+              title: "DeepSeek V4 release notes",
+              provider: "tavily",
+            },
+            {
+              url: "https://b.example.com/deepseek-v4-pricing",
+              title: "DeepSeek V4 release pricing",
+              provider: "tavily",
+            },
+          ],
+          warnings: [],
+        };
+      },
+    };
+    const service = new SearchService(
+      loadConfig({
+        OPENROUTER_API_KEY: "test-key",
+        EMBEDDING_MODE: "on",
+      }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: provider,
+        searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
+      },
+      successfulNative(),
+      fakeReranker([]),
+      {
+        embedder: {
+          async embed(texts: string[]) {
+            return {
+              vectors: texts.map((_text, index) => (
+                index === 0
+                  ? new Float32Array([1, 0])
+                  : new Float32Array([0.66, Math.sqrt(1 - 0.66 * 0.66)])
+              )),
+              model: "baai/bge-m3",
+              dims: 2,
+              partial: false,
+            };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 2,
+      freshness: "any",
+      quality: "balanced",
+    });
+
+    // bge-m3's own threshold is 0.72; the 0.66 pair must NOT merge even though
+    // the configured primary 8b threshold would be 0.62.
+    expect(result.sources).toHaveLength(2);
+    expect(result.embedding?.model).toBe("baai/bge-m3");
+    expect(result.embedding?.mergedPairs).toBe(0);
+    expect(result.sourceIdentity?.semanticCopyCount).toBeUndefined();
+  });
+
+  it("does not warn about suppressed routing in decisions shadow mode", async () => {
+    const service = new SearchService(
+      loadConfig({ OPENROUTER_API_KEY: "test-key", DECISIONS_MODE: "shadow" }),
+      baseProviders(),
+      successfulNative(),
+      fakeReranker([]),
+      {
+        docsIntent: {
+          async resolve() {
+            return {
+              mode: "shadow",
+              applied: false,
+              verdict: "veto",
+              p: 0.04,
+              threshold: 0.3,
+              regexOfficialIntent: true,
+              resolvedOfficialIntent: true,
+              cached: false,
+              elapsedMs: 5,
+            };
+          },
+        } as never,
+      },
+    );
+
+    const result = await service.webSearch({
+      query: "OpenAI official MCP documentation",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      quality: "balanced",
+    });
+
+    expect(result.warnings.join(" ")).not.toContain("Documentation routing suppressed");
+    expect(result.warnings.join(" ")).toContain("routed from quality=balanced to fast");
+  });
+
 });

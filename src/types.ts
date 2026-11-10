@@ -9,6 +9,50 @@ export type DocumentationQueryMode = "fast" | "deep";
 export type SearchProviderId = "anysearch" | "tavily" | "searxng" | "deepseek-search";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
+export type RerankNormalization = "auto" | "raw" | "minmax";
+export type RerankSignalQuality = "strong" | "weak";
+export type EmbeddingMode = "off" | "shadow" | "on";
+export type DecisionsMode = "off" | "shadow" | "on";
+
+export interface RerankScoreReport {
+  mode: RerankNormalization;
+  applied: boolean;
+  rawMin?: number;
+  rawMax?: number;
+  spread?: number;
+  signalQuality: RerankSignalQuality;
+}
+
+export interface EmbeddingReport {
+  mode: EmbeddingMode;
+  applied: boolean;
+  model?: string;
+  dims?: number;
+  candidates: number;
+  embedded: number;
+  mergedPairs: number;
+  partial: boolean;
+  fallbackIndex?: number;
+  circuitOpen: boolean;
+  elapsedMs: number;
+  usage?: Record<string, unknown>;
+  /** Shadow mode: number of pairs that would have been merged. */
+  wouldMerge?: number;
+}
+
+export interface DecisionsReport {
+  mode: DecisionsMode;
+  applied: boolean;
+  verdict: "veto" | "keep" | "fallback";
+  p?: number;
+  threshold: number;
+  regexOfficialIntent: boolean;
+  resolvedOfficialIntent: boolean;
+  cached: boolean;
+  fallbackReason?: string;
+  elapsedMs: number;
+  annotations?: number;
+}
 
 export interface SearchInput {
   query: string;
@@ -103,7 +147,13 @@ export interface SearchResult {
     cached?: boolean;
     top1Protected?: boolean;
     reason?: string;
+    normalization?: RerankNormalization;
+    scoreRange?: { min: number; max: number; spread: number };
+    signalQuality?: RerankSignalQuality;
+    usage?: Record<string, unknown>;
   };
+  embedding?: EmbeddingReport;
+  decisions?: DecisionsReport;
 }
 
 export interface FreshnessReport {
@@ -128,6 +178,8 @@ export interface SourceIdentityReport {
   languageVariantCount: number;
   crossHostCopyCount: number;
   conflictingDateCount: number;
+  /** Additional merges attributed to semantic dedupe (0 when off). */
+  semanticCopyCount?: number;
   independence: {
     independentDomains: number;
     dominantDomainShare: number;
@@ -138,7 +190,7 @@ export interface SourceIdentityReport {
     keptUrl: string;
     mergedUrls: string[];
     hosts: string[];
-    reason: "same-url" | "language-variant" | "syndicated-copy";
+    reason: "same-url" | "language-variant" | "syndicated-copy" | "semantic-syndication";
     dateConflict: boolean;
   }>;
 }
@@ -179,6 +231,7 @@ export interface RerankResult {
   model: string;
   elapsedMs: number;
   inputCount: number;
+  usage?: Record<string, unknown>;
 }
 
 export interface Reranker {
@@ -187,6 +240,7 @@ export interface Reranker {
     query: string,
     sources: SearchSource[],
     signal?: AbortSignal,
+    options?: { model?: string },
   ): Promise<RerankResult>;
   health(signal?: AbortSignal): Promise<number>;
 }

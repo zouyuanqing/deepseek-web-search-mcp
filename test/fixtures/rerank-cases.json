@@ -1,0 +1,1379 @@
+{
+  "schemaVersion": 1,
+  "datasetKind": "recorded",
+  "capturedAt": "2026-11-10T10:20:39.000Z",
+  "inputChars": 800,
+  "models": {
+    "old": "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
+    "new": "nvidia/nemotron-3.5-rerank-8b:free"
+  },
+  "budget": {
+    "maxRequests": 120
+  },
+  "cases": [
+    {
+      "id": "official-001",
+      "category": "official",
+      "query": "DeepSeek official API documentation",
+      "candidates": [
+        {
+          "provider": "searxng",
+          "url": "https://github.com/deepseek-ai/DeepSeek-V4",
+          "title": "deepseek-ai/DeepSeek-V4",
+          "snippet": "Model repository with weights and technical report.",
+          "label": 2
+        },
+        {
+          "provider": "tavily",
+          "url": "https://api-docs.deepseek.com/",
+          "title": "DeepSeek API Documentation",
+          "snippet": "Official reference for chat completions, models, pricing and rate limits.",
+          "label": 3
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1deepseekapi/",
+          "title": "Is the DeepSeek API worth it? - r/LocalLLaMA",
+          "snippet": "Community discussion about pricing and quality.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://techsy.io/en/deepseek-api-complete-guide",
+          "title": "DeepSeek API complete guide 2026",
+          "snippet": "Aggregated tips and tricks from multiple blogs.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://api-docs.deepseek.com/pricing",
+          "title": "DeepSeek API Pricing",
+          "snippet": "Official pricing table for the DeepSeek API.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://blog.thirdparty.dev/call-deepseek-api-python",
+          "title": "How to call the DeepSeek API with Python in 5 minutes",
+          "snippet": "Third-party tutorial with screenshots.",
+          "label": 1
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 2178,
+          "scores": {
+            "https://api-docs.deepseek.com/": 0.982423,
+            "https://api-docs.deepseek.com/pricing": 0.375821,
+            "https://techsy.io/en/deepseek-api-complete-guide": 0.163713,
+            "https://blog.thirdparty.dev/call-deepseek-api-python": 0.035013,
+            "https://github.com/deepseek-ai/DeepSeek-V4": 0.017986,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1deepseekapi/": 0.016657
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 981,
+          "scores": {
+            "https://api-docs.deepseek.com/": 0.217427,
+            "https://api-docs.deepseek.com/pricing": 0.113167,
+            "https://blog.thirdparty.dev/call-deepseek-api-python": 0.095761,
+            "https://techsy.io/en/deepseek-api-complete-guide": 0.089688,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1deepseekapi/": 0.066708,
+            "https://github.com/deepseek-ai/DeepSeek-V4": 0.061595
+          }
+        }
+      }
+    },
+    {
+      "id": "official-002",
+      "category": "official",
+      "query": "OpenAI official MCP documentation",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://medium.com/@writer/mcp-explained-simply",
+          "title": "MCP explained simply",
+          "snippet": "Blog post explaining MCP in plain language.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://platform.openai.com/docs/mcp",
+          "title": "MCP - OpenAI Platform docs",
+          "snippet": "Official OpenAI documentation for Model Context Protocol support.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://modelcontextprotocol.io/specification/transports",
+          "title": "MCP transports specification",
+          "snippet": "Official MCP specification page for transports.",
+          "label": 3
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://ofox.ai/mcp-complete-guide",
+          "title": "MCP complete guide",
+          "snippet": "Mirrored aggregator page.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://www.youtube.com/watch?v=mcp-video",
+          "title": "MCP video walkthrough",
+          "snippet": "Conference talk recording.",
+          "label": 0
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1746,
+          "scores": {
+            "https://platform.openai.com/docs/mcp": 0.696578,
+            "https://ofox.ai/mcp-complete-guide": 0.049131,
+            "https://modelcontextprotocol.io/specification/transports": 0.035079,
+            "https://medium.com/@writer/mcp-explained-simply": 0.010611,
+            "https://www.youtube.com/watch?v=mcp-video": 0.00483
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 956,
+          "scores": {
+            "https://platform.openai.com/docs/mcp": 0.213031,
+            "https://ofox.ai/mcp-complete-guide": 0.074169,
+            "https://modelcontextprotocol.io/specification/transports": 0.073859,
+            "https://medium.com/@writer/mcp-explained-simply": 0.059342,
+            "https://www.youtube.com/watch?v=mcp-video": 0.051556
+          }
+        }
+      }
+    },
+    {
+      "id": "official-003",
+      "category": "official",
+      "query": "SearXNG official Docker installation guide",
+      "candidates": [
+        {
+          "provider": "searxng",
+          "url": "https://docs.searxng.org/admin/installation-docker.html",
+          "title": "SearXNG Docker installation",
+          "snippet": "Official docs: run SearXNG with Docker Compose.",
+          "label": 3
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/searxng/searxng",
+          "title": "searxng/searxng",
+          "snippet": "Source repository and README.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://taskade.com/searxng-notes",
+          "title": "SearXNG notes and tips",
+          "snippet": "Content-farm notes page.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/searxng/comments/1docker/",
+          "title": "Docker setup questions",
+          "snippet": "Community thread about docker networking.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.searxng.org/admin/settings/index.html",
+          "title": "SearXNG settings reference",
+          "snippet": "Official settings reference.",
+          "label": 3
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1023,
+          "scores": {
+            "https://docs.searxng.org/admin/installation-docker.html": 0.991015,
+            "https://www.reddit.com/r/searxng/comments/1docker/": 0.062103,
+            "https://github.com/searxng/searxng": 0.036016,
+            "https://taskade.com/searxng-notes": 0.014118,
+            "https://docs.searxng.org/admin/settings/index.html": 0.008062
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 1756,
+          "scores": {
+            "https://docs.searxng.org/admin/installation-docker.html": 0.227119,
+            "https://github.com/searxng/searxng": 0.07597,
+            "https://www.reddit.com/r/searxng/comments/1docker/": 0.074859,
+            "https://docs.searxng.org/admin/settings/index.html": 0.051433,
+            "https://taskade.com/searxng-notes": 0.050792
+          }
+        }
+      }
+    },
+    {
+      "id": "official-004",
+      "category": "official",
+      "query": "Anthropic Messages API reference",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://docs.anthropic.com/en/api/messages",
+          "title": "Messages API reference - Anthropic",
+          "snippet": "Official API reference for the Messages endpoint.",
+          "label": 3
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://stackoverflow.com/questions/1/anthropic-messages",
+          "title": "Anthropic Messages API error - Stack Overflow",
+          "snippet": "Question about a 400 error.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://github.com/anthropics/anthropic-sdk-typescript",
+          "title": "anthropic-sdk-typescript",
+          "snippet": "Official TypeScript SDK repository.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://aitoolly.com/anthropic-api-guide",
+          "title": "Anthropic API guide",
+          "snippet": "Aggregator repost.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.anthropic.com/en/api/rate-limits",
+          "title": "Rate limits - Anthropic docs",
+          "snippet": "Official rate limit reference.",
+          "label": 3
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 865,
+          "scores": {
+            "https://docs.anthropic.com/en/api/messages": 0.999941,
+            "https://aitoolly.com/anthropic-api-guide": 0.108189,
+            "https://stackoverflow.com/questions/1/anthropic-messages": 0.029591,
+            "https://docs.anthropic.com/en/api/rate-limits": 0.021492,
+            "https://github.com/anthropics/anthropic-sdk-typescript": 0.015604
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 1353,
+          "scores": {
+            "https://docs.anthropic.com/en/api/messages": 0.259632,
+            "https://stackoverflow.com/questions/1/anthropic-messages": 0.080423,
+            "https://aitoolly.com/anthropic-api-guide": 0.072571,
+            "https://docs.anthropic.com/en/api/rate-limits": 0.06114,
+            "https://github.com/anthropics/anthropic-sdk-typescript": 0.059739
+          }
+        }
+      }
+    },
+    {
+      "id": "official-005",
+      "category": "official",
+      "query": "Tavily search API reference",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/webdev/comments/1tavily/",
+          "title": "Tavily API experience?",
+          "snippet": "Community opinions.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+          "title": "Search endpoint - Tavily API reference",
+          "snippet": "Official API reference for the search endpoint.",
+          "label": 3
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/extract",
+          "title": "Extract endpoint - Tavily API reference",
+          "snippet": "Official API reference for extract.",
+          "label": 3
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://techstackexplorer.com/tavily-guide",
+          "title": "Tavily guide",
+          "snippet": "Aggregator page.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://blog.thirdparty.dev/tavily-vs-serpapi",
+          "title": "Tavily vs SerpAPI",
+          "snippet": "Comparison blog.",
+          "label": 1
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 2117,
+          "scores": {
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.998427,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/extract": 0.056652,
+            "https://blog.thirdparty.dev/tavily-vs-serpapi": 0.038107,
+            "https://www.reddit.com/r/webdev/comments/1tavily/": 0.01844,
+            "https://techstackexplorer.com/tavily-guide": 0.013849
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 935,
+          "scores": {
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.237294,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/extract": 0.101768,
+            "https://techstackexplorer.com/tavily-guide": 0.072603,
+            "https://www.reddit.com/r/webdev/comments/1tavily/": 0.069993,
+            "https://blog.thirdparty.dev/tavily-vs-serpapi": 0.068679
+          }
+        }
+      }
+    },
+    {
+      "id": "current-001",
+      "category": "current",
+      "query": "DeepSeek latest model release",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://api-docs.deepseek.com/news/2026/deepseek-v41",
+          "title": "DeepSeek V4.1 release notes",
+          "snippet": "Official announcement of the V4.1 release.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://techcrunch.com/2026/09/deepseek-v41-release",
+          "title": "DeepSeek releases V4.1 with 1M context",
+          "snippet": "News coverage of the release.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://ofox.ai/deepseek-v41-analysis",
+          "title": "DeepSeek V4.1 analysis",
+          "snippet": "Mirrored aggregator analysis.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1v41/",
+          "title": "V4.1 first impressions",
+          "snippet": "Community thread.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://blog.oldnews.dev/deepseek-v3-review",
+          "title": "DeepSeek V3 review (2025)",
+          "snippet": "Outdated review of the previous generation.",
+          "label": 0
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 895,
+          "scores": {
+            "https://techcrunch.com/2026/09/deepseek-v41-release": 0.613121,
+            "https://api-docs.deepseek.com/news/2026/deepseek-v41": 0.161188,
+            "https://ofox.ai/deepseek-v41-analysis": 0.136493,
+            "https://blog.oldnews.dev/deepseek-v3-review": 0.093512,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1v41/": 0.001661
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2570,
+          "scores": {
+            "https://techcrunch.com/2026/09/deepseek-v41-release": 0.136433,
+            "https://api-docs.deepseek.com/news/2026/deepseek-v41": 0.129412,
+            "https://ofox.ai/deepseek-v41-analysis": 0.081537,
+            "https://blog.oldnews.dev/deepseek-v3-review": 0.076887,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1v41/": 0.051196
+          }
+        }
+      }
+    },
+    {
+      "id": "current-002",
+      "category": "current",
+      "query": "OpenAI latest API changelog",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://community.openai.com/t/changelog-discussion/1",
+          "title": "Changelog discussion thread",
+          "snippet": "Community discussion.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://platform.openai.com/docs/changelog",
+          "title": "API changelog - OpenAI Platform",
+          "snippet": "Official changelog of API changes.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://news.ycombinator.com/item?id=1",
+          "title": "OpenAI API changes - Hacker News",
+          "snippet": "Discussion thread.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://aitoolmall.com/openai-changelog-summary",
+          "title": "OpenAI changelog summary",
+          "snippet": "Auto-generated summary site.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://platform.openai.com/docs/deprecations",
+          "title": "Deprecations - OpenAI Platform",
+          "snippet": "Official deprecation schedule.",
+          "label": 3
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 716,
+          "scores": {
+            "https://platform.openai.com/docs/changelog": 0.97151,
+            "https://aitoolmall.com/openai-changelog-summary": 0.130618,
+            "https://news.ycombinator.com/item?id=1": 0.089773,
+            "https://community.openai.com/t/changelog-discussion/1": 0.033211,
+            "https://platform.openai.com/docs/deprecations": 0.009486
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 1077,
+          "scores": {
+            "https://platform.openai.com/docs/changelog": 0.179143,
+            "https://aitoolmall.com/openai-changelog-summary": 0.091406,
+            "https://community.openai.com/t/changelog-discussion/1": 0.087728,
+            "https://news.ycombinator.com/item?id=1": 0.080532,
+            "https://platform.openai.com/docs/deprecations": 0.074257
+          }
+        }
+      }
+    },
+    {
+      "id": "current-003",
+      "category": "current",
+      "query": "SearXNG latest release notes",
+      "candidates": [
+        {
+          "provider": "searxng",
+          "url": "https://github.com/searxng/searxng/releases",
+          "title": "Releases - searxng/searxng",
+          "snippet": "Official GitHub release notes.",
+          "label": 3
+        },
+        {
+          "provider": "tavily",
+          "url": "https://news.ycombinator.com/item?id=2",
+          "title": "SearXNG release discussion",
+          "snippet": "Hacker News thread.",
+          "label": 1
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/searxng/comments/1release/",
+          "title": "Release thread",
+          "snippet": "Subreddit thread.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://genuineai.com/searxng-release-summary",
+          "title": "SearXNG release summary",
+          "snippet": "Content-farm summary.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.searxng.org/dev/releases.html",
+          "title": "SearXNG release history",
+          "snippet": "Official release history page.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 942,
+          "scores": {
+            "https://docs.searxng.org/dev/releases.html": 0.779658,
+            "https://github.com/searxng/searxng/releases": 0.7773,
+            "https://genuineai.com/searxng-release-summary": 0.444354,
+            "https://www.reddit.com/r/searxng/comments/1release/": 0.049497,
+            "https://news.ycombinator.com/item?id=2": 0.043691
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b:free",
+          "status": "skipped",
+          "elapsedMs": 909,
+          "errorCode": 502,
+          "errorMessage": "HTTP 502"
+        }
+      }
+    },
+    {
+      "id": "current-004",
+      "category": "current",
+      "query": "MCP security guidance 2026",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://modelcontextprotocol.io/specification/security",
+          "title": "MCP security best practices",
+          "snippet": "Official security guidance for MCP.",
+          "label": 3
+        },
+        {
+          "provider": "tavily",
+          "url": "https://www.reddit.com/r/mcp/comments/1security/",
+          "title": "MCP security concerns",
+          "snippet": "Community thread.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://blog.thirdparty.dev/mcp-security-checklist",
+          "title": "MCP security checklist",
+          "snippet": "Third-party checklist blog.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://pdf.ai/mcp-security-guide",
+          "title": "MCP security guide PDF",
+          "snippet": "Gated PDF landing page.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/modelcontextprotocol/security-advisories",
+          "title": "MCP security advisories",
+          "snippet": "Official advisories repository.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1933,
+          "scores": {
+            "https://modelcontextprotocol.io/specification/security": 0.117167,
+            "https://pdf.ai/mcp-security-guide": 0.040922,
+            "https://blog.thirdparty.dev/mcp-security-checklist": 0.012054,
+            "https://www.reddit.com/r/mcp/comments/1security/": 0.008446,
+            "https://github.com/modelcontextprotocol/security-advisories": 0.006004
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 3009,
+          "scores": {
+            "https://modelcontextprotocol.io/specification/security": 0.092823,
+            "https://pdf.ai/mcp-security-guide": 0.065579,
+            "https://blog.thirdparty.dev/mcp-security-checklist": 0.059412,
+            "https://github.com/modelcontextprotocol/security-advisories": 0.057652,
+            "https://www.reddit.com/r/mcp/comments/1security/": 0.053785
+          }
+        }
+      }
+    },
+    {
+      "id": "current-005",
+      "category": "current",
+      "query": "web search API pricing changes",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://docs.tavily.com/documentation/pricing",
+          "title": "Tavily pricing",
+          "snippet": "Official pricing page.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://techcrunch.com/2026/08/search-api-pricing",
+          "title": "Search API pricing shifts",
+          "snippet": "News article on pricing changes.",
+          "label": 2
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/webdev/comments/1pricing/",
+          "title": "Search API pricing thread",
+          "snippet": "Community discussion.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://productbard.com/search-api-pricing-comparison",
+          "title": "Search API pricing comparison",
+          "snippet": "Affiliate comparison page.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+          "title": "Tavily search API reference",
+          "snippet": "Official API reference.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 941,
+          "scores": {
+            "https://techcrunch.com/2026/08/search-api-pricing": 0.430925,
+            "https://www.reddit.com/r/webdev/comments/1pricing/": 0.040163,
+            "https://productbard.com/search-api-pricing-comparison": 0.010818,
+            "https://docs.tavily.com/documentation/pricing": 0.001668,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.001138
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2463,
+          "scores": {
+            "https://techcrunch.com/2026/08/search-api-pricing": 0.139803,
+            "https://www.reddit.com/r/webdev/comments/1pricing/": 0.087905,
+            "https://productbard.com/search-api-pricing-comparison": 0.063273,
+            "https://docs.tavily.com/documentation/pricing": 0.054123,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.040809
+          }
+        }
+      }
+    },
+    {
+      "id": "comparison-001",
+      "category": "comparison",
+      "query": "SearXNG vs Tavily",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/searxng/comments/1vst/",
+          "title": "SearXNG vs Tavily - r/searxng",
+          "snippet": "Community comparison thread.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://docs.searxng.org/",
+          "title": "SearXNG documentation",
+          "snippet": "Official docs landing page.",
+          "label": 2
+        },
+        {
+          "provider": "tavily",
+          "url": "https://blog.thirdparty.dev/searxng-vs-tavily-2026",
+          "title": "SearXNG vs Tavily in 2026",
+          "snippet": "Detailed comparison with benchmarks.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://techsy.io/en/searxng-vs-tavily",
+          "title": "SearXNG vs Tavily - what is better?",
+          "snippet": "Content-farm comparison.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+          "title": "Tavily search endpoint reference",
+          "snippet": "Official API reference.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1113,
+          "scores": {
+            "https://blog.thirdparty.dev/searxng-vs-tavily-2026": 0.999477,
+            "https://techsy.io/en/searxng-vs-tavily": 0.999193,
+            "https://www.reddit.com/r/searxng/comments/1vst/": 0.995408,
+            "https://docs.searxng.org/": 0.023962,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.007969
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2732,
+          "scores": {
+            "https://www.reddit.com/r/searxng/comments/1vst/": 0.179823,
+            "https://techsy.io/en/searxng-vs-tavily": 0.177221,
+            "https://blog.thirdparty.dev/searxng-vs-tavily-2026": 0.173998,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.052647,
+            "https://docs.searxng.org/": 0.050864
+          }
+        }
+      }
+    },
+    {
+      "id": "comparison-002",
+      "category": "comparison",
+      "query": "best web search API",
+      "candidates": [
+        {
+          "provider": "deepseek-search",
+          "url": "https://aitoolplanet.com/best-web-search-api",
+          "title": "Best web search API 2026 (top 12)",
+          "snippet": "Affiliate listicle.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://www.g2.com/categories/search-apis",
+          "title": "Best Search APIs - G2",
+          "snippet": "Review portal rankings.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://docs.searxng.org/",
+          "title": "SearXNG docs",
+          "snippet": "Official docs.",
+          "label": 2
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://news.ycombinator.com/item?id=3",
+          "title": "Ask HN: best search API?",
+          "snippet": "HN discussion.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+          "title": "Tavily search API reference",
+          "snippet": "Official API reference.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 954,
+          "scores": {
+            "https://aitoolplanet.com/best-web-search-api": 0.860134,
+            "https://www.g2.com/categories/search-apis": 0.1414,
+            "https://news.ycombinator.com/item?id=3": 0.079353,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.008062,
+            "https://docs.searxng.org/": 0.004905
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 3670,
+          "scores": {
+            "https://aitoolplanet.com/best-web-search-api": 0.174278,
+            "https://www.g2.com/categories/search-apis": 0.111353,
+            "https://news.ycombinator.com/item?id=3": 0.10883,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.0715,
+            "https://docs.searxng.org/": 0.046513
+          }
+        }
+      }
+    },
+    {
+      "id": "comparison-003",
+      "category": "comparison",
+      "query": "reranker model comparison",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://huggingface.co/spaces/reranker-leaderboard",
+          "title": "Reranker leaderboard",
+          "snippet": "Community leaderboard on Hugging Face.",
+          "label": 2
+        },
+        {
+          "provider": "searxng",
+          "url": "https://arxiv.org/abs/2404.00000",
+          "title": "A survey of reranking models",
+          "snippet": "Academic survey paper.",
+          "label": 2
+        },
+        {
+          "provider": "tavily",
+          "url": "https://blog.thirdparty.dev/nemotron-rerank-vs-cohere",
+          "title": "Nemotron rerank vs Cohere rerank",
+          "snippet": "Hands-on comparison blog.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://thequantumgadget.com/reranker-comparison",
+          "title": "Reranker comparison 2026",
+          "snippet": "Aggregator listicle.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/MachineLearning/comments/1rerank/",
+          "title": "Reranker experiences",
+          "snippet": "Community thread.",
+          "label": 1
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 682,
+          "scores": {
+            "https://thequantumgadget.com/reranker-comparison": 0.716119,
+            "https://blog.thirdparty.dev/nemotron-rerank-vs-cohere": 0.363308,
+            "https://arxiv.org/abs/2404.00000": 0.16872,
+            "https://huggingface.co/spaces/reranker-leaderboard": 0.161188,
+            "https://www.reddit.com/r/MachineLearning/comments/1rerank/": 0.028328
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2280,
+          "scores": {
+            "https://thequantumgadget.com/reranker-comparison": 0.111118,
+            "https://blog.thirdparty.dev/nemotron-rerank-vs-cohere": 0.10692,
+            "https://huggingface.co/spaces/reranker-leaderboard": 0.086872,
+            "https://arxiv.org/abs/2404.00000": 0.081617,
+            "https://www.reddit.com/r/MachineLearning/comments/1rerank/": 0.073032
+          }
+        }
+      }
+    },
+    {
+      "id": "comparison-004",
+      "category": "comparison",
+      "query": "vector database comparison for RAG",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://www.reddit.com/r/Rag/comments/1vdb/",
+          "title": "Vector DB choices for RAG",
+          "snippet": "Community thread.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://blog.thirdparty.dev/vector-db-benchmarks-2026",
+          "title": "Vector DB benchmarks 2026",
+          "snippet": "Benchmark blog with methodology.",
+          "label": 2
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://news.ycombinator.com/item?id=4",
+          "title": "Vector database discussion",
+          "snippet": "HN thread.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://itoolszone.com/vector-database-guide",
+          "title": "Vector database guide",
+          "snippet": "Aggregator page.",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://docs.pinecone.io/guides/overview",
+          "title": "Pinecone documentation",
+          "snippet": "Official docs for one compared product.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1530,
+          "scores": {
+            "https://www.reddit.com/r/Rag/comments/1vdb/": 0.779825,
+            "https://news.ycombinator.com/item?id=4": 0.005775,
+            "https://itoolszone.com/vector-database-guide": 0.004982,
+            "https://blog.thirdparty.dev/vector-db-benchmarks-2026": 0.004102,
+            "https://docs.pinecone.io/guides/overview": 0.000289
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2510,
+          "scores": {
+            "https://www.reddit.com/r/Rag/comments/1vdb/": 0.116788,
+            "https://blog.thirdparty.dev/vector-db-benchmarks-2026": 0.071272,
+            "https://itoolszone.com/vector-database-guide": 0.065271,
+            "https://news.ycombinator.com/item?id=4": 0.058015,
+            "https://docs.pinecone.io/guides/overview": 0.057922
+          }
+        }
+      }
+    },
+    {
+      "id": "chinese-001",
+      "category": "chinese",
+      "query": "DeepSeek 官方 API 文档",
+      "candidates": [
+        {
+          "provider": "searxng",
+          "url": "https://api-docs.deepseek.com/zh-cn/",
+          "title": "DeepSeek API 文档",
+          "snippet": "官方 API 参考文档（中文）。",
+          "label": 3
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://zhuanlan.zhihu.com/p/123456",
+          "title": "DeepSeek API 使用指南 - 知乎",
+          "snippet": "第三方知乎专栏教程。",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://blog.csdn.net/x/article/details/1",
+          "title": "DeepSeek API 接入教程",
+          "snippet": "CSDN 博客转载。",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/deepseek-ai/DeepSeek-V4",
+          "title": "deepseek-ai/DeepSeek-V4",
+          "snippet": "官方模型仓库。",
+          "label": 2
+        },
+        {
+          "provider": "searxng",
+          "url": "https://techsy.io/zh/deepseek-api",
+          "title": "DeepSeek API 完整指南",
+          "snippet": "内容农场聚合页。",
+          "label": 0
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1673,
+          "scores": {
+            "https://api-docs.deepseek.com/zh-cn/": 0.997547,
+            "https://techsy.io/zh/deepseek-api": 0.753104,
+            "https://zhuanlan.zhihu.com/p/123456": 0.225758,
+            "https://blog.csdn.net/x/article/details/1": 0.103205,
+            "https://github.com/deepseek-ai/DeepSeek-V4": 0.033972
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2002,
+          "scores": {
+            "https://api-docs.deepseek.com/zh-cn/": 0.249143,
+            "https://techsy.io/zh/deepseek-api": 0.109234,
+            "https://zhuanlan.zhihu.com/p/123456": 0.097085,
+            "https://blog.csdn.net/x/article/details/1": 0.091499,
+            "https://github.com/deepseek-ai/DeepSeek-V4": 0.069342
+          }
+        }
+      }
+    },
+    {
+      "id": "chinese-002",
+      "category": "chinese",
+      "query": "MCP 协议 传输类型",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://modelcontextprotocol.io/specification/transports",
+          "title": "MCP transports specification",
+          "snippet": "官方传输层规范（英文）。",
+          "label": 3
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://juejin.cn/post/123456",
+          "title": "MCP 传输类型详解 - 掘金",
+          "snippet": "社区技术文章。",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://www.cnblogs.com/x/p/1.html",
+          "title": "MCP 协议学习笔记",
+          "snippet": "博客学习笔记。",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://docs.searxng.org/",
+          "title": "SearXNG 文档",
+          "snippet": "无关的官方文档。",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/modelcontextprotocol/typescript-sdk",
+          "title": "modelcontextprotocol/typescript-sdk",
+          "snippet": "官方 TypeScript SDK 仓库。",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1335,
+          "scores": {
+            "https://juejin.cn/post/123456": 0.685949,
+            "https://modelcontextprotocol.io/specification/transports": 0.507171,
+            "https://www.cnblogs.com/x/p/1.html": 0.020449,
+            "https://github.com/modelcontextprotocol/typescript-sdk": 0.003707,
+            "https://docs.searxng.org/": 0.000691
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2999,
+          "scores": {
+            "https://juejin.cn/post/123456": 0.135067,
+            "https://modelcontextprotocol.io/specification/transports": 0.10776,
+            "https://www.cnblogs.com/x/p/1.html": 0.06617,
+            "https://github.com/modelcontextprotocol/typescript-sdk": 0.03066,
+            "https://docs.searxng.org/": 0.023684
+          }
+        }
+      }
+    },
+    {
+      "id": "chinese-003",
+      "category": "chinese",
+      "query": "Tavily 定价 套餐",
+      "candidates": [
+        {
+          "provider": "searxng",
+          "url": "https://docs.tavily.com/documentation/pricing",
+          "title": "Tavily pricing",
+          "snippet": "Official pricing page.",
+          "label": 3
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://zhuanlan.zhihu.com/p/654321",
+          "title": "Tavily 定价分析 - 知乎",
+          "snippet": "知乎分析文章。",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://aitoolmall.com/tavily-pricing",
+          "title": "Tavily 价格汇总",
+          "snippet": "聚合站价格汇总。",
+          "label": 0
+        },
+        {
+          "provider": "tavily",
+          "url": "https://www.reddit.com/r/webdev/comments/1tavilypricing/",
+          "title": "Tavily pricing?",
+          "snippet": "Reddit 讨论。",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+          "title": "Tavily search API reference",
+          "snippet": "官方 API 参考。",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1446,
+          "scores": {
+            "https://docs.tavily.com/documentation/pricing": 0.549157,
+            "https://aitoolmall.com/tavily-pricing": 0.431584,
+            "https://www.reddit.com/r/webdev/comments/1tavilypricing/": 0.108378,
+            "https://zhuanlan.zhihu.com/p/654321": 0.056548,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.003636
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 1850,
+          "scores": {
+            "https://docs.tavily.com/documentation/pricing": 0.097427,
+            "https://zhuanlan.zhihu.com/p/654321": 0.09511,
+            "https://www.reddit.com/r/webdev/comments/1tavilypricing/": 0.094155,
+            "https://aitoolmall.com/tavily-pricing": 0.092187,
+            "https://docs.tavily.com/documentation/api-reference/endpoint/search": 0.047686
+          }
+        }
+      }
+    },
+    {
+      "id": "aggregator-001",
+      "category": "aggregator-dominance",
+      "query": "DeepSeek API rate limits",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://www.reddit.com/r/LocalLLaMA/comments/1ratelimit/",
+          "title": "DeepSeek rate limits discussion",
+          "snippet": "Community thread with anecdotal limits.",
+          "label": 1
+        },
+        {
+          "provider": "searxng",
+          "url": "https://techsy.io/en/deepseek-api-rate-limits",
+          "title": "DeepSeek API rate limits complete guide",
+          "snippet": "Content-farm guide that scrapes the docs.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://api-docs.deepseek.com/quick_start/rate_limit",
+          "title": "Rate limits - DeepSeek API Docs",
+          "snippet": "Official rate limit documentation.",
+          "label": 3
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://medium.com/@writer/deepseek-rate-limits-explained",
+          "title": "DeepSeek rate limits explained",
+          "snippet": "Medium blog post repeating the docs.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://www.youtube.com/watch?v=ratelimits",
+          "title": "DeepSeek rate limits video",
+          "snippet": "Video overview.",
+          "label": 0
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 941,
+          "scores": {
+            "https://api-docs.deepseek.com/quick_start/rate_limit": 0.999536,
+            "https://techsy.io/en/deepseek-api-rate-limits": 0.998396,
+            "https://medium.com/@writer/deepseek-rate-limits-explained": 0.994739,
+            "https://www.youtube.com/watch?v=ratelimits": 0.947672,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1ratelimit/": 0.916559
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2616,
+          "scores": {
+            "https://api-docs.deepseek.com/quick_start/rate_limit": 0.219491,
+            "https://techsy.io/en/deepseek-api-rate-limits": 0.200121,
+            "https://medium.com/@writer/deepseek-rate-limits-explained": 0.160426,
+            "https://www.reddit.com/r/LocalLLaMA/comments/1ratelimit/": 0.131984,
+            "https://www.youtube.com/watch?v=ratelimits": 0.117469
+          }
+        }
+      }
+    },
+    {
+      "id": "aggregator-002",
+      "category": "aggregator-dominance",
+      "query": "SSE reconnect backoff",
+      "candidates": [
+        {
+          "provider": "anysearch",
+          "url": "https://medium.com/@writer/sse-reconnect-backoff-explained",
+          "title": "SSE reconnect backoff explained",
+          "snippet": "Medium blog post about backoff strategies.",
+          "label": 1
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://taskade.com/sse-notes",
+          "title": "SSE notes",
+          "snippet": "Content-farm notes page.",
+          "label": 0
+        },
+        {
+          "provider": "searxng",
+          "url": "https://html.spec.whatwg.org/multipage/server-sent-events.html",
+          "title": "Server-sent events - WHATWG HTML spec",
+          "snippet": "Official specification for SSE.",
+          "label": 3
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/modelcontextprotocol/typescript-sdk/issues/1",
+          "title": "SSE reconnect issue - MCP SDK",
+          "snippet": "GitHub issue thread.",
+          "label": 2
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://www.reddit.com/r/webdev/comments/1sse/",
+          "title": "SSE reconnect experiences",
+          "snippet": "Community thread.",
+          "label": 1
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 793,
+          "scores": {
+            "https://medium.com/@writer/sse-reconnect-backoff-explained": 0.996584,
+            "https://www.reddit.com/r/webdev/comments/1sse/": 0.019531,
+            "https://github.com/modelcontextprotocol/typescript-sdk/issues/1": 0.013795,
+            "https://taskade.com/sse-notes": 0.001832,
+            "https://html.spec.whatwg.org/multipage/server-sent-events.html": 0.001549
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 3128,
+          "scores": {
+            "https://medium.com/@writer/sse-reconnect-backoff-explained": 0.186004,
+            "https://www.reddit.com/r/webdev/comments/1sse/": 0.076932,
+            "https://github.com/modelcontextprotocol/typescript-sdk/issues/1": 0.061617,
+            "https://taskade.com/sse-notes": 0.049962,
+            "https://html.spec.whatwg.org/multipage/server-sent-events.html": 0.049839
+          }
+        }
+      }
+    },
+    {
+      "id": "aggregator-003",
+      "category": "aggregator-dominance",
+      "query": "MCP transport types",
+      "candidates": [
+        {
+          "provider": "tavily",
+          "url": "https://techsy.io/en/mcp-transport-types",
+          "title": "MCP transport types complete guide",
+          "snippet": "Content-farm guide.",
+          "label": 0
+        },
+        {
+          "provider": "anysearch",
+          "url": "https://modelcontextprotocol.io/specification/transports",
+          "title": "MCP transports specification",
+          "snippet": "Official specification.",
+          "label": 3
+        },
+        {
+          "provider": "searxng",
+          "url": "https://blog.thirdparty.dev/mcp-stdio-vs-http",
+          "title": "MCP stdio vs HTTP transports",
+          "snippet": "Third-party explainer.",
+          "label": 2
+        },
+        {
+          "provider": "deepseek-search",
+          "url": "https://www.reddit.com/r/mcp/comments/1transport/",
+          "title": "MCP transport discussion",
+          "snippet": "Community thread.",
+          "label": 1
+        },
+        {
+          "provider": "tavily",
+          "url": "https://github.com/modelcontextprotocol/typescript-sdk",
+          "title": "typescript-sdk",
+          "snippet": "Official SDK repository.",
+          "label": 2
+        }
+      ],
+      "recorded": {
+        "old": {
+          "model": "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "status": "ok",
+          "elapsedMs": 1049,
+          "scores": {
+            "https://techsy.io/en/mcp-transport-types": 0.938576,
+            "https://modelcontextprotocol.io/specification/transports": 0.136954,
+            "https://blog.thirdparty.dev/mcp-stdio-vs-http": 0.052814,
+            "https://www.reddit.com/r/mcp/comments/1transport/": 0.052425,
+            "https://github.com/modelcontextprotocol/typescript-sdk": 0.001519
+          }
+        },
+        "new": {
+          "model": "nvidia/nemotron-3.5-rerank-8b",
+          "status": "ok",
+          "elapsedMs": 2564,
+          "scores": {
+            "https://techsy.io/en/mcp-transport-types": 0.168964,
+            "https://modelcontextprotocol.io/specification/transports": 0.11308,
+            "https://blog.thirdparty.dev/mcp-stdio-vs-http": 0.103924,
+            "https://www.reddit.com/r/mcp/comments/1transport/": 0.093657,
+            "https://github.com/modelcontextprotocol/typescript-sdk": 0.037755
+          }
+        }
+      }
+    }
+  ]
+}

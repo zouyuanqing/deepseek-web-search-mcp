@@ -1,9 +1,12 @@
-import { loadConfig } from "./config.js";
+import { loadConfig, validateConfig } from "./config.js";
 import { errorText } from "./errors.js";
 import { printHealth, runStdioServer } from "./tools.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
+  for (const warning of validateConfig(config)) {
+    process.stderr.write(`Warning: ${warning}\n`);
+  }
   const doctor = process.argv.includes("--doctor") || process.argv.includes("--health");
   if (doctor) {
     await printHealth(config);

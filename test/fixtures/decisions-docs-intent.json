@@ -1,0 +1,490 @@
+{
+  "schemaVersion": 1,
+  "datasetKind": "recorded",
+  "capturedAt": "2026-11-10T11:18:22.972Z",
+  "model": "parallel/decisions-fast:free",
+  "endpoint": "/api/alpha/decisions",
+  "repeats": 2,
+  "promptVersion": "docs-intent-noul-v1",
+  "questionHash": "e8459d5a34e7e154610301c567a521332d72b5d21439561c301677096d2c1b0d",
+  "promptSource": "dist/providers/openrouter-decisions.js + dist/docs-intent.js",
+  "requestShape": {
+    "state": "object:{query}",
+    "questions": "object:{is_documentation:noul}",
+    "model": "parallel/decisions-fast:free"
+  },
+  "deadBand": [
+    0.25,
+    0.4
+  ],
+  "question": {
+    "type": "noul",
+    "instructions": "Is the user asking for official documentation, API reference, source code, release notes or changelog of a software project?",
+    "criteria": {
+      "true": "The query asks for a software project's own documentation, API reference, source code, release notes, or changelog.",
+      "false": "The query asks for general information, news, tutorials, comparisons, or opinions rather than a software project's own documentation or release artifacts."
+    }
+  },
+  "cases": [
+    {
+      "id": "docs-intent-001",
+      "category": "official-docs",
+      "query": "DeepSeek official API documentation",
+      "gold": true,
+      "note": "explicit official docs",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.994397,
+          "annotations": 10,
+          "elapsedMs": 2447,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.994253,
+          "annotations": 10,
+          "elapsedMs": 1636,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-002",
+      "category": "fn-prone",
+      "query": "MCP transport types",
+      "gold": true,
+      "note": "concept page in the official spec; regex has no docs keyword",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.712624,
+          "annotations": 10,
+          "elapsedMs": 1599,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.712624,
+          "annotations": 10,
+          "elapsedMs": 1567,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-003",
+      "category": "fn-prone",
+      "query": "OpenAI pricing per million tokens",
+      "gold": true,
+      "note": "pricing reference page; may look like commercial research",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.267804,
+          "annotations": 10,
+          "elapsedMs": 3222,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.235112,
+          "annotations": 10,
+          "elapsedMs": 1475,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-004",
+      "category": "official-docs",
+      "query": "Anthropic Messages API reference",
+      "gold": true,
+      "note": "explicit API reference",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.99501,
+          "annotations": 10,
+          "elapsedMs": 1969,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.995408,
+          "annotations": 10,
+          "elapsedMs": 1282,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-005",
+      "category": "fn-prone",
+      "query": "SSE reconnection behavior in MCP clients",
+      "gold": true,
+      "note": "behaviour detail documented in the spec",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.495073,
+          "annotations": 10,
+          "elapsedMs": 1372,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.45372,
+          "annotations": 10,
+          "elapsedMs": 1313,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-006",
+      "category": "official-docs",
+      "query": "DeepSeek context caching documentation",
+      "gold": true,
+      "note": "explicit docs",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.97485,
+          "annotations": 8,
+          "elapsedMs": 1781,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.97485,
+          "annotations": 8,
+          "elapsedMs": 1019,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-007",
+      "category": "official-docs",
+      "query": "SearXNG docker installation guide",
+      "gold": true,
+      "note": "official admin docs",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.965485,
+          "annotations": 10,
+          "elapsedMs": 1284,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.965485,
+          "annotations": 10,
+          "elapsedMs": 1442,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-008",
+      "category": "fn-prone",
+      "query": "Tavily API rate limit headers",
+      "gold": true,
+      "note": "reference detail table",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.915036,
+          "annotations": 9,
+          "elapsedMs": 1879,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.938787,
+          "annotations": 9,
+          "elapsedMs": 1289,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-009",
+      "category": "official-docs",
+      "query": "Python requests library reference",
+      "gold": true,
+      "note": "library reference docs",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.985806,
+          "annotations": 10,
+          "elapsedMs": 1363,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.986405,
+          "annotations": 10,
+          "elapsedMs": 1649,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-010",
+      "category": "official-docs",
+      "query": "MCP TypeScript SDK server example",
+      "gold": true,
+      "note": "official SDK docs example",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.889147,
+          "annotations": 10,
+          "elapsedMs": 1361,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.900504,
+          "annotations": 10,
+          "elapsedMs": 2273,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-011",
+      "category": "fn-prone",
+      "query": "webhook retry semantics documentation",
+      "gold": true,
+      "note": "explicit docs, product unspecified",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.921321,
+          "annotations": 10,
+          "elapsedMs": 1509,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.922025,
+          "annotations": 10,
+          "elapsedMs": 1834,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-012",
+      "category": "fp-prone",
+      "query": "best search API",
+      "gold": false,
+      "note": "comparison/buying intent; regex sees api",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.136208,
+          "annotations": 10,
+          "elapsedMs": 1703,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.122391,
+          "annotations": 10,
+          "elapsedMs": 2307,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-013",
+      "category": "fp-prone",
+      "query": "release management",
+      "gold": false,
+      "note": "process intent; regex sees release",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.384105,
+          "annotations": 10,
+          "elapsedMs": 1367,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.384105,
+          "annotations": 10,
+          "elapsedMs": 1068,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-014",
+      "category": "fp-prone",
+      "query": "REST API design",
+      "gold": false,
+      "note": "craft/practices intent; regex sees api",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.205049,
+          "annotations": 10,
+          "elapsedMs": 2020,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.205049,
+          "annotations": 10,
+          "elapsedMs": 1364,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-015",
+      "category": "fp-prone",
+      "query": "how to choose an embedding model",
+      "gold": false,
+      "note": "advice intent",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.085434,
+          "annotations": 10,
+          "elapsedMs": 2866,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.061154,
+          "annotations": 10,
+          "elapsedMs": 1387,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-016",
+      "category": "fp-prone",
+      "query": "API gateway cost calculator",
+      "gold": false,
+      "note": "tool intent; regex sees api",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.109828,
+          "annotations": 10,
+          "elapsedMs": 1852,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.096691,
+          "annotations": 10,
+          "elapsedMs": 1366,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-017",
+      "category": "neg-control",
+      "query": "how do I release a version",
+      "gold": false,
+      "note": "process question; regex sees release",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.250604,
+          "annotations": 10,
+          "elapsedMs": 2214,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.250604,
+          "annotations": 10,
+          "elapsedMs": 1809,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-018",
+      "category": "neg-control",
+      "query": "compare search providers",
+      "gold": false,
+      "note": "comparison intent",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.125091,
+          "annotations": 10,
+          "elapsedMs": 1326,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.091988,
+          "annotations": 10,
+          "elapsedMs": 1077,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-019",
+      "category": "neg-control",
+      "query": "what is a reranker",
+      "gold": false,
+      "note": "concept/opinion intent",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.075658,
+          "annotations": 10,
+          "elapsedMs": 1507,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.073877,
+          "annotations": 10,
+          "elapsedMs": 1358,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    },
+    {
+      "id": "docs-intent-020",
+      "category": "neg-control",
+      "query": "search API market share",
+      "gold": false,
+      "note": "market data intent",
+      "runs": [
+        {
+          "status": "ok",
+          "probability": 0.063382,
+          "annotations": 10,
+          "elapsedMs": 1393,
+          "model": "parallel/decisions-fast-20261106"
+        },
+        {
+          "status": "ok",
+          "probability": 0.063382,
+          "annotations": 10,
+          "elapsedMs": 2117,
+          "model": "parallel/decisions-fast-20261106"
+        }
+      ]
+    }
+  ]
+}

@@ -13,7 +13,7 @@ const EXPECTED_ANNOTATIONS = {
 
 async function listToolSurface() {
   const server = createMcpServer(loadConfig({}));
-  const client = new Client({ name: "tools-test", version: "1.4.0" });
+  const client = new Client({ name: "tools-test", version: "1.7.0" });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
   try {

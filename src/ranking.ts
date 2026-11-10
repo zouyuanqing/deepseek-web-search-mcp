@@ -1,4 +1,11 @@
-import type { Quality, SearchInput, SearchSource } from "./types.js";
+import { calibrateRerankScores } from "./rerank-calibration.js";
+import type {
+  Quality,
+  RerankNormalization,
+  RerankScoreReport,
+  SearchInput,
+  SearchSource,
+} from "./types.js";
 import { canonicalizeUrl } from "./utils.js";
 import {
   isAggregatorHost,
@@ -39,7 +46,12 @@ export const RANK_FUSION_WEIGHTS = {
 const RRF_K = 60;
 const OFFICIAL_BOOST = 0.003;
 export const RERANK_CONFIDENCE_FLOOR = 0.35;
-export const TOP1_MIN_RERANK_RELEVANCE = 0.5;
+/** Minimum calibrated rerank score for the top-1 protection gate (v1.7 recalibration). */
+export const TOP1_MIN_RERANK_RELEVANCE = 0.85;
+/** Profile-neutral alias for the top-1 relevance floor. */
+export const RERANK_TOP1_MIN = TOP1_MIN_RERANK_RELEVANCE;
+/** The original top result is only protected while rerank keeps it near the top. */
+const TOP1_MAX_RERANK_RANK = 2;
 
 const OFFICIAL_INTENT_PATTERN =
   /(?:官方|official|\bdocs?\b|documentation|\bapi\b|reference|source\s+code|release|changelog)/iu;
@@ -76,6 +88,21 @@ export interface FusionResult {
   sources: RankedSource[];
   top1Protected: boolean;
   officialIntent: boolean;
+  /** How rerank scores were calibrated, in rerank-result order. */
+  calibration?: RerankScoreReport & { scores: number[] };
+}
+
+export interface FusionOptions {
+  /** Overrides regex-based official intent detection (e.g. a decisions-model verdict). */
+  officialIntent?: boolean;
+  /** Rerank model that produced the scores; selects the calibration profile. */
+  rerankModel?: string;
+  /** Score normalization mode; "auto" resolves from the rerank model profile. */
+  rerankNormalization?: RerankNormalization;
+  /** Absolute calibrated-score floor below which rerank evidence is ignored. */
+  confidenceFloor?: number;
+  /** Minimum calibrated rerank score for top-1 protection. */
+  top1Min?: number;
 }
 
 export function resolveQuality(input: Pick<SearchInput, "quality" | "rerank">): Quality {
@@ -175,17 +202,29 @@ function rankScore(rank: number, weight: number): number {
   return weight / (RRF_K + rank);
 }
 
-export function rerankConfidence(score: number | undefined): number {
+export function rerankConfidence(
+  score: number | undefined,
+  floor = RERANK_CONFIDENCE_FLOOR,
+): number {
   if (score === undefined || !Number.isFinite(score)) return 0;
+  const effectiveFloor = Number.isFinite(floor)
+    ? Math.max(0, Math.min(1, floor))
+    : RERANK_CONFIDENCE_FLOOR;
   const normalized = Math.max(0, Math.min(1, score));
   // Low-confidence candidates receive no rerank evidence, not a noisy rank bonus.
-  if (normalized <= RERANK_CONFIDENCE_FLOOR) return 0;
-  return (normalized - RERANK_CONFIDENCE_FLOOR) / (1 - RERANK_CONFIDENCE_FLOOR);
+  if (normalized <= effectiveFloor) return 0;
+  return (normalized - effectiveFloor) / (1 - effectiveFloor);
 }
 
-function hasTop1RelevantRerank(source: RankedSource): boolean {
-  return source.rerankScore !== undefined
-    && source.rerankScore >= TOP1_MIN_RERANK_RELEVANCE;
+function isTop1Relevant(score: number | undefined, top1Min: number): boolean {
+  return score !== undefined && Number.isFinite(score) && score >= top1Min;
+}
+
+function resolveTop1Min(top1Min: number | undefined): number {
+  if (top1Min === undefined || !Number.isFinite(top1Min)) {
+    return TOP1_MIN_RERANK_RELEVANCE;
+  }
+  return Math.max(0, Math.min(1, top1Min));
 }
 
 function compareRanked(left: RankedSource, right: RankedSource): number {
@@ -201,8 +240,25 @@ export function fuseRankings(
   query: string,
   originalSources: SearchSource[],
   rerankSources: SearchSource[],
+  options: FusionOptions = {},
 ): FusionResult {
-  const officialIntent = hasOfficialIntent(query);
+  const officialIntent = options.officialIntent ?? hasOfficialIntent(query);
+  const top1Min = resolveTop1Min(options.top1Min);
+  // Calibrate the model's raw scores before any absolute gate sees them: a
+  // compressed distribution would otherwise make rerank a silent no-op.
+  const calibration = calibrateRerankScores(
+    rerankSources.map((source) => source.rerankScore ?? 0),
+    options.rerankNormalization ?? "auto",
+    options.rerankModel ?? "",
+  );
+  const calibratedByKey = new Map<string, number>();
+  rerankSources.forEach((source, index) => {
+    const key = sourceKey(source);
+    if (!calibratedByKey.has(key)) {
+      calibratedByKey.set(key, calibration.scores[index] ?? 0);
+    }
+  });
+
   const originalRanks = new Map<string, number>();
   originalSources.forEach((source, index) => {
     const key = sourceKey(source);
@@ -223,7 +279,10 @@ export function fuseRankings(
     const rerankRank = rerankRanks.get(key) ?? missingRerankRank;
     const sourceAuthority = authorityScore(query, source);
     const rerankSource = rerankByKey.get(key);
-    const confidence = rerankConfidence(rerankSource?.rerankScore);
+    const confidence = rerankConfidence(
+      calibratedByKey.get(key),
+      options.confidenceFloor,
+    );
     const rrf = rankScore(originalRank, RANK_FUSION_WEIGHTS.original)
       + rankScore(rerankRank, RANK_FUSION_WEIGHTS.rerank * confidence);
     return {
@@ -245,15 +304,17 @@ export function fuseRankings(
 
   const originalTop = ranked.find((source) => source.originalRank === 1);
   const fusedTop = ranked[0];
+  const calibratedScore = (source: RankedSource | undefined): number | undefined =>
+    source === undefined ? undefined : calibratedByKey.get(sourceKey(source));
   let top1Protected = false;
   if (
     originalTop !== undefined
     && fusedTop !== undefined
-    && originalTop.rerankRank <= 5
-    && hasTop1RelevantRerank(originalTop)
+    && originalTop.rerankRank <= TOP1_MAX_RERANK_RANK
+    && isTop1Relevant(calibratedScore(originalTop), top1Min)
     && !(
-      fusedTop.rerankRank <= 2
-      && hasTop1RelevantRerank(fusedTop)
+      fusedTop.rerankRank <= TOP1_MAX_RERANK_RANK
+      && isTop1Relevant(calibratedScore(fusedTop), top1Min)
       && fusedTop.authorityScore >= originalTop.authorityScore + 0.25
     )
   ) {
@@ -269,6 +330,7 @@ export function fuseRankings(
     sources: ranked,
     top1Protected,
     officialIntent,
+    calibration,
   };
 }
 

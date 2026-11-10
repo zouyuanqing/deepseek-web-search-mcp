@@ -4,3 +4,6 @@ dist/
 coverage/
 *.log
 work/quality/runtime/
+work/eval/runtime/
+work/eval/live/
+work/eval/*.json

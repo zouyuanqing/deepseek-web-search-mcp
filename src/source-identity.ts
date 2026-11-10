@@ -126,7 +126,12 @@ function jaccard(left: ReadonlySet<string>, right: ReadonlySet<string>): number 
   return shared / (left.size + right.size - shared);
 }
 
-function titleSimilarity(left: SearchSource, right: SearchSource): number {
+/**
+ * Jaccard similarity of title tokens (stop words and short tokens removed).
+ * Exported so semantic dedupe can gate its candidate pairs to the same
+ * "gray band" the lexical syndicated-copy heuristic deliberately skips.
+ */
+export function titleSimilarity(left: SearchSource, right: SearchSource): number {
   return jaccard(new Set(titleTokens(left.title)), new Set(titleTokens(right.title)));
 }
 

@@ -10,7 +10,7 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "deepseek-web-search-smoke", version: "1.6.0" });
+const client = new Client({ name: "deepseek-web-search-smoke", version: "1.7.0" });
 
 try {
   await client.connect(transport);

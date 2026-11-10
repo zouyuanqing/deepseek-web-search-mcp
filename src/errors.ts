@@ -14,7 +14,7 @@ export type ProviderErrorCode =
   | "unknown";
 
 export class ProviderError extends Error {
-  readonly provider: SearchProviderId | "deepseek-native" | "openrouter-rerank" | "service";
+  readonly provider: SearchProviderId | "deepseek-native" | "openrouter-rerank" | "openrouter-embed" | "openrouter-decisions" | "service";
   readonly code: ProviderErrorCode;
   readonly retryable: boolean;
   readonly status?: number;

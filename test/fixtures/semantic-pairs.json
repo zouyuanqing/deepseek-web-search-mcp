@@ -1,0 +1,580 @@
+{
+  "version": 1,
+  "description": "Hand-authored, fully offline fixture for semantic syndication dedupe. All vectors are 4-dimensional L2 unit vectors so every cosine is exact by construction. Titles are chosen so the title-Jaccard falls in the gray band [0.25, 0.6) unless a case explicitly tests the band edges. No network, no API key.",
+  "dims": 4,
+  "thresholds": {
+    "nvidia/nemotron-3.5-embed-8b:free": 0.62,
+    "nvidia/llama-nemotron-embed-vl-1b-v2:free": 0.62,
+    "baai/bge-m3": 0.72
+  },
+  "pairs": [
+    {
+      "id": "gray-band-merge",
+      "label": "merge",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 0.96,
+      "left": {
+        "url": "https://api-docs.deepseek.com/news/release-notes-v32",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "Official release notes for DeepSeek V3.2 with API changes and benchmark numbers.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://ofox.ai/deepseek-v32-launch-recap",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "A recap of the DeepSeek V3.2 launch covering the new API and benchmark numbers.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        0.8,
+        0.6,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "threshold-band",
+      "label": "merge",
+      "titleJaccard": 0.42857142857142855,
+      "cosine": 0.6,
+      "left": {
+        "url": "https://api-docs.deepseek.com/pricing/models",
+        "title": "DeepSeek API pricing update analysis",
+        "snippet": "Updated DeepSeek API pricing and context limits for all models.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://techcrunch.com/deepseek-pricing-changes",
+        "title": "DeepSeek API pricing changes overview",
+        "snippet": "An overview of DeepSeek API pricing changes and context limits.",
+        "provider": "anysearch"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "distinct-topic",
+      "label": "distinct",
+      "titleJaccard": 0.42857142857142855,
+      "cosine": 0,
+      "left": {
+        "url": "https://www.nvidia.com/gtc-2026-supply",
+        "title": "Nvidia GPU supply chain report",
+        "snippet": "Supply chain report on Nvidia GPU allocation for data centers.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://www.reuters.com/technology/nvidia-gpu-forecast",
+        "title": "Nvidia GPU supply forecast review",
+        "snippet": "Review of Nvidia GPU supply forecasts for the next quarter.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "high-band-rejected",
+      "label": "band-rejected-high",
+      "titleJaccard": 0.6,
+      "cosine": 1,
+      "left": {
+        "url": "https://a.example.com/deepseek-v32-notes",
+        "title": "DeepSeek V3.2 release notes explained",
+        "snippet": "Notes about the release.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://b.example.com/deepseek-v32-notes-summary",
+        "title": "DeepSeek V3.2 release notes summarized",
+        "snippet": "Summary about the release.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "low-band-rejected",
+      "label": "band-rejected-low",
+      "titleJaccard": 0.2,
+      "cosine": 1,
+      "left": {
+        "url": "https://a.example.com/deepseek-release",
+        "title": "DeepSeek release notes",
+        "snippet": "Notes.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://b.example.com/deepseek-launch",
+        "title": "DeepSeek launch developers",
+        "snippet": "Launch notes.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "same-host-rejected",
+      "label": "host-rejected",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 1,
+      "left": {
+        "url": "https://news.example.com/post-one",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "First post.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://news.example.com/post-two",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Second post.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "same-slug-rejected",
+      "label": "slug-rejected",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 1,
+      "left": {
+        "url": "https://a.example.com/deepseek-v32-release",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "First copy.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://b.example.com/deepseek-v32-release",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Second copy.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "rightVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "date-conflict",
+      "label": "merge",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 0.96,
+      "left": {
+        "url": "https://api-docs.deepseek.com/news/version-history",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "Official version history.",
+        "publishedAt": "2026-01-05T00:00:00Z",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://ofox.ai/deepseek-v32-version-history",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Syndicated version history.",
+        "publishedAt": "2026-03-05T00:00:00Z",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        0.8,
+        0.6,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "metadata-fill",
+      "label": "merge",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 0.96,
+      "left": {
+        "url": "https://api-docs.deepseek.com/resources/v32-notes",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://ofox.ai/deepseek-v32-resources",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Recap text that should fill the missing official snippet.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        0.8,
+        0.6,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "authority-tie",
+      "label": "keep-earlier-on-tie",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 0.96,
+      "left": {
+        "url": "https://ofox.ai/deepseek-v32-analysis",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "Content farm copy.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://techsy.io/deepseek-v32-recap",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Second content farm copy.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        0.8,
+        0.6,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "primary-beats-unknown",
+      "label": "keep-primary",
+      "titleJaccard": 0.3333333333333333,
+      "cosine": 0.96,
+      "left": {
+        "url": "https://devnotes.example.com/deepseek-v32-explained",
+        "title": "DeepSeek V3.2 release notes: what changed",
+        "snippet": "Independent write-up.",
+        "provider": "tavily"
+      },
+      "right": {
+        "url": "https://api-docs.deepseek.com/news/primary-release-notes",
+        "title": "DeepSeek V3.2 release recap for developers",
+        "snippet": "Official primary source.",
+        "provider": "searxng"
+      },
+      "leftVector": [
+        0.8,
+        0.6,
+        0,
+        0
+      ],
+      "rightVector": [
+        0.6,
+        0.8,
+        0,
+        0
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "gray-band-merge",
+      "threshold": 0.55,
+      "sources": [
+        "gray-band-merge:left",
+        "gray-band-merge:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/news/release-notes-v32",
+        "hosts": [
+          "api-docs.deepseek.com",
+          "ofox.ai"
+        ],
+        "dateConflict": false
+      }
+    },
+    {
+      "id": "below-threshold",
+      "threshold": 0.72,
+      "sources": [
+        "threshold-band:left",
+        "threshold-band:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0
+      }
+    },
+    {
+      "id": "exact-threshold-merge",
+      "threshold": 0.6,
+      "sources": [
+        "threshold-band:left",
+        "threshold-band:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/pricing/models"
+      }
+    },
+    {
+      "id": "just-above-threshold",
+      "threshold": 0.62,
+      "sources": [
+        "threshold-band:left",
+        "threshold-band:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0
+      }
+    },
+    {
+      "id": "high-band-rejected",
+      "threshold": 0.55,
+      "sources": [
+        "high-band-rejected:left",
+        "high-band-rejected:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0,
+        "candidates": 0
+      }
+    },
+    {
+      "id": "low-band-rejected",
+      "threshold": 0.55,
+      "sources": [
+        "low-band-rejected:left",
+        "low-band-rejected:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0,
+        "candidates": 0
+      }
+    },
+    {
+      "id": "same-host-rejected",
+      "threshold": 0.55,
+      "sources": [
+        "same-host-rejected:left",
+        "same-host-rejected:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0,
+        "candidates": 0
+      }
+    },
+    {
+      "id": "same-slug-rejected",
+      "threshold": 0.55,
+      "sources": [
+        "same-slug-rejected:left",
+        "same-slug-rejected:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0,
+        "candidates": 0
+      }
+    },
+    {
+      "id": "distinct-topic",
+      "threshold": 0.55,
+      "sources": [
+        "distinct-topic:left",
+        "distinct-topic:right"
+      ],
+      "expect": {
+        "merged": false,
+        "mergedCount": 0,
+        "semanticCopyCount": 0,
+        "groups": 0
+      }
+    },
+    {
+      "id": "date-conflict",
+      "threshold": 0.55,
+      "sources": [
+        "date-conflict:left",
+        "date-conflict:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/news/version-history",
+        "dateConflict": true
+      }
+    },
+    {
+      "id": "metadata-fill",
+      "threshold": 0.55,
+      "sources": [
+        "metadata-fill:left",
+        "metadata-fill:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/resources/v32-notes",
+        "keptSnippet": "Recap text that should fill the missing official snippet."
+      }
+    },
+    {
+      "id": "authority-tie",
+      "threshold": 0.55,
+      "sources": [
+        "authority-tie:left",
+        "authority-tie:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://ofox.ai/deepseek-v32-analysis"
+      }
+    },
+    {
+      "id": "primary-beats-unknown",
+      "threshold": 0.55,
+      "sources": [
+        "primary-beats-unknown:left",
+        "primary-beats-unknown:right"
+      ],
+      "expect": {
+        "merged": true,
+        "mergedCount": 1,
+        "semanticCopyCount": 1,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/news/primary-release-notes"
+      }
+    },
+    {
+      "id": "three-way-star",
+      "threshold": 0.55,
+      "sources": [
+        "gray-band-merge:left",
+        "gray-band-merge:right"
+      ],
+      "extraSources": [
+        {
+          "url": "https://techsy.io/deepseek-v32-platform-notes",
+          "title": "DeepSeek V3.2 release details for platform teams",
+          "snippet": "Platform-team recap of the DeepSeek V3.2 release.",
+          "provider": "searxng"
+        }
+      ],
+      "vectors": {
+        "https://techsy.io/deepseek-v32-platform-notes": [
+          0.9,
+          0.4358898943540674,
+          0,
+          0
+        ]
+      },
+      "expect": {
+        "merged": true,
+        "mergedCount": 2,
+        "semanticCopyCount": 2,
+        "groups": 1,
+        "keptUrl": "https://api-docs.deepseek.com/news/release-notes-v32",
+        "hosts": [
+          "api-docs.deepseek.com",
+          "ofox.ai",
+          "techsy.io"
+        ]
+      }
+    }
+  ]
+}

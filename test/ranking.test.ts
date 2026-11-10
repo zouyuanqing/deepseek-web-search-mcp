@@ -6,11 +6,13 @@ import {
   providerRequestLimit,
   rerankConfidence,
   RERANK_CONFIDENCE_FLOOR,
+  RERANK_TOP1_MIN,
   resolveQuality,
-  TOP1_MIN_RERANK_RELEVANCE,
   withoutRankingMetadata,
 } from "../src/ranking.js";
 import type { SearchSource } from "../src/types.js";
+
+const NEW_MODEL = "nvidia/nemotron-3.5-rerank-8b:free";
 
 function source(
   url: string,
@@ -112,23 +114,84 @@ describe("rank fusion", () => {
     expect(fused.top1Protected).toBe(true);
   });
 
-  it("guards the original top result when its rerank rank is still strong", () => {
+  it("guards the original top result while rerank keeps it near the top", () => {
     const original = [
       source("https://example.com/a"),
       source("https://example.com/b"),
       source("https://example.com/c"),
     ];
     const rerankedSources = [
-      reranked(original[2]!, 0.8),
-      reranked(original[0]!, 0.8),
-      reranked(original[1]!, 0.8),
+      reranked(original[2]!, 0.9),
+      reranked(original[0]!, 0.9),
+      reranked(original[1]!, 0.9),
     ];
     const fused = fuseRankings("test query", original, rerankedSources);
     expect(fused.sources[0]?.url).toBe(original[0]?.url);
     expect(fused.top1Protected).toBe(true);
   });
 
-  it("allows a materially more authoritative rerank winner to replace top one", () => {
+  it("requires the original top result to clear the recalibrated 0.85 floor", () => {
+    const original = [
+      source("https://example.com/original-top"),
+      source("https://example.com/reliable-alternative"),
+      source("https://example.com/third"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(original[1]!, 0.9),
+        reranked(original[0]!, RERANK_TOP1_MIN - 0.01),
+        reranked(original[2]!, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(original[1]?.url);
+    expect(fused.top1Protected).toBe(false);
+  });
+
+  it("protects the original top result when it clears the floor and rerank kept it at rank 2", () => {
+    const originalTop = source("https://example.com/original-top");
+    const second = source("https://example.com/second");
+    const official = source("https://docs.searxng.org/guide");
+    const original = [originalTop, second, official];
+    // Rerank promotes an authoritative-but-rank-3 candidate over the original
+    // top; the original top is still near the top (rank 2) so it is protected.
+    const fused = fuseRankings(
+      "SearXNG official documentation",
+      original,
+      [
+        reranked(second, 0.9),
+        reranked(originalTop, 0.9),
+        reranked(official, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(originalTop.url);
+    expect(fused.top1Protected).toBe(true);
+  });
+
+  it("does not protect an original top result that fell to rerank rank 3", () => {
+    const original = [
+      source("https://example.com/a"),
+      source("https://example.com/b"),
+      source("https://example.com/c"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(original[2]!, 0.95),
+        reranked(original[1]!, 0.9),
+        reranked(original[0]!, 0.9),
+      ],
+    );
+
+    expect(fused.sources[0]?.url).toBe(original[2]?.url);
+    expect(fused.top1Protected).toBe(false);
+  });
+
+  it("keeps a materially more authoritative near-top rerank winner", () => {
     const aggregator = source("https://reddit.com/r/deepseek");
     const official = source("https://api-docs.deepseek.com/guides/anthropic_api");
     const original = [
@@ -139,13 +202,39 @@ describe("rank fusion", () => {
       official,
     ];
     const rerankedSources = [
-      reranked(official, 0.95),
-      reranked(aggregator, 0.8),
-      ...original.slice(1, 4).map((item) => reranked(item, 0.8)),
+      reranked(official, 0.9),
+      reranked(aggregator, 0.9),
+      ...original.slice(1, 4).map((item) => reranked(item, 0.9)),
     ];
     const fused = fuseRankings("DeepSeek official API documentation", original, rerankedSources);
+
     expect(fused.sources[0]?.url).toBe(official.url);
     expect(fused.top1Protected).toBe(false);
+  });
+
+  it("honors a configured top-1 floor", () => {
+    const originalTop = source("https://example.com/original-top");
+    const second = source("https://example.com/second");
+    const official = source("https://docs.searxng.org/guide");
+    const original = [originalTop, second, official];
+    const rerankSources = [
+      reranked(second, 0.8),
+      reranked(originalTop, 0.8),
+      reranked(official, 0.8),
+    ];
+
+    const defaultFloor = fuseRankings("SearXNG official documentation", original, rerankSources);
+    expect(defaultFloor.sources[0]?.url).toBe(official.url);
+    expect(defaultFloor.top1Protected).toBe(false);
+
+    const lowered = fuseRankings(
+      "SearXNG official documentation",
+      original,
+      rerankSources,
+      { top1Min: 0.75 },
+    );
+    expect(lowered.sources[0]?.url).toBe(originalTop.url);
+    expect(lowered.top1Protected).toBe(true);
   });
 
   it("zeroes low-confidence rerank contributions so noise cannot win by rank alone", () => {
@@ -169,48 +258,120 @@ describe("rank fusion", () => {
     expect(fused.top1Protected).toBe(false);
   });
 
-  it("requires the original top result to clear the top-1 relevance floor", () => {
+  it("disables rerank evidence entirely for a weak min-max signal", () => {
     const original = [
-      source("https://example.com/original-top"),
-      source("https://example.com/reliable-alternative"),
-      source("https://example.com/third"),
+      source("https://example.com/a"),
+      source("https://example.com/b"),
+      source("https://example.com/c"),
     ];
     const fused = fuseRankings(
       "test query",
       original,
       [
-        reranked(original[1]!, 0.9),
-        reranked(original[0]!, TOP1_MIN_RERANK_RELEVANCE - 0.01),
-        reranked(original[2]!, 0.9),
+        reranked(original[1]!, 0.015),
+        reranked(original[2]!, 0.018),
+        reranked(original[0]!, 0.02),
+      ],
+      { rerankModel: NEW_MODEL, rerankNormalization: "auto" },
+    );
+
+    expect(fused.sources.map((item) => item.url)).toEqual(original.map((item) => item.url));
+    expect(fused.top1Protected).toBe(false);
+    expect(fused.calibration?.signalQuality).toBe("weak");
+    expect(fused.calibration?.applied).toBe(false);
+    expect(fused.calibration?.scores).toEqual([0, 0, 0]);
+    expect(fused.sources.every((item) => item.rerankConfidence === 0)).toBe(true);
+  });
+
+  it("recovers rerank ordering from compressed scores with min-max calibration", () => {
+    const original = [
+      source("https://example.com/a"),
+      source("https://example.com/b"),
+      source("https://example.com/c"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(original[2]!, 0.262),
+        reranked(original[1]!, 0.14),
+        reranked(original[0]!, 0.015),
+      ],
+      { rerankModel: NEW_MODEL, rerankNormalization: "auto" },
+    );
+
+    expect(fused.sources.map((item) => item.url)).toEqual([
+      original[2]?.url,
+      original[1]?.url,
+      original[0]?.url,
+    ]);
+    expect(fused.calibration?.mode).toBe("minmax");
+    expect(fused.calibration?.applied).toBe(true);
+    expect(fused.calibration?.signalQuality).toBe("strong");
+    expect(fused.calibration?.rawMin).toBeCloseTo(0.015, 10);
+    expect(fused.calibration?.rawMax).toBeCloseTo(0.262, 10);
+    expect(fused.calibration?.spread).toBeCloseTo(0.247, 10);
+    const calibrated = fused.calibration?.scores ?? [];
+    expect(calibrated[0]).toBe(1);
+    expect(calibrated[1]).toBeCloseTo(0.125 / 0.247, 10);
+    expect(calibrated[2]).toBe(0);
+  });
+
+  it("maps calibrated scores by canonical URL", () => {
+    const original = [
+      source("https://example.com/a?utm_source=newsletter"),
+      source("https://example.com/b"),
+    ];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [
+        reranked(source("https://example.com/b"), 0.9),
+        reranked(source("https://example.com/a"), 0.9),
       ],
     );
 
-    expect(fused.sources[0]?.url).toBe(original[1]?.url);
+    const top = fused.sources.find((item) => item.url.includes("/a"));
+    expect(top?.rerankConfidence).toBeCloseTo((0.9 - RERANK_CONFIDENCE_FLOOR) / (1 - RERANK_CONFIDENCE_FLOOR), 10);
+  });
+
+  it("lets an explicit officialIntent override the query detection", () => {
+    const low = source("https://example.com/low");
+    const other = source("https://example.com/other");
+    const docs = source("https://docs.searxng.org/guide");
+    const original = [low, other, docs];
+    const rerankSources = [
+      reranked(low, 0.9),
+      reranked(docs, 0.9),
+      reranked(other, 0.9),
+    ];
+
+    const detected = fuseRankings("searxng query", original, rerankSources);
+    expect(detected.officialIntent).toBe(false);
+    expect(detected.sources[0]?.url).toBe(low.url);
+
+    const overridden = fuseRankings("searxng query", original, rerankSources, {
+      officialIntent: true,
+    });
+    expect(overridden.officialIntent).toBe(true);
+    expect(overridden.sources[0]?.url).toBe(docs.url);
+  });
+
+  it("applies a custom confidence floor", () => {
+    const original = [source("https://example.com/a"), source("https://example.com/b")];
+    const fused = fuseRankings(
+      "test query",
+      original,
+      [reranked(original[1]!, 0.5), reranked(original[0]!, 0.5)],
+      { confidenceFloor: 0.6 },
+    );
+    expect(fused.sources.every((item) => item.rerankConfidence === 0)).toBe(true);
     expect(fused.top1Protected).toBe(false);
   });
 
-  it("does not let a low-confidence authoritative result replace the original top", () => {
-    const original = [
-      source("https://example.com/original-top"),
-      source("https://example.com/second"),
-      source("https://example.com/third"),
-    ];
-    const authoritativeNoise = source("https://docs.example.com/official-looking");
-    const fused = fuseRankings(
-      "official documentation",
-      [original[0]!, authoritativeNoise, original[2]!],
-      [
-        reranked(authoritativeNoise, RERANK_CONFIDENCE_FLOOR),
-        reranked(original[0]!, 0.9),
-        reranked(original[2]!, 0.9),
-      ],
-    );
-
-    expect(fused.sources[0]?.url).toBe(original[0]?.url);
-    expect(fused.top1Protected).toBe(true);
-  });
-
   it("normalizes rerank confidence and clamps invalid scores", () => {
+    expect(RERANK_CONFIDENCE_FLOOR).toBe(0.35);
+    expect(RERANK_TOP1_MIN).toBe(0.85);
     expect(rerankConfidence(undefined)).toBe(0);
     expect(rerankConfidence(Number.NaN)).toBe(0);
     expect(rerankConfidence(-1)).toBe(0);
@@ -218,6 +379,9 @@ describe("rank fusion", () => {
     expect(rerankConfidence(1)).toBe(1);
     expect(rerankConfidence(2)).toBe(1);
     expect(rerankConfidence(0.675)).toBeCloseTo(0.5, 10);
+    expect(rerankConfidence(0.675, 0.5)).toBeCloseTo(0.35, 10);
+    expect(rerankConfidence(0.5, 0.5)).toBe(0);
+    expect(rerankConfidence(0.9, Number.NaN)).toBeCloseTo(0.8461538461538461, 10);
   });
 
   it("removes internal ranking metadata from public sources", () => {

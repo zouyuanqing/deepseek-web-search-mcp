@@ -64,6 +64,8 @@ export interface FastCleaningOptions {
   mode: FastCleaningMode;
   maxResults: number;
   domainCap: number;
+  /** Resolved documentation intent; when omitted the regex is used. */
+  officialIntent?: boolean;
 }
 
 export interface FastCleaningResult {
@@ -131,10 +133,15 @@ export function nearDuplicate(
     && leftSnippet === rightSnippet;
 }
 
-function fastSourceScore(query: string, source: SearchSource, index: number): number {
+function fastSourceScore(
+  query: string,
+  source: SearchSource,
+  index: number,
+  officialIntent: boolean,
+): number {
   const authority = authorityScore(query, source);
   const lowAuthority = isLowAuthorityHost(source.url);
-  const authorityBoost = hasOfficialIntent(query) ? 0.4 : 0.08;
+  const authorityBoost = officialIntent ? 0.4 : 0.08;
   // The reciprocal-rank term spans 0.2..1.0, so a bounded additive penalty can
   // never displace a rank-1 low-authority hit (measured: reddit at rank 1 scored
   // 0.88 vs 0.78 for a rank-2 official page). The demotion is therefore
@@ -161,8 +168,9 @@ export function cleanFastSources(
     };
   }
 
+  const officialIntent = options.officialIntent ?? hasOfficialIntent(query);
   const ranked = unique
-    .map((source, index) => ({ source, index, score: fastSourceScore(query, source, index) }))
+    .map((source, index) => ({ source, index, score: fastSourceScore(query, source, index, officialIntent) }))
     .sort((left, right) =>
       right.score - left.score
       || left.index - right.index

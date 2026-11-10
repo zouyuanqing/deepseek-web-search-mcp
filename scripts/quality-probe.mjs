@@ -10,7 +10,7 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "quality-probe", version: "1.6.0" });
+const client = new Client({ name: "quality-probe", version: "1.7.0" });
 
 const call = async (name, args) => {
   const result = await client.callTool({ name, arguments: args });

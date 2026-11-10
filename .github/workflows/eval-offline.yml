@@ -1,0 +1,43 @@
+name: Eval (offline)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  eval:
+    name: replay + acceptance gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: npm test
+
+      # Offline replay over committed fixtures (test/fixtures/*.json). No network, no secrets.
+      - run: npm run eval:replay
+
+      # Gate table in scripts/eval/accept.mjs; exit 1 on a red gate, exit 2 when a fixture or
+      # built module is missing (nothing measured). Reports land in work/eval/.
+      - run: npm run eval:accept
+
+      - name: Upload eval reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-reports
+          path: |
+            work/eval/report.json
+            work/eval/acceptance.json
+          if-no-files-found: ignore
+          retention-days: 14

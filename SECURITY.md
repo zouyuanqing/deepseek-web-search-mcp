@@ -28,9 +28,20 @@ Anthropic-compatible Messages API at `DEEPSEEK_SEARCH_BASE_URL` (default
 `https://api.deepseek.com/anthropic`, endpoint `/v1/messages`). With
 `DEEPSEEK_SEARCH_NEED_CONTENT=on`, Search API responses also include page
 content. Rank fusion sends candidate titles, URLs, and snippets to OpenRouter.
-Do not enable `quality: "balanced"` or `quality: "deep"` for queries that must
-remain local. Search and rerank caches are in memory only and are discarded
-when the MCP process exits.
+
+Rerank is enabled by default for `quality: "balanced"` / `"deep"` when
+`OPENROUTER_API_KEY` is configured and sends candidate titles, URLs and snippets to
+`https://openrouter.ai/api/v1/rerank`. Two further OpenRouter features are opt-in
+and off by default:
+`WEB_SEARCH_DECISIONS_MODE=shadow|on` sends the raw query to
+`https://openrouter.ai/api/alpha/decisions`, where the web-grounded model runs
+its own search and returns citations; `EMBEDDING_MODE=shadow|on` sends up to
+eight candidate titles/snippets/URLs to `https://openrouter.ai/api/v1/embeddings`
+(and may use a paid fallback model). Shadow mode makes the same network calls as
+on mode, so it is not a privacy mode. Do not enable `quality: "balanced"` or
+`quality: "deep"` for queries that must remain local. Search, rerank, decisions,
+and embedding caches are in memory only and are discarded when the MCP process
+exits.
 
 ## Reporting
 
