@@ -706,6 +706,27 @@ npm run eval:accept
 | decisions | 决定性 veto 的 false negative = 0；precision ≥ 0.95；recall ≥ 0.85；决定性 case 数 ≥ 10；fixture 的 promptVersion / questionHash 与 dist 一致（漂移即 FAIL） |
 | semantic | 存在候选阈值使 precision ≥ 0.95、recall ≥ 0.80、FPR ≤ 0.03；比较 pair 数 ≥ 20 |
 
+### v1.7.0 验证结果（2026-11-10）
+
+当前提交的 fixture 上的离线结果（`npm run eval:replay` / `npm run eval:accept`）：
+
+- 构建与测试：`npm run build` 通过；`npm test` 20 个文件 / 263 tests 全绿。
+- 验收门控：**PASS（9 pass / 0 fail / 0 blocked / 5 info）**。
+
+| 模块 | 结果 |
+| --- | --- |
+| rerank（20 cases，19 个 paired） | baseline nDCG@5 0.8314；old-raw 0.8503；new-minmax 0.8376；paired new-minmax vs old-raw **-0.0054**（门控 ≥ -0.01）。new-raw 0.8254 = baseline（证明不校准就是 no-op）；old-minmax 比 old-raw 低 0.0185（说明不能对所有模型强制 minmax）。new-minmax calibration applied 100%。延迟：old p50/p95 1023/2117ms，new 2280/3128ms（在 12s profile 内） |
+| decisions（20 queries，12 regex-positive，10 decisive） | decisive precision/recall **1.0 / 1.0**，veto-FN **0**；applicable（含 dead band 回退正则）precision **0.75**、dead band 3、regex-only baseline 0.5；p95 2127ms；promptVersion/questionHash 与 dist 一致 |
+| semantic（24 pairs） | 阈值 0.62：precision/recall **1.0 / 1.0**、FPR **0**；min duplicate 0.8657 / max distinct 0.6115（margin 0.2542）。0.55 时 precision 0.583 / FPR 0.294，因此默认阈值取 0.62 |
+
+补充说明：
+
+- 以上是 production prompt/state 下的结果；`decisions` 的 applicable precision 0.75
+  只作为 INFO、不作为门控，因此 decisions 仍默认 `off`，建议先用 `shadow`
+  积累线上数据再评估是否开启。
+- 独立验证：v1.6.0 与 v1.7.0 在 flags-off 的 fast 搜索上逐字节一致；缺 key/坏 key
+  只降级不失败；shadow 模式不改变行为。
+
 `eval:accept` 退出码：0 = 全部门控 PASS；1 = 有 FAIL；2 = 有 BLOCKED（fixture 或
 构建产物缺失，未测量）。`work/eval/` 下的 JSON 报告被 `.gitignore` 排除；CI
 （`.github/workflows/eval-offline.yml`）在 push / PR 时执行 build、test、
