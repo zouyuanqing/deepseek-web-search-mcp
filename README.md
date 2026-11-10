@@ -25,15 +25,31 @@ v1.7.0 起可在 `balanced` / `deep` 路径上可选接入 OpenRouter 模型能�
 
 ### 分层架构
 
-![分层架构](docs/diagrams/architecture.png)
+**核心分层**
 
-> LaTeX/TikZ 源文件：[`docs/diagrams/architecture.tex`](docs/diagrams/architecture.tex)
+![核心分层架构](docs/diagrams/architecture-core.png)
+
+> LaTeX/TikZ 源文件：[`docs/diagrams/architecture-core.tex`](docs/diagrams/architecture-core.tex)
+
+**可选 OpenRouter 面板（核心图右侧扩展）**
+
+![可选 OpenRouter 面板](docs/diagrams/architecture-openrouter.png)
+
+> LaTeX/TikZ 源文件：[`docs/diagrams/architecture-openrouter.tex`](docs/diagrams/architecture-openrouter.tex)
 
 ### `web_search` 请求流程
 
-![web_search 请求流程](docs/diagrams/request-flow.png)
+**主流程**
 
-> LaTeX/TikZ 源文件：[`docs/diagrams/request-flow.tex`](docs/diagrams/request-flow.tex)
+![web_search 主流程](docs/diagrams/request-flow-main.png)
+
+> LaTeX/TikZ 源文件：[`docs/diagrams/request-flow-main.tex`](docs/diagrams/request-flow-main.tex)
+
+**可选分支（失败时降级）**
+
+![web_search 可选分支](docs/diagrams/request-flow-branches.png)
+
+> LaTeX/TikZ 源文件：[`docs/diagrams/request-flow-branches.tex`](docs/diagrams/request-flow-branches.tex)
 
 ### 模块地图
 

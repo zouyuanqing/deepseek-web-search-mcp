@@ -1,0 +1,41 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usetikzlibrary{positioning,arrows.meta,calc}
+
+\tikzset{
+  box/.style={draw, rounded corners=2pt, align=center, font=\small\sffamily,
+    fill=white, inner sep=4pt, minimum height=9mm, text width=100mm},
+  arrow/.style={-{Latex[length=2mm,width=1.3mm]}, semithick},
+  lbl/.style={font=\scriptsize\sffamily, fill=white, inner sep=1pt, align=center}
+}
+
+\begin{document}
+\begin{tikzpicture}
+\node[box] (client) at (0,10.6) {MCP client (Codex / Claude / ...)};
+\node[box] (tools) at (0,9.4) {\texttt{src/tools.ts}\\web\_search(input)};
+\node[box] (svc) at (0,8.2) {\texttt{SearchService.webSearch}\\quality / backend / freshness};
+\node[box] (routing) at (0,6.8) {\textbf{backend routing}\\auto $\cdot$ external $\cdot$ hybrid $\cdot$ deepseek-search $\cdot$ deepseek-native};
+\node[box] (providers) at (0,5.6) {provider recall: parallel calls + timeout / fallback};
+\node[box] (pool) at (0,4.4) {candidate pool: merge + lexical dedupe + source-identity};
+\node[box] (sem) at (0,3.2) {\texttt{semantic-dedupe}\\optional embedding dedupe};
+\node[box] (rer) at (0,2.0) {\texttt{openrouter-rerank}\\optional rerank + calibration};
+\node[box] (fuse) at (0,0.8) {\texttt{ranking.ts}\\rank fusion (RRF 50/50 + authority)};
+\node[box] (qual) at (0,-0.4) {\texttt{quality.ts}\\freshness + fast cleaning};
+\node[box] (result) at (0,-1.6) {\texttt{SearchResult}\\sources + report fields};
+
+\draw[arrow] (client) -- (tools);
+\draw[arrow] (tools) -- (svc);
+\draw[arrow] (svc) -- (routing);
+\draw[arrow] (routing) -- (providers);
+\draw[arrow] (providers) -- (pool);
+\draw[arrow] (pool) -- (sem);
+\draw[arrow] (sem) -- (rer);
+\draw[arrow] (rer) -- (fuse);
+\draw[arrow] (fuse) -- (qual);
+\draw[arrow] (qual) -- (result);
+
+\node[lbl, anchor=north west, fill=none] at (-5.2,-2.8) {solid = main path; optional branches are shown separately};
+\end{tikzpicture}
+\end{document}
