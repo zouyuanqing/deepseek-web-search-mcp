@@ -7,3 +7,7 @@ work/quality/runtime/
 work/eval/runtime/
 work/eval/live/
 work/eval/*.json
+docs/diagrams/*.aux
+docs/diagrams/*.log
+docs/diagrams/*.pdf
+docs/diagrams/*.synctex.gz
