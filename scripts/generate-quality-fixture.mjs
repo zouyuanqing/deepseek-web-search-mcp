@@ -74,9 +74,9 @@ function makeSyndicationCase(query, index) {
       source(farm, "anysearch", `${query} notes`, 0.66),
       source(languageVariants[2], "anysearch", title, 0.61),
     ] },
-    { provider: "deepseek-native", status: "ok", elapsedMs: 480 + index, sources: [
-      source(mirror, "deepseek-native", title, 0.59),
-      source(farm, "deepseek-native", `${query} notes`, 0.55),
+    { provider: "deepseek-search", status: "ok", elapsedMs: 480 + index, sources: [
+      source(mirror, "deepseek-search", title, 0.59),
+      source(farm, "deepseek-search", `${query} notes`, 0.55),
     ] },
   ];
   return {
@@ -116,8 +116,8 @@ function makeAggregatorDominanceCase(query, index) {
     { provider: "anysearch", status: "ok", elapsedMs: 190 + index, sources: [
       source(video, "anysearch", `${query} video walkthrough`, 0.86),
     ] },
-    { provider: "deepseek-native", status: "ok", elapsedMs: 520 + index, sources: [
-      source(farm, "deepseek-native", `${query} complete guide`, 0.6),
+    { provider: "deepseek-search", status: "ok", elapsedMs: 520 + index, sources: [
+      source(farm, "deepseek-search", `${query} complete guide`, 0.6),
     ] },
   ];
   return {
@@ -171,7 +171,7 @@ function makeCase(category, query, index) {
     { provider: "tavily", status: "ok", elapsedMs: 100 + index, sources: [source(official, "tavily", `${query} official reference`, 0.91 - (index % 5) * 0.03, category === "current" ? currentDate : undefined)] },
     { provider: "searxng", status: "ok", elapsedMs: 140 + index, sources: [source(repository, "searxng", `${query} source repository`, 0.76 - (index % 4) * 0.02)] },
     { provider: "anysearch", status: index % 9 === 0 ? "empty" : "ok", elapsedMs: 180 + index, sources: index % 9 === 0 ? [] : [source(news, "anysearch", `${query} recent result`, 0.63, category === "current" ? currentDate : undefined)] },
-    { provider: "deepseek-native", status: index % 13 === 0 ? "error" : "ok", elapsedMs: 500 + index, sources: index % 13 === 0 ? [] : [source(community, "deepseek-native", `${query} native research`, 0.58, category === "current" ? currentDate : undefined)], ...(index % 13 === 0 ? { errorCode: "timeout", errorMessage: "synthetic timeout" } : {}) },
+    { provider: "deepseek-search", status: index % 13 === 0 ? "error" : "ok", elapsedMs: 500 + index, sources: index % 13 === 0 ? [] : [source(community, "deepseek-search", `${query} native research`, 0.58, category === "current" ? currentDate : undefined)], ...(index % 13 === 0 ? { errorCode: "timeout", errorMessage: "synthetic timeout" } : {}) },
   ];
   const labels = {
     [official]: 3,

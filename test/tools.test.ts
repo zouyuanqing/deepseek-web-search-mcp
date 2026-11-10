@@ -53,7 +53,7 @@ describe("tool surface", () => {
       properties: {
         backend: {
           type: "string",
-          enum: ["auto", "external", "deepseek-native", "hybrid"],
+          enum: ["auto", "external", "deepseek-search", "deepseek-native", "hybrid"],
         },
       },
     });

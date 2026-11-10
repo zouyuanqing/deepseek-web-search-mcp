@@ -142,6 +142,15 @@ export function authorityScore(query: string, source: SearchSource): number {
   const host = parsed.hostname.toLowerCase();
   if (isAggregatorHost(host)) return 0;
   if (isLowAuthorityHost(source.url)) return 0;
+  // The official Search API returns its own authority tier; trust it over
+  // host heuristics when present (tier 3+ is documented as highly authoritative).
+  if (source.authorityTier !== undefined && Number.isFinite(source.authorityTier)) {
+    const tier = Math.trunc(source.authorityTier);
+    if (tier >= 3) return 0.9;
+    if (tier === 2) return 0.6;
+    if (tier === 1) return 0.3;
+    if (tier === 0) return 0;
+  }
 
   const tokens = queryTokens(query);
   if (tokens.length > 0) {

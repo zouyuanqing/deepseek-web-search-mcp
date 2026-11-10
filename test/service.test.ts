@@ -62,12 +62,12 @@ describe("provider routing", () => {
     expect(providerOrder("global")).toEqual(["tavily", "searxng", "anysearch"]);
   });
 
-  it("appends DeepSeek native search to the external provider order", () => {
+  it("appends the official DeepSeek Search API to the external provider order", () => {
     expect(hybridProviderOrder("global")).toEqual([
       "tavily",
       "searxng",
       "anysearch",
-      "deepseek-native",
+      "deepseek-search",
     ]);
   });
 });
@@ -84,6 +84,7 @@ describe("webResearch fallback", () => {
       anysearch: successfulProvider("anysearch"),
       tavily: successfulProvider("tavily"),
       searxng: successfulProvider("searxng"),
+      "deepseek-search": successfulProvider("deepseek-search"),
     };
     const service = new SearchService(loadConfig({}), providers, native);
     const result = await service.webResearch({
@@ -108,6 +109,7 @@ describe("web_search native backend compatibility", () => {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
       },
       native,
     );
@@ -146,6 +148,12 @@ describe("web_search native backend compatibility", () => {
           throw new Error("external provider should not be called");
         },
       },
+      "deepseek-search": {
+        id: "deepseek-search" as const,
+        async search() {
+          throw new Error("external provider should not be called");
+        },
+      },
     };
     const service = new SearchService(
       loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
@@ -171,7 +179,7 @@ describe("web_search native backend compatibility", () => {
     expect(result.nativeSearchDegraded).toBe(false);
   });
 
-  it("includes native and external sources in auto mode", async () => {
+  it("includes the official DeepSeek Search API and external sources in auto mode", async () => {
     const native = successfulNative();
     const service = new SearchService(
       loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
@@ -179,6 +187,7 @@ describe("web_search native backend compatibility", () => {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
       },
       native,
     );
@@ -193,26 +202,25 @@ describe("web_search native backend compatibility", () => {
 
     expect(result.backend).toBe("hybrid");
     expect(result.provider).toBe("multiple");
-    expect(result.sources.some((source) => source.provider === "deepseek-native")).toBe(true);
+    expect(result.sources.some((source) => source.provider === "deepseek-search")).toBe(true);
     expect(result.sources.some((source) => source.provider === "tavily")).toBe(true);
-    expect(result.nativeSearchRequests).toBe(1);
-    expect(result.nativeSearchDegraded).toBe(false);
-    expect(native.calls).toBe(1);
+    expect(native.calls).toBe(0);
   });
 
-  it("keeps external sources when native search fails in hybrid mode", async () => {
-    const native: DeepSeekNativeProvider = {
-      id: "deepseek-native",
-      async research() {
-        throw new ProviderError("deepseek-native", "timeout", "native timeout");
-      },
-    };
+  it("keeps external sources when the official DeepSeek Search API fails in hybrid mode", async () => {
+    const native = successfulNative();
     const service = new SearchService(
       loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
       {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": {
+          id: "deepseek-search" as const,
+          async search() {
+            throw new ProviderError("deepseek-search", "rate_limited", "deepseek search rate limited");
+          },
+        },
       },
       native,
     );
@@ -228,11 +236,11 @@ describe("web_search native backend compatibility", () => {
     expect(result.backend).toBe("hybrid");
     expect(result.provider).toBe("multiple");
     expect(result.fallbackUsed).toBe(true);
-    expect(result.nativeSearchDegraded).toBe(true);
-    expect(result.warnings[0]).toContain("native timeout");
+    expect(result.warnings.join(" ")).toContain("deepseek-search failed: deepseek search rate limited");
+    expect(native.calls).toBe(0);
   });
 
-  it("sends native and external candidates through the same reranker", async () => {
+  it("sends official DeepSeek and external candidates through the same reranker", async () => {
     const seen: SearchSource[][] = [];
     const reranker: Reranker = {
       id: "openrouter-rerank",
@@ -255,6 +263,7 @@ describe("web_search native backend compatibility", () => {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
       },
       successfulNative(),
       reranker,
@@ -271,8 +280,164 @@ describe("web_search native backend compatibility", () => {
 
     expect(result.backend).toBe("hybrid");
     expect(seen).toHaveLength(1);
-    expect(seen[0]?.some((source) => source.provider === "deepseek-native")).toBe(true);
+    expect(seen[0]?.some((source) => source.provider === "deepseek-search")).toBe(true);
     expect(seen[0]?.some((source) => source.provider === "tavily")).toBe(true);
+  });
+});
+
+describe("web_search official DeepSeek Search API backend", () => {
+  it("uses only the official Search API provider and never the legacy model path", async () => {
+    const native = successfulNative();
+    const externalFailure = {
+      async search() {
+        throw new Error("external provider should not be called");
+      },
+    };
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: { id: "anysearch" as const, ...externalFailure },
+        tavily: { id: "tavily" as const, ...externalFailure },
+        searxng: { id: "searxng" as const, ...externalFailure },
+        "deepseek-search": successfulProvider("deepseek-search"),
+      },
+      native,
+    );
+
+    const result = await service.webSearch({
+      query: "DeepSeek official Search API",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      backend: "deepseek-search",
+    });
+
+    expect(result.backend).toBe("deepseek-search");
+    expect(result.mode).toBe("fast");
+    expect(result.provider).toBe("deepseek-search");
+    expect(result.sources[0]?.provider).toBe("deepseek-search");
+    expect(native.calls).toBe(0);
+  });
+
+  it("routes official Search API balanced searches through rank fusion", async () => {
+    const seen: SearchSource[][] = [];
+    const reranker: Reranker = {
+      id: "openrouter-rerank",
+      async rerank(_query, sources) {
+        seen.push(sources);
+        return {
+          sources: sources.map((source) => ({ ...source, rerankScore: 0.9 })),
+          model: "test-reranker",
+          elapsedMs: 1,
+          inputCount: sources.length,
+        };
+      },
+      async health() {
+        return 1;
+      },
+    };
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+        "deepseek-search": {
+          id: "deepseek-search" as const,
+          async search() {
+            return {
+              provider: "deepseek-search" as const,
+              sources: [
+                { url: "https://example.com/a", provider: "deepseek-search" as const },
+                { url: "https://example.com/b", provider: "deepseek-search" as const },
+              ],
+              warnings: [],
+            };
+          },
+        },
+      },
+      successfulNative(),
+      reranker,
+    );
+
+    const result = await service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 1,
+      freshness: "any",
+      quality: "balanced",
+      backend: "deepseek-search",
+    });
+
+    expect(result.backend).toBe("deepseek-search");
+    expect(result.mode).toBe("reranked");
+    expect(result.rerank?.applied).toBe(true);
+    expect(seen).toHaveLength(1);
+    expect(seen[0]?.every((source) => source.provider === "deepseek-search")).toBe(true);
+  });
+
+  it("preserves the provider error when the official backend is the only provider", async () => {
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+        "deepseek-search": {
+          id: "deepseek-search" as const,
+          async search() {
+            throw new ProviderError(
+              "deepseek-search",
+              "auth_error",
+              "DeepSeek Search API error (HTTP 401): Authentication Fails",
+              { status: 401 },
+            );
+          },
+        },
+      },
+      successfulNative(),
+    );
+
+    await expect(service.webSearch({
+      query: "DeepSeek V4 benchmark results",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      backend: "deepseek-search",
+    })).rejects.toMatchObject({
+      provider: "deepseek-search",
+      code: "auth_error",
+      status: 401,
+    });
+  });
+
+  it("reports a no-results error when the official backend succeeds with zero sources", async () => {
+    const service = new SearchService(
+      loadConfig({ DEEPSEEK_API_KEY: "test-key" }),
+      {
+        anysearch: successfulProvider("anysearch"),
+        tavily: successfulProvider("tavily"),
+        searxng: successfulProvider("searxng"),
+        "deepseek-search": {
+          id: "deepseek-search" as const,
+          async search() {
+            return { provider: "deepseek-search" as const, sources: [], warnings: [] };
+          },
+        },
+      },
+      successfulNative(),
+    );
+
+    await expect(service.webSearch({
+      query: "a query with no matches",
+      scope: "global",
+      maxResults: 3,
+      freshness: "any",
+      backend: "deepseek-search",
+    })).rejects.toMatchObject({
+      code: "no_results",
+      message: expect.stringContaining("No search results"),
+    });
   });
 });
 
@@ -294,6 +459,7 @@ describe("fast cleaning integration", () => {
         },
       },
       searxng: successfulProvider("searxng"),
+      "deepseek-search": successfulProvider("deepseek-search"),
     };
     const shadow = new SearchService(loadConfig({}), providers, successfulNative());
     const shadowResult = await shadow.webSearch({
@@ -326,6 +492,7 @@ describe("fast cleaning integration", () => {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
       },
       successfulNative(),
     );
@@ -353,6 +520,7 @@ describe("research session service", () => {
         anysearch: successfulProvider("anysearch"),
         tavily: successfulProvider("tavily"),
         searxng: successfulProvider("searxng"),
+        "deepseek-search": successfulProvider("deepseek-search"),
       },
       successfulNative(),
     );
@@ -388,6 +556,7 @@ describe("source identity integration", () => {
       anysearch: { id: "anysearch", async search() { return { provider: "anysearch", sources: [], warnings: [] }; } },
       tavily: { id: "tavily", async search() { return { provider: "tavily", sources: translatedCopies, warnings: [] }; } },
       searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+      "deepseek-search": { id: "deepseek-search", async search() { throw new Error("unavailable"); } },
     };
   }
 
@@ -451,6 +620,7 @@ describe("source identity integration", () => {
           },
         },
         searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+        "deepseek-search": { id: "deepseek-search", async search() { throw new Error("unavailable"); } },
       },
       successfulNative(),
     );
@@ -536,6 +706,7 @@ describe("freshness intent integration", () => {
           },
         },
         searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+        "deepseek-search": { id: "deepseek-search", async search() { throw new Error("unavailable"); } },
       },
       successfulNative(),
     );
@@ -575,6 +746,7 @@ describe("freshness intent integration", () => {
           },
         },
         searxng: { id: "searxng", async search() { throw new Error("unavailable"); } },
+        "deepseek-search": { id: "deepseek-search", async search() { throw new Error("unavailable"); } },
       },
       successfulNative(),
     );

@@ -16,6 +16,7 @@ export const FRESHNESS_CAPABILITIES: Record<FreshnessProviderId, FreshnessCapabi
   tavily: "native",
   searxng: "native",
   anysearch: "soft",
+  "deepseek-search": "native",
   "deepseek-native": "soft",
 };
 

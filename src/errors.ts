@@ -3,6 +3,8 @@ import type { SearchProviderId } from "./types.js";
 export type ProviderErrorCode =
   | "missing_credential"
   | "auth_error"
+  | "insufficient_balance"
+  | "invalid_request"
   | "rate_limited"
   | "timeout"
   | "network_error"

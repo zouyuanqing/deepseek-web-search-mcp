@@ -11,12 +11,34 @@ describe("web search backend configuration", () => {
     expect(loadConfig({}).researchSessionMaxTurns).toBe(8);
   });
 
-  it("accepts native, hybrid, and automatic backend defaults", () => {
+  it("accepts native, hybrid, official-search, and automatic backend defaults", () => {
     expect(loadConfig({ WEB_SEARCH_BACKEND: "external" }).webSearchBackend).toBe("external");
+    expect(loadConfig({ WEB_SEARCH_BACKEND: "deepseek-search" }).webSearchBackend)
+      .toBe("deepseek-search");
     expect(loadConfig({ WEB_SEARCH_BACKEND: "deepseek-native" }).webSearchBackend)
       .toBe("deepseek-native");
     expect(loadConfig({ WEB_SEARCH_BACKEND: "hybrid" }).webSearchBackend).toBe("hybrid");
     expect(loadConfig({ WEB_SEARCH_BACKEND: "auto" }).webSearchBackend).toBe("auto");
+  });
+
+  it("defaults the official DeepSeek Search API configuration", () => {
+    const config = loadConfig({});
+    expect(config.deepseekSearchApiBaseUrl).toBe("https://api.deepseek.com/v1");
+    expect(config.deepseekSearchApiTimeoutMs).toBe(15_000);
+    expect(config.deepseekSearchNeedContent).toBe(false);
+    // The legacy Messages API base stays separate from the official Search API base.
+    expect(config.deepseekSearchBaseUrl).toBe("https://api.deepseek.com/anthropic");
+  });
+
+  it("accepts official DeepSeek Search API overrides", () => {
+    const config = loadConfig({
+      DEEPSEEK_SEARCH_API_BASE_URL: "https://search.example.test/v1",
+      DEEPSEEK_SEARCH_API_TIMEOUT_MS: "9000",
+      DEEPSEEK_SEARCH_NEED_CONTENT: "on",
+    });
+    expect(config.deepseekSearchApiBaseUrl).toBe("https://search.example.test/v1");
+    expect(config.deepseekSearchApiTimeoutMs).toBe(9_000);
+    expect(config.deepseekSearchNeedContent).toBe(true);
   });
 
   it("falls back to auto for an unknown backend value", () => {

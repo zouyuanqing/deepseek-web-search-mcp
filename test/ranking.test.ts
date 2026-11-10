@@ -77,6 +77,23 @@ describe("official authority prior", () => {
     expect(authorityScore("kubernetes ingress", source("https://docs.k8s.io/guide"))).toBe(0.7);
     expect(authorityScore("kubernetes ingress", source("https://unknown-blog.example/guide"))).toBe(0);
   });
+
+  it("uses the DeepSeek Search API authority tier after explicit host denylists", () => {
+    const tiered = (tier: number, url = "https://example.com/page"): SearchSource => ({
+      ...source(url),
+      authorityTier: tier,
+    });
+    expect(authorityScore("any query", tiered(4))).toBe(0.9);
+    expect(authorityScore("any query", tiered(3))).toBe(0.9);
+    expect(authorityScore("any query", tiered(2))).toBe(0.6);
+    expect(authorityScore("any query", tiered(1))).toBe(0.3);
+    expect(authorityScore("any query", tiered(0))).toBe(0);
+    // -1 means unknown: fall back to the existing host heuristics.
+    expect(authorityScore("any query", tiered(-1, "https://example.com/docs/page"))).toBe(0.7);
+    // The explicit aggregator/content-farm denylist still wins over a high tier.
+    expect(authorityScore("any query", tiered(4, "https://reddit.com/r/deepseek"))).toBe(0);
+    expect(authorityScore("any query", tiered(4, "https://techsy.io/en/deepseek"))).toBe(0);
+  });
 });
 
 describe("rank fusion", () => {

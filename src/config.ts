@@ -16,6 +16,9 @@ export interface AppConfig {
   researchSessionMaxTurns: number;
   deepseekApiKey?: string;
   deepseekSearchBaseUrl: string;
+  deepseekSearchApiBaseUrl: string;
+  deepseekSearchApiTimeoutMs: number;
+  deepseekSearchNeedContent: boolean;
   deepseekSearchModel: string;
   deepseekSearchMaxUses: number;
   deepseekSearchMaxTokens: number;
@@ -57,6 +60,8 @@ function searchBackend(value: string | undefined): SearchBackend {
       return "auto";
     case "deepseek-native":
       return "deepseek-native";
+    case "deepseek-search":
+      return "deepseek-search";
     case "hybrid":
       return "hybrid";
     default:
@@ -114,6 +119,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     deepseekSearchMaxUses: positiveInt(env.DEEPSEEK_SEARCH_MAX_USES, 5),
     deepseekSearchMaxTokens: positiveInt(env.DEEPSEEK_SEARCH_MAX_TOKENS, 4096),
     deepseekSearchTimeoutMs: positiveInt(env.DEEPSEEK_SEARCH_TIMEOUT_MS, 150_000),
+    deepseekSearchApiBaseUrl:
+      optional(env.DEEPSEEK_SEARCH_API_BASE_URL) ?? "https://api.deepseek.com/v1",
+    deepseekSearchApiTimeoutMs: positiveInt(env.DEEPSEEK_SEARCH_API_TIMEOUT_MS, 15_000),
+    deepseekSearchNeedContent: booleanEnv(env.DEEPSEEK_SEARCH_NEED_CONTENT, false),
     ...(anySearchApiKey === undefined ? {} : { anySearchApiKey }),
     anySearchMcpUrl: optional(env.ANYSEARCH_MCP_URL) ?? "https://api.anysearch.com/mcp",
     anySearchTimeoutMs: positiveInt(env.ANYSEARCH_TIMEOUT_MS, 6_000),

@@ -4,9 +4,9 @@ export type Freshness = "any" | "day" | "week" | "month" | "year";
 export type FreshnessMode = "soft" | "strict";
 export type FastCleaningMode = "off" | "shadow" | "on";
 export type Quality = "fast" | "balanced" | "deep";
-export type SearchBackend = "auto" | "external" | "deepseek-native" | "hybrid";
+export type SearchBackend = "auto" | "external" | "deepseek-search" | "deepseek-native" | "hybrid";
 export type DocumentationQueryMode = "fast" | "deep";
-export type SearchProviderId = "anysearch" | "tavily" | "searxng";
+export type SearchProviderId = "anysearch" | "tavily" | "searxng" | "deepseek-search";
 export type NativeSearchProviderId = "deepseek-native";
 export type RerankerId = "openrouter-rerank";
 
@@ -35,6 +35,10 @@ export interface SearchSource {
   publishedAt?: string;
   score?: number;
   rerankScore?: number;
+  /** DeepSeek Search API authority tier: 0-4, -1 when unknown. */
+  authorityTier?: number;
+  /** Full page content, only when DEEPSEEK_SEARCH_NEED_CONTENT is enabled. */
+  content?: string;
   provider: SearchProviderId | NativeSearchProviderId;
 }
 

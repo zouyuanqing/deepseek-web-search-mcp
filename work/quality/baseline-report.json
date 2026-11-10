@@ -283,7 +283,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -413,9 +413,9 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -425,7 +425,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -555,9 +555,9 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -567,7 +567,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -697,9 +697,9 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -709,7 +709,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -839,9 +839,9 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -851,7 +851,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -977,7 +977,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -1110,9 +1110,9 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1122,7 +1122,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -1255,9 +1255,9 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1267,7 +1267,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -1400,9 +1400,9 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1412,7 +1412,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -1544,9 +1544,9 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1556,7 +1556,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -1680,7 +1680,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -1810,9 +1810,9 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1822,7 +1822,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -1952,9 +1952,9 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -1964,7 +1964,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -2094,9 +2094,9 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2106,7 +2106,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -2236,9 +2236,9 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2248,7 +2248,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -2372,7 +2372,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -2502,9 +2502,9 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2514,7 +2514,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -2644,9 +2644,9 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2656,7 +2656,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -2786,9 +2786,9 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2798,7 +2798,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -2928,9 +2928,9 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -2940,7 +2940,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -3064,7 +3064,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -3194,9 +3194,9 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -3206,7 +3206,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -3336,9 +3336,9 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -3348,7 +3348,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -3478,9 +3478,9 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -3490,7 +3490,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -3620,9 +3620,9 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -3632,7 +3632,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -3758,7 +3758,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -3891,9 +3891,9 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -3903,7 +3903,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -4036,9 +4036,9 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4048,7 +4048,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -4181,9 +4181,9 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4193,7 +4193,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -4325,9 +4325,9 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4337,7 +4337,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -4461,7 +4461,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -4591,9 +4591,9 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4603,7 +4603,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -4733,9 +4733,9 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4745,7 +4745,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -4875,9 +4875,9 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -4887,7 +4887,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -5017,9 +5017,9 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5029,7 +5029,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -5153,7 +5153,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -5283,9 +5283,9 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5295,7 +5295,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -5425,9 +5425,9 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5437,7 +5437,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -5567,9 +5567,9 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5579,7 +5579,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -5709,9 +5709,9 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5721,7 +5721,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -5845,7 +5845,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -5975,9 +5975,9 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -5987,7 +5987,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -6117,9 +6117,9 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6129,7 +6129,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -6259,9 +6259,9 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6271,7 +6271,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -6401,9 +6401,9 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6413,7 +6413,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -6539,7 +6539,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -6672,9 +6672,9 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6684,7 +6684,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -6817,9 +6817,9 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6829,7 +6829,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -6962,9 +6962,9 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -6974,7 +6974,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -7106,9 +7106,9 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -7118,7 +7118,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -7242,7 +7242,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -7372,9 +7372,9 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -7384,7 +7384,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -7514,9 +7514,9 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -7526,7 +7526,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -7656,9 +7656,9 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -7668,7 +7668,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -7798,9 +7798,9 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -7810,7 +7810,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -7934,7 +7934,7 @@
         "tavily": 100,
         "searxng": 140,
         "anysearch": 180,
-        "deepseek-native": 500
+        "deepseek-search": 500
       }
     },
     {
@@ -8064,9 +8064,9 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -8076,7 +8076,7 @@
         "tavily": 101,
         "searxng": 141,
         "anysearch": 181,
-        "deepseek-native": 501
+        "deepseek-search": 501
       }
     },
     {
@@ -8206,9 +8206,9 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -8218,7 +8218,7 @@
         "tavily": 102,
         "searxng": 142,
         "anysearch": 182,
-        "deepseek-native": 502
+        "deepseek-search": 502
       }
     },
     {
@@ -8348,9 +8348,9 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -8360,7 +8360,7 @@
         "tavily": 103,
         "searxng": 143,
         "anysearch": 183,
-        "deepseek-native": 503
+        "deepseek-search": 503
       }
     },
     {
@@ -8490,9 +8490,9 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "providerRanks": {
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 1,
           "fusionScore": 0.02420594
@@ -8502,7 +8502,7 @@
         "tavily": 104,
         "searxng": 144,
         "anysearch": 184,
-        "deepseek-native": 504
+        "deepseek-search": 504
       }
     },
     {
@@ -8608,7 +8608,7 @@
           "provider": "tavily",
           "providerRanks": {
             "tavily": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8618,7 +8618,7 @@
           "provider": "anysearch",
           "providerRanks": {
             "anysearch": 1,
-            "deepseek-native": 2
+            "deepseek-search": 2
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8655,7 +8655,7 @@
         "tavily": 90,
         "searxng": 130,
         "anysearch": 170,
-        "deepseek-native": 480
+        "deepseek-search": 480
       }
     },
     {
@@ -8761,7 +8761,7 @@
           "provider": "tavily",
           "providerRanks": {
             "tavily": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8771,7 +8771,7 @@
           "provider": "anysearch",
           "providerRanks": {
             "anysearch": 1,
-            "deepseek-native": 2
+            "deepseek-search": 2
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8808,7 +8808,7 @@
         "tavily": 91,
         "searxng": 131,
         "anysearch": 171,
-        "deepseek-native": 481
+        "deepseek-search": 481
       }
     },
     {
@@ -8916,7 +8916,7 @@
           "provider": "tavily",
           "providerRanks": {
             "tavily": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8926,7 +8926,7 @@
           "provider": "anysearch",
           "providerRanks": {
             "anysearch": 1,
-            "deepseek-native": 2
+            "deepseek-search": 2
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -8963,7 +8963,7 @@
         "tavily": 92,
         "searxng": 132,
         "anysearch": 172,
-        "deepseek-native": 482
+        "deepseek-search": 482
       }
     },
     {
@@ -9069,7 +9069,7 @@
           "provider": "tavily",
           "providerRanks": {
             "tavily": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -9079,7 +9079,7 @@
           "provider": "anysearch",
           "providerRanks": {
             "anysearch": 1,
-            "deepseek-native": 2
+            "deepseek-search": 2
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -9116,7 +9116,7 @@
         "tavily": 93,
         "searxng": 133,
         "anysearch": 173,
-        "deepseek-native": 483
+        "deepseek-search": 483
       }
     },
     {
@@ -9222,7 +9222,7 @@
           "provider": "tavily",
           "providerRanks": {
             "tavily": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -9232,7 +9232,7 @@
           "provider": "anysearch",
           "providerRanks": {
             "anysearch": 1,
-            "deepseek-native": 2
+            "deepseek-search": 2
           },
           "providerCoverage": 2,
           "fusionScore": 0.03252247
@@ -9269,7 +9269,7 @@
         "tavily": 94,
         "searxng": 134,
         "anysearch": 174,
-        "deepseek-native": 484
+        "deepseek-search": 484
       }
     },
     {
@@ -9375,7 +9375,7 @@
           "provider": "searxng",
           "providerRanks": {
             "searxng": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.04021478
@@ -9421,7 +9421,7 @@
         "tavily": 100,
         "searxng": 150,
         "anysearch": 190,
-        "deepseek-native": 520
+        "deepseek-search": 520
       }
     },
     {
@@ -9527,7 +9527,7 @@
           "provider": "searxng",
           "providerRanks": {
             "searxng": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.04021478
@@ -9573,7 +9573,7 @@
         "tavily": 101,
         "searxng": 151,
         "anysearch": 191,
-        "deepseek-native": 521
+        "deepseek-search": 521
       }
     },
     {
@@ -9679,7 +9679,7 @@
           "provider": "searxng",
           "providerRanks": {
             "searxng": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.04021478
@@ -9725,7 +9725,7 @@
         "tavily": 102,
         "searxng": 152,
         "anysearch": 192,
-        "deepseek-native": 522
+        "deepseek-search": 522
       }
     },
     {
@@ -9831,7 +9831,7 @@
           "provider": "searxng",
           "providerRanks": {
             "searxng": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.04021478
@@ -9877,7 +9877,7 @@
         "tavily": 103,
         "searxng": 153,
         "anysearch": 193,
-        "deepseek-native": 523
+        "deepseek-search": 523
       }
     },
     {
@@ -9983,7 +9983,7 @@
           "provider": "searxng",
           "providerRanks": {
             "searxng": 2,
-            "deepseek-native": 1
+            "deepseek-search": 1
           },
           "providerCoverage": 2,
           "fusionScore": 0.04021478
@@ -10029,7 +10029,7 @@
         "tavily": 104,
         "searxng": 154,
         "anysearch": 194,
-        "deepseek-native": 524
+        "deepseek-search": 524
       }
     }
   ]

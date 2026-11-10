@@ -41,7 +41,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -126,13 +126,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI official MCP documentation native research",
             "score": 0.58
           }
@@ -167,7 +167,7 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI official MCP documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -230,13 +230,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG official Docker documentation native research",
             "score": 0.58
           }
@@ -271,7 +271,7 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG official Docker documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -334,13 +334,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily official search API documentation native research",
             "score": 0.58
           }
@@ -375,7 +375,7 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily official search API documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -438,13 +438,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Anthropic official Messages API reference native research",
             "score": 0.58
           }
@@ -479,7 +479,7 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Anthropic official Messages API reference native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -535,7 +535,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -620,13 +620,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-deepseek-latest-model-release.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek latest model release native research",
             "score": 0.58
           }
@@ -661,7 +661,7 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek latest model release native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -724,13 +724,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-openai-latest-api-changelog.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI latest API changelog native research",
             "score": 0.58
           }
@@ -765,7 +765,7 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI latest API changelog native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -828,13 +828,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-searxng-latest-release-notes.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG latest release notes native research",
             "score": 0.58
           }
@@ -869,7 +869,7 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG latest release notes native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -932,13 +932,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-tavily-latest-product-update.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily latest product update native research",
             "score": 0.58
           }
@@ -973,7 +973,7 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily latest product update native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1029,7 +1029,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -1114,13 +1114,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-best-web-search-api.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "best web search API native research",
             "score": 0.58
           }
@@ -1155,7 +1155,7 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "best web search API native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1218,13 +1218,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-deepseek-research-tools.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek research tools native research",
             "score": 0.58
           }
@@ -1259,7 +1259,7 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek research tools native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1322,13 +1322,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-openai-agents-framework.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI agents framework native research",
             "score": 0.58
           }
@@ -1363,7 +1363,7 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI agents framework native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1426,13 +1426,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-searxng-vs-tavily.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG vs Tavily native research",
             "score": 0.58
           }
@@ -1467,7 +1467,7 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG vs Tavily native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1523,7 +1523,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -1608,13 +1608,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "multi source search research workflow native research",
             "score": 0.58
           }
@@ -1649,7 +1649,7 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "multi source search research workflow native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1712,13 +1712,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-freshness-aware-web-search.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "freshness aware web search native research",
             "score": 0.58
           }
@@ -1753,7 +1753,7 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "freshness aware web search native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1816,13 +1816,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "provider aware rank fusion native research",
             "score": 0.58
           }
@@ -1857,7 +1857,7 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "provider aware rank fusion native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -1920,13 +1920,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-deepseek-web-search-integration.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek web search integration native research",
             "score": 0.58
           }
@@ -1961,7 +1961,7 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek web search integration native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2017,7 +2017,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -2102,13 +2102,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI official MCP documentation native research",
             "score": 0.58
           }
@@ -2143,7 +2143,7 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI official MCP documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2206,13 +2206,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG official Docker documentation native research",
             "score": 0.58
           }
@@ -2247,7 +2247,7 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG official Docker documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2310,13 +2310,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily official search API documentation native research",
             "score": 0.58
           }
@@ -2351,7 +2351,7 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily official search API documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2414,13 +2414,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Anthropic official Messages API reference native research",
             "score": 0.58
           }
@@ -2455,7 +2455,7 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Anthropic official Messages API reference native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2511,7 +2511,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -2596,13 +2596,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-deepseek-latest-model-release.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek latest model release native research",
             "score": 0.58
           }
@@ -2637,7 +2637,7 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek latest model release native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2700,13 +2700,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-openai-latest-api-changelog.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI latest API changelog native research",
             "score": 0.58
           }
@@ -2741,7 +2741,7 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI latest API changelog native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2804,13 +2804,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-searxng-latest-release-notes.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG latest release notes native research",
             "score": 0.58
           }
@@ -2845,7 +2845,7 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG latest release notes native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -2908,13 +2908,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-tavily-latest-product-update.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily latest product update native research",
             "score": 0.58
           }
@@ -2949,7 +2949,7 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily latest product update native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3005,7 +3005,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -3090,13 +3090,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-best-web-search-api.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "best web search API native research",
             "score": 0.58
           }
@@ -3131,7 +3131,7 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "best web search API native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3194,13 +3194,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-deepseek-research-tools.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek research tools native research",
             "score": 0.58
           }
@@ -3235,7 +3235,7 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek research tools native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3298,13 +3298,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-openai-agents-framework.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI agents framework native research",
             "score": 0.58
           }
@@ -3339,7 +3339,7 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI agents framework native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3402,13 +3402,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-searxng-vs-tavily.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG vs Tavily native research",
             "score": 0.58
           }
@@ -3443,7 +3443,7 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG vs Tavily native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3499,7 +3499,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -3584,13 +3584,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "multi source search research workflow native research",
             "score": 0.58
           }
@@ -3625,7 +3625,7 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "multi source search research workflow native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3688,13 +3688,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-freshness-aware-web-search.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "freshness aware web search native research",
             "score": 0.58
           }
@@ -3729,7 +3729,7 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "freshness aware web search native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3792,13 +3792,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "provider aware rank fusion native research",
             "score": 0.58
           }
@@ -3833,7 +3833,7 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "provider aware rank fusion native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3896,13 +3896,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-deepseek-web-search-integration.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek web search integration native research",
             "score": 0.58
           }
@@ -3937,7 +3937,7 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek web search integration native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -3993,7 +3993,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -4078,13 +4078,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI official MCP documentation native research",
             "score": 0.58
           }
@@ -4119,7 +4119,7 @@
         },
         {
           "url": "https://community-openai-official-mcp-documentation.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI official MCP documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4182,13 +4182,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG official Docker documentation native research",
             "score": 0.58
           }
@@ -4223,7 +4223,7 @@
         },
         {
           "url": "https://community-searxng-official-docker-documentatio.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG official Docker documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4286,13 +4286,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily official search API documentation native research",
             "score": 0.58
           }
@@ -4327,7 +4327,7 @@
         },
         {
           "url": "https://community-tavily-official-search-api-documenta.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily official search API documentation native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4390,13 +4390,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Anthropic official Messages API reference native research",
             "score": 0.58
           }
@@ -4431,7 +4431,7 @@
         },
         {
           "url": "https://community-anthropic-official-messages-api-refe.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Anthropic official Messages API reference native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4487,7 +4487,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -4572,13 +4572,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-deepseek-latest-model-release.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek latest model release native research",
             "score": 0.58
           }
@@ -4613,7 +4613,7 @@
         },
         {
           "url": "https://community-deepseek-latest-model-release.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek latest model release native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4676,13 +4676,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-openai-latest-api-changelog.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI latest API changelog native research",
             "score": 0.58
           }
@@ -4717,7 +4717,7 @@
         },
         {
           "url": "https://community-openai-latest-api-changelog.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI latest API changelog native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4780,13 +4780,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-searxng-latest-release-notes.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG latest release notes native research",
             "score": 0.58
           }
@@ -4821,7 +4821,7 @@
         },
         {
           "url": "https://community-searxng-latest-release-notes.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG latest release notes native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4884,13 +4884,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-tavily-latest-product-update.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily latest product update native research",
             "score": 0.58
           }
@@ -4925,7 +4925,7 @@
         },
         {
           "url": "https://community-tavily-latest-product-update.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "Tavily latest product update native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -4981,7 +4981,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -5066,13 +5066,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-best-web-search-api.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "best web search API native research",
             "score": 0.58
           }
@@ -5107,7 +5107,7 @@
         },
         {
           "url": "https://community-best-web-search-api.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "best web search API native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5170,13 +5170,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-deepseek-research-tools.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek research tools native research",
             "score": 0.58
           }
@@ -5211,7 +5211,7 @@
         },
         {
           "url": "https://community-deepseek-research-tools.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek research tools native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5274,13 +5274,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-openai-agents-framework.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "OpenAI agents framework native research",
             "score": 0.58
           }
@@ -5315,7 +5315,7 @@
         },
         {
           "url": "https://community-openai-agents-framework.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "OpenAI agents framework native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5378,13 +5378,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-searxng-vs-tavily.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG vs Tavily native research",
             "score": 0.58
           }
@@ -5419,7 +5419,7 @@
         },
         {
           "url": "https://community-searxng-vs-tavily.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "SearXNG vs Tavily native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5475,7 +5475,7 @@
         "sources": []
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "error",
         "elapsedMs": 500,
         "sources": [],
@@ -5560,13 +5560,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 501,
         "sources": [
           {
             "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "multi source search research workflow native research",
             "score": 0.58
           }
@@ -5601,7 +5601,7 @@
         },
         {
           "url": "https://community-multi-source-search-research-workflo.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "multi source search research workflow native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5664,13 +5664,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 502,
         "sources": [
           {
             "url": "https://community-freshness-aware-web-search.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "freshness aware web search native research",
             "score": 0.58
           }
@@ -5705,7 +5705,7 @@
         },
         {
           "url": "https://community-freshness-aware-web-search.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "freshness aware web search native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5768,13 +5768,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 503,
         "sources": [
           {
             "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "provider aware rank fusion native research",
             "score": 0.58
           }
@@ -5809,7 +5809,7 @@
         },
         {
           "url": "https://community-provider-aware-rank-fusion.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "provider aware rank fusion native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5872,13 +5872,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 504,
         "sources": [
           {
             "url": "https://community-deepseek-web-search-integration.example.net/thread",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek web search integration native research",
             "score": 0.58
           }
@@ -5913,7 +5913,7 @@
         },
         {
           "url": "https://community-deepseek-web-search-integration.example.net/thread",
-          "provider": "deepseek-native",
+          "provider": "deepseek-search",
           "title": "DeepSeek web search integration native research",
           "score": 0.58,
           "rerankScore": 0.41000000000000003
@@ -5993,19 +5993,19 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 480,
         "sources": [
           {
             "url": "https://ofox.ai/deepseek-v4-benchmark-results-full-analysis",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek V4 benchmark results full analysis",
             "score": 0.59
           },
           {
             "url": "https://taskade.com/deepseek-v4-benchmark-results-notes",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek V4 benchmark results notes",
             "score": 0.55
           }
@@ -6094,19 +6094,19 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 481,
         "sources": [
           {
             "url": "https://ofox.ai/searxng-1-0-changes-full-analysis",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG 1.0 changes full analysis",
             "score": 0.59
           },
           {
             "url": "https://taskade.com/searxng-1-0-changes-notes",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG 1.0 changes notes",
             "score": 0.55
           }
@@ -6195,19 +6195,19 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 482,
         "sources": [
           {
             "url": "https://ofox.ai/tavily-pricing-tiers-full-analysis",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily pricing tiers full analysis",
             "score": 0.59
           },
           {
             "url": "https://taskade.com/tavily-pricing-tiers-notes",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily pricing tiers notes",
             "score": 0.55
           }
@@ -6296,19 +6296,19 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 483,
         "sources": [
           {
             "url": "https://ofox.ai/mcp-server-security-guidance-full-analysis",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "MCP server security guidance full analysis",
             "score": 0.59
           },
           {
             "url": "https://taskade.com/mcp-server-security-guidance-notes",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "MCP server security guidance notes",
             "score": 0.55
           }
@@ -6397,19 +6397,19 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 484,
         "sources": [
           {
             "url": "https://ofox.ai/reranker-model-comparison-full-analysis",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Reranker model comparison full analysis",
             "score": 0.59
           },
           {
             "url": "https://taskade.com/reranker-model-comparison-notes",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Reranker model comparison notes",
             "score": 0.55
           }
@@ -6493,13 +6493,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 520,
         "sources": [
           {
             "url": "https://techsy.io/en/deepseek-api-rate-limits-complete-guide",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "DeepSeek API rate limits complete guide",
             "score": 0.6
           }
@@ -6617,13 +6617,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 521,
         "sources": [
           {
             "url": "https://techsy.io/en/searxng-rate-limit-configuration-complete-guide",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SearXNG rate limit configuration complete guide",
             "score": 0.6
           }
@@ -6741,13 +6741,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 522,
         "sources": [
           {
             "url": "https://techsy.io/en/tavily-search-api-quotas-complete-guide",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "Tavily search API quotas complete guide",
             "score": 0.6
           }
@@ -6865,13 +6865,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 523,
         "sources": [
           {
             "url": "https://techsy.io/en/mcp-protocol-transport-types-complete-guide",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "MCP protocol transport types complete guide",
             "score": 0.6
           }
@@ -6989,13 +6989,13 @@
         ]
       },
       {
-        "provider": "deepseek-native",
+        "provider": "deepseek-search",
         "status": "ok",
         "elapsedMs": 524,
         "sources": [
           {
             "url": "https://techsy.io/en/sse-reconnect-backoff-complete-guide",
-            "provider": "deepseek-native",
+            "provider": "deepseek-search",
             "title": "SSE reconnect backoff complete guide",
             "score": 0.6
           }

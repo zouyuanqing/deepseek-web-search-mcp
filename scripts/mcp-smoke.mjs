@@ -10,7 +10,7 @@ const transport = new StdioClientTransport({
   env,
   stderr: "pipe",
 });
-const client = new Client({ name: "deepseek-web-search-smoke", version: "1.4.0" });
+const client = new Client({ name: "deepseek-web-search-smoke", version: "1.6.0" });
 
 try {
   await client.connect(transport);
@@ -54,6 +54,20 @@ try {
   });
   if (legacySearch.isError === true) {
     throw new Error(`legacy web_search failed: ${JSON.stringify(legacySearch.content)}`);
+  }
+
+  const officialSearch = await client.callTool({
+    name: "web_search",
+    arguments: {
+      query: "DeepSeek official Search API",
+      scope: "global",
+      max_results: 5,
+      freshness: "any",
+      backend: "deepseek-search",
+    },
+  });
+  if (officialSearch.isError === true) {
+    throw new Error(`official DeepSeek search failed: ${JSON.stringify(officialSearch.content)}`);
   }
 
   const research = await client.callTool({
@@ -119,6 +133,7 @@ try {
 
   const searchResult = search.structuredContent;
   const legacySearchResult = legacySearch.structuredContent;
+  const officialSearchResult = officialSearch.structuredContent;
   const researchResult = research.structuredContent;
   const hybridSearchResult = hybridSearch.structuredContent;
   if (searchResult?.quality !== "balanced" || searchResult.rerank?.strategy !== "rank_fusion") {
@@ -128,12 +143,20 @@ try {
     throw new Error(`Legacy rerank alias did not map to balanced: ${JSON.stringify(legacySearchResult)}`);
   }
   if (
+    officialSearchResult?.backend !== "deepseek-search"
+    || officialSearchResult?.provider !== "deepseek-search"
+    || officialSearchResult?.mode !== "fast"
+    || !Array.isArray(officialSearchResult?.sources)
+    || officialSearchResult.sources.length === 0
+  ) {
+    throw new Error(`Unexpected official DeepSeek search metadata: ${JSON.stringify(officialSearchResult)}`);
+  }
+  if (
     hybridSearchResult?.backend !== "hybrid"
     || hybridSearchResult?.mode !== "fast"
     || hybridSearchResult?.provider !== "multiple"
     || !Array.isArray(hybridSearchResult?.sources)
-    || !hybridSearchResult.attempts?.some((attempt) => attempt.provider === "deepseek-native")
-    || hybridSearchResult.nativeSearchRequests < 1
+    || !hybridSearchResult.attempts?.some((attempt) => attempt.provider === "deepseek-search")
   ) {
     throw new Error(`Unexpected hybrid web_search metadata: ${JSON.stringify(hybridSearchResult)}`);
   }
@@ -155,6 +178,13 @@ try {
       mode: legacySearchResult?.mode,
       rerankApplied: legacySearchResult?.rerank?.applied,
     },
+    officialSearch: {
+      backend: officialSearchResult?.backend,
+      provider: officialSearchResult?.provider,
+      mode: officialSearchResult?.mode,
+      sources: officialSearchResult.sources.length,
+      sourceProviders: [...new Set(officialSearchResult.sources.map((source) => source.provider))],
+    },
     research: {
       provider: researchResult?.provider,
       sources: Array.isArray(researchResult?.sources) ? researchResult.sources.length : 0,
@@ -173,8 +203,6 @@ try {
       sources: hybridSearchResult.sources.length,
       sourceProviders: [...new Set(hybridSearchResult.sources.map((source) => source.provider))],
       attemptedProviders: hybridSearchResult.attempts.map((attempt) => attempt.provider),
-      nativeSearchRequests: hybridSearchResult?.nativeSearchRequests,
-      degraded: hybridSearchResult?.nativeSearchDegraded,
     },
   }, null, 2)}\n`);
 } finally {

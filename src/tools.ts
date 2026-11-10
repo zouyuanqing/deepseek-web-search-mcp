@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { AppConfig } from "./config.js";
 import { errorText } from "./errors.js";
 import { SearchService } from "./service.js";
+import { SERVER_VERSION } from "./version.js";
 import type { ResearchResult, SearchResult } from "./types.js";
 import { safeJson } from "./utils.js";
 
@@ -11,7 +12,7 @@ const scopeSchema = z.enum(["auto", "cn", "global"]).default("auto");
 const freshnessSchema = z.enum(["any", "day", "week", "month", "year"]).default("any");
 const freshnessModeSchema = z.enum(["soft", "strict"]).default("soft");
 const qualitySchema = z.enum(["fast", "balanced", "deep"]);
-const backendSchema = z.enum(["auto", "external", "deepseek-native", "hybrid"]);
+const backendSchema = z.enum(["auto", "external", "deepseek-search", "deepseek-native", "hybrid"]);
 
 export function searchMarkdown(result: SearchResult): string {
   const lines = [
@@ -117,7 +118,7 @@ export function createMcpServer(config: AppConfig): McpServer {
   const service = new SearchService(config);
   const server = new McpServer({
     name: "deepseek-web-search-mcp",
-    version: "1.5.0",
+    version: SERVER_VERSION,
   });
 
   server.registerTool(
@@ -147,7 +148,7 @@ export function createMcpServer(config: AppConfig): McpServer {
           "Deprecated compatibility alias: true maps to balanced when quality is omitted.",
         ),
         backend: backendSchema.optional().describe(
-          "Search backend. Defaults to WEB_SEARCH_BACKEND (auto by default); hybrid includes DeepSeek native search as one provider, deepseek-native uses it exclusively, and auto uses hybrid when DEEPSEEK_API_KEY is configured.",
+          "Search backend. Defaults to WEB_SEARCH_BACKEND (auto by default). deepseek-search uses the official DeepSeek Search API only, deepseek-native uses the legacy model-backed Messages API search, hybrid combines the external providers with the official DeepSeek Search API, and auto uses hybrid when DEEPSEEK_API_KEY is configured.",
         ),
       },
     },
@@ -327,7 +328,7 @@ export async function runStdioServer(config: AppConfig): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   if (config.deepseekApiKey === undefined) {
-    process.stderr.write("Warning: DEEPSEEK_API_KEY is not configured for web_research.\\n");
+    process.stderr.write("Warning: DEEPSEEK_API_KEY is not configured for web_research, deepseek-search, or hybrid search.\\n");
   }
 }
 

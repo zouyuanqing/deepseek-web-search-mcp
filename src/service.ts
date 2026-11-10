@@ -12,6 +12,7 @@ import {
   dedupeSourceIdentities,
 } from "./source-identity.js";
 import { DeepSeekNativeSearchProvider } from "./providers/deepseek-native.js";
+import { DeepSeekSearchProvider } from "./providers/deepseek-search.js";
 import { AnySearchProvider } from "./providers/anysearch.js";
 import { OpenRouterReranker } from "./providers/openrouter-rerank.js";
 import { TavilySearchProvider } from "./providers/tavily.js";
@@ -79,7 +80,7 @@ export function providerOrder(scope: "cn" | "global"): SearchProviderId[] {
 }
 
 export function hybridProviderOrder(scope: "cn" | "global"): CandidateProviderId[] {
-  return [...providerOrder(scope), "deepseek-native"];
+  return [...providerOrder(scope), "deepseek-search"];
 }
 
 export function buildProviderRegistry(config: AppConfig): ProviderRegistry {
@@ -87,6 +88,7 @@ export function buildProviderRegistry(config: AppConfig): ProviderRegistry {
     anysearch: new AnySearchProvider(config),
     tavily: new TavilySearchProvider(config),
     searxng: new SearxngProvider(config),
+    "deepseek-search": new DeepSeekSearchProvider(config),
   };
 }
 
@@ -301,6 +303,8 @@ export class SearchService {
     let result: SearchResult;
     if (backend === "deepseek-native") {
       result = await this.webSearchNative(input, quality, signal);
+    } else if (backend === "deepseek-search") {
+      result = await this.webSearchOfficial(input, quality, signal);
     } else if (backend === "hybrid") {
       result = await this.webSearchHybrid(input, quality, signal);
     } else {
@@ -320,9 +324,39 @@ export class SearchService {
     quality: Quality,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
+    const scope = resolveScope(input.query, input.scope);
+    return this.webSearchProviderSet(
+      input,
+      quality,
+      providerOrder(scope),
+      "external",
+      signal,
+    );
+  }
+
+  /**
+   * Official DeepSeek Search API only: a raw structured search with no model
+   * turn. Balanced/deep still use the shared rank-fusion path so the result
+   * shape stays identical to the other backends.
+   */
+  private async webSearchOfficial(
+    input: SearchInput,
+    quality: Quality,
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
+    return this.webSearchProviderSet(input, quality, ["deepseek-search"], "deepseek-search", signal);
+  }
+
+  private async webSearchProviderSet(
+    input: SearchInput,
+    quality: Quality,
+    order: SearchProviderId[],
+    backend: "external" | "deepseek-search",
+    signal?: AbortSignal,
+  ): Promise<SearchResult> {
     return QUALITY_PROFILES[quality].rerank
-      ? this.webSearchRanked(input, quality, signal)
-      : this.webSearchFast(input, quality, signal);
+      ? this.webSearchRanked(input, quality, order, backend, signal)
+      : this.webSearchFast(input, quality, order, backend, signal);
   }
 
   private async webSearchHybrid(
@@ -330,8 +364,9 @@ export class SearchService {
     quality: Quality,
     signal?: AbortSignal,
   ): Promise<SearchResult> {
+    const scope = resolveScope(input.query, input.scope);
     return QUALITY_PROFILES[quality].rerank
-      ? this.webSearchRanked(input, quality, signal, true)
+      ? this.webSearchRanked(input, quality, hybridProviderOrder(scope), "hybrid", signal)
       : this.webSearchAggregate(input, quality, signal);
   }
 
@@ -410,6 +445,8 @@ export class SearchService {
   private async webSearchFast(
     input: SearchInput,
     quality: Quality,
+    order: SearchProviderId[],
+    backend: "external" | "deepseek-search",
     signal?: AbortSignal,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
@@ -424,7 +461,7 @@ export class SearchService {
       maxResults: providerRequestLimit(quality, input.maxResults),
     };
 
-    for (const providerId of providerOrder(scope)) {
+    for (const providerId of order) {
       const started = performance.now();
       try {
         const call = await this.searchProvider(providerId, providerInput, scope, signal);
@@ -468,7 +505,7 @@ export class SearchService {
           scope,
           mode: "fast",
           quality,
-          backend: "external",
+          backend,
           provider: providerId,
           fallbackUsed: attempts.length > 1,
           attempts,
@@ -501,10 +538,18 @@ export class SearchService {
       }
     }
 
+    // A single-provider backend must keep the provider's error so callers see
+    // the real cause (auth_error, rate_limited, ...) instead of a generic
+    // "all providers failed" message. Multi-provider backends aggregate.
+    if (order.length === 1 && lastError instanceof ProviderError) throw lastError;
+    const allEmpty = attempts.length > 0
+      && attempts.every((attempt) => attempt.status === "empty");
     throw new ProviderError(
       "service",
       "no_results",
-      `All search providers failed for query "${input.query}"`,
+      allEmpty
+        ? `No search results for query "${input.query}"`
+        : `All search providers failed for query "${input.query}"`,
       { cause: lastError },
     );
   }
@@ -532,7 +577,6 @@ export class SearchService {
             providerId,
             result: { ...call.result, sources: freshness.sources },
             cached: call.cached,
-            nativeSearch: call.nativeSearch,
             freshnessReport: freshness.report,
             elapsedMs: Math.round(performance.now() - started),
           };
@@ -554,14 +598,11 @@ export class SearchService {
     const sourceGroups: SearchSource[][] = [];
     const answers: string[] = [];
     const successfulProviders: CandidateProviderId[] = [];
-    let nativeAttempted = false;
-    let nativeSucceeded = false;
-    let nativeSearchRequests = 0;
-    let nativeSearchCalls: NativeSearchCall[] = [];
+    let lastError: unknown;
 
     for (const item of settled) {
-      if (item.providerId === "deepseek-native") nativeAttempted = true;
       if ("error" in item) {
+        lastError = item.error;
         attempts.push({
           provider: item.providerId,
           status: "error",
@@ -586,11 +627,6 @@ export class SearchService {
       }
       freshnessReports.push(item.freshnessReport);
       successfulProviders.push(item.providerId);
-      if (item.providerId === "deepseek-native") {
-        nativeSucceeded = true;
-        nativeSearchRequests = item.nativeSearch?.requests ?? 0;
-        nativeSearchCalls = item.nativeSearch?.calls ?? [];
-      }
       attempts.push({
         provider: item.providerId,
         status: "ok",
@@ -611,10 +647,15 @@ export class SearchService {
     const identified = this.identifySources(cleaned.sources);
     const sources = identified.sources.slice(0, input.maxResults);
     if (sources.length === 0) {
+      const allEmpty = attempts.length > 0
+        && attempts.every((attempt) => attempt.status === "empty");
       throw new ProviderError(
         "service",
         "no_results",
-        `All search providers failed for query "${input.query}"`,
+        allEmpty
+          ? `No search results for query "${input.query}"`
+          : `All search providers failed for query "${input.query}"`,
+        { cause: lastError },
       );
     }
     const mergedWarnings = this.identityWarnings(identified.report!, warnings);
@@ -647,20 +688,18 @@ export class SearchService {
       ),
       fastCleaning: cleaned.metadata,
       sourceIdentity: identified.report,
-      nativeSearchRequests,
-      nativeSearchCalls,
-      nativeSearchDegraded: nativeAttempted && !nativeSucceeded,
     };
   }
 
   private async webSearchRanked(
     input: SearchInput,
     quality: Quality,
+    order: CandidateProviderId[],
+    backend: SearchResult["backend"],
     signal?: AbortSignal,
-    hybrid = false,
   ): Promise<SearchResult> {
     const scope = resolveScope(input.query, input.scope);
-    const order = hybrid ? hybridProviderOrder(scope) : providerOrder(scope);
+    const hybrid = backend === "hybrid";
     const target = candidateTarget(
       quality,
       input.maxResults,
@@ -682,7 +721,6 @@ export class SearchService {
             providerId,
             result: { ...call.result, sources: freshness.sources },
             cached: call.cached,
-            nativeSearch: call.nativeSearch,
             freshnessReport: freshness.report,
             elapsedMs: Math.round(performance.now() - started),
           };
@@ -704,14 +742,11 @@ export class SearchService {
     const sourceGroups: SearchSource[][] = [];
     const answers: string[] = [];
     let successCount = 0;
-    let nativeAttempted = false;
-    let nativeSucceeded = false;
-    let nativeSearchRequests = 0;
-    let nativeSearchCalls: NativeSearchCall[] = [];
+    let lastError: unknown;
 
     for (const item of settled) {
-      if (item.providerId === "deepseek-native") nativeAttempted = true;
       if ("error" in item) {
+        lastError = item.error;
         attempts.push({
           provider: item.providerId,
           status: "error",
@@ -736,11 +771,6 @@ export class SearchService {
       }
       freshnessReports.push(item.freshnessReport);
       successCount += 1;
-      if (item.providerId === "deepseek-native") {
-        nativeSucceeded = true;
-        nativeSearchRequests = item.nativeSearch?.requests ?? 0;
-        nativeSearchCalls = item.nativeSearch?.calls ?? [];
-      }
       attempts.push({
         provider: item.providerId,
         status: "ok",
@@ -759,10 +789,16 @@ export class SearchService {
     );
     const uniqueCandidates = identifiedCandidates.sources.slice(0, target);
     if (uniqueCandidates.length === 0) {
+      if (order.length === 1 && lastError instanceof ProviderError) throw lastError;
+      const allEmpty = attempts.length > 0
+        && attempts.every((attempt) => attempt.status === "empty");
       throw new ProviderError(
         "service",
         "no_results",
-        `All search providers failed for query "${input.query}"`,
+        allEmpty
+          ? `No search results for query "${input.query}"`
+          : `All search providers failed for query "${input.query}"`,
+        { cause: lastError },
       );
     }
 
@@ -779,7 +815,7 @@ export class SearchService {
       scope,
       mode: "reranked" as const,
       quality,
-      backend: hybrid ? "hybrid" as const : "external" as const,
+      backend,
       provider: successCount > 1 ? ("multiple" as const) : settled.find(
         (item) => "result" in item && item.result.sources.length > 0,
       )?.providerId ?? null,
@@ -794,13 +830,6 @@ export class SearchService {
         input.query,
       ),
       sourceIdentity: identifiedCandidates.report,
-      ...(hybrid
-        ? {
-          nativeSearchRequests,
-          nativeSearchCalls,
-          nativeSearchDegraded: nativeAttempted && !nativeSucceeded,
-        }
-        : {}),
     };
 
     if (uniqueCandidates.length <= input.maxResults) {
@@ -1188,6 +1217,9 @@ export class SearchService {
     };
 
     await Promise.all([
+      run("deepseek-search", async () => (
+        await this.providers["deepseek-search"].search(input, signal)
+      ).sources.length),
       run("deepseek-native", async () => {
         const result = await this.nativeProvider.research(
           { query, maxSources: 3, freshness: "day" },
