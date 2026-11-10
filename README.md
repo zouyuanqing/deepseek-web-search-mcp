@@ -19,6 +19,128 @@ v1.7.0 起可在 `balanced` / `deep` 路径上可选接入 OpenRouter 模型能�
 未配置 `OPENROUTER_API_KEY` 时三者自动跳过，搜索退回纯检索行为（重排报告
 `applied: false`）。
 
+## 架构
+
+> 下图使用 Mermaid 绘制，GitHub 会直接渲染；本地 Markdown 预览器需支持 Mermaid。
+
+### 分层架构
+
+```mermaid
+flowchart TB
+  subgraph CLIENT["客户端"]
+    C["Codex / Claude / 其他 MCP 客户端"]
+  end
+  subgraph MCP["MCP 层"]
+    IDX["src/index.ts<br/>stdio server · --doctor"]
+    TOOLS["src/tools.ts<br/>web_search / web_research / research_*"]
+  end
+  subgraph SERVICE["服务层"]
+    SVC["SearchService<br/>src/service.ts"]
+    CACHE["内存缓存<br/>search / rerank"]
+    SESS["ResearchSessionStore<br/>TTL + 最大轮数"]
+  end
+  subgraph BACKEND["检索后端"]
+    OFF["deepseek-search<br/>官方 Search API"]
+    EXT["external<br/>AnySearch / Tavily / SearXNG"]
+    HYB["hybrid<br/>external + deepseek-search"]
+    NAT["deepseek-native<br/>legacy Messages 搜索"]
+  end
+  subgraph RANK["排序与质量"]
+    IDENT["source-identity<br/>词法去重 / 独立性"]
+    SEM["semantic-dedupe<br/>语义转载折叠"]
+    RER["openrouter-rerank<br/>分数校准"]
+    FUSE["ranking.ts<br/>rank fusion"]
+    QUAL["quality.ts<br/>fast 清洗 / 时效性"]
+  end
+  subgraph OPT["可选 OpenRouter 能力"]
+    ORC["OpenRouterClient<br/>30 次/分 · 并发 2 · 熔断"]
+    DEC["docs-intent veto<br/>decisions"]
+    EMB["embedding<br/>语义去重"]
+  end
+  C -->|stdio JSON-RPC| IDX
+  IDX --> TOOLS
+  TOOLS --> SVC
+  SVC --> CACHE
+  SVC --> SESS
+  SVC --> OFF
+  SVC --> EXT
+  SVC --> HYB
+  SVC --> NAT
+  OFF --> IDENT
+  EXT --> IDENT
+  HYB --> IDENT
+  NAT -->|"直接返回 native 结果"| QUAL
+  IDENT --> SEM
+  SEM --> RER
+  RER --> FUSE
+  FUSE --> QUAL
+  QUAL -->|"SearchResult"| TOOLS
+  SVC --> DEC
+  SEM --> EMB
+  ORC --> RER
+  ORC --> DEC
+  ORC --> EMB
+```
+
+### `web_search` 请求流程
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant C as MCP 客户端
+  participant T as tools.ts
+  participant S as SearchService
+  participant D as DocsIntentResolver
+  participant P as 检索后端
+  participant Q as 去重/融合
+  participant O as OpenRouter（可选）
+  C->>T: web_search(query, quality, backend, ...)
+  T->>S: webSearch(input)
+  S->>D: resolve(query, quality, hasOfficialIntent)
+  alt decisions off / quality=fast / regex 未命中
+    D-->>S: fallback（0 次模型调用）
+  else shadow 或 on 且 regex 命中
+    D->>O: POST /api/alpha/decisions
+    O-->>D: p + citations（失败/超时 → 正则）
+  end
+  S->>P: 按 backend 并发召回（timeout / fallback）
+  P-->>S: 候选池 + provider warnings
+  S->>Q: merge + 词法去重 + source-identity
+  opt EMBEDDING_MODE=on 且有灰色候选对
+    Q->>O: POST /api/v1/embeddings
+    O-->>Q: cosine → 折叠 + embedding 报告
+  end
+  opt quality=balanced/deep 且已配置 key
+    S->>O: POST /api/v1/rerank（按 quality 选模型）
+    O-->>S: 原始 rerank 分数
+    S->>Q: 分数校准 + rank fusion（RRF 50/50）
+  end
+  Q-->>S: sources + 报告字段
+  S-->>T: SearchResult
+  T-->>C: JSON / Markdown
+```
+
+### 模块地图
+
+| 层 | 主要文件 |
+| --- | --- |
+| MCP 入口与工具 | `src/index.ts`、`src/tools.ts` |
+| 编排与缓存 | `src/service.ts`、`src/cache.ts`、`src/research-session.ts` |
+| 检索 provider | `src/providers/`（DeepSeek Search、AnySearch、Tavily、SearXNG、DeepSeek native） |
+| 排序与质量 | `src/ranking.ts`、`src/rerank-calibration.ts`、`src/quality.ts`、`src/source-identity.ts`、`src/semantic-dedupe.ts` |
+| 可选 OpenRouter | `src/providers/openrouter-client.ts`、`openrouter-rerank.ts`、`openrouter-decisions.ts`、`openrouter-embed.ts`、`src/docs-intent.ts` |
+| 配置与类型 | `src/config.ts`、`src/types.ts`、`src/errors.ts` |
+| 评估 | `scripts/eval/`、`test/fixtures/`、`.github/workflows/eval-offline.yml` |
+
+### 关键设计约束
+
+- **先召回、后统一排序**：所有 provider 的结果进入同一候选池，再做去重与 rank fusion，避免单家排序偏置。
+- **增强能力默认不改变基础行为**：rerank 在 `fast`、无 key 或失败时直接跳过；decisions 与 embedding 默认 `off`；flags-off 的 fast 搜索与 v1.6.0 逐字节一致。
+- **失败只降级、不阻断**：rerank 失败回到 provider 顺序，decisions 失败回到正则，embedding 失败回到词法去重，搜索本身不因 OpenRouter 故障失败。
+- **校准与模型解耦**：provider 只返回原始 rerank 分数，min-max/weak-signal 校准在 ranking 层完成，便于按模型选择 `auto` 策略。
+- **共享客户端**：rerank / decisions / embeddings 共用一个 `OpenRouterClient`，统一限流、并发与熔断，避免三个模块各自打爆配额。
+
+
 ## DeepSeek 协议
 
 DeepSeek 自 2026-10-17 起开放官方 Search & Fetch API。v1.6.0 起，`web_search`
@@ -697,6 +819,17 @@ npm run eval:accept
 - `test/fixtures/decisions-docs-intent.json`：docs-intent 概率（每 query 重复采集），
   并记录 `promptVersion` / `questionHash` / `requestShape` 用于检测生产 prompt 漂移
 - `test/fixtures/semantic-capture.json`：重复/非重复文本对的 8b embedding cosine
+
+### 评估流水线
+
+```mermaid
+flowchart LR
+  CAP["npm run eval:capture<br/>live · 预算 120 次"] --> FIX["test/fixtures/*.json<br/>提交到仓库"]
+  FIX --> REP["npm run eval:replay<br/>离线 · 无密钥"]
+  REP --> RPT["work/eval/report.json"]
+  RPT --> ACC["npm run eval:accept<br/>0 PASS / 1 FAIL / 2 BLOCKED"]
+  ACC --> CI["CI: eval-offline.yml<br/>build + test + replay + accept"]
+```
 
 验收门控（`scripts/eval/accept.mjs`）：
 
